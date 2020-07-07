@@ -1,0 +1,36 @@
+{
+	"version": "2.0.0",
+	"echoCommand": true,
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "watch",
+			"path": "packages/node/",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"isBackground": true,
+			"label": "node:watch",
+			"detail": "del ./out/**/* && tsc --build ./tsconfig.json -w"
+		},
+		{
+			"type": "npm",
+			"script": "watch",
+			"path": "packages/common/",
+			"isBackground": true,
+			"label": "common:watch",
+			"detail": "del ./lib/**/* && tsc --build ./tsconfig.json -w"
+		},
+		{
+			"type": "npm",
+			"script": "start",
+			"label": "proj:watch",
+			"dependsOn": [
+				"node:watch",
+				"common:watch"
+			],
+			"dependsOrder": "sequence"
+		}
+	]
+}

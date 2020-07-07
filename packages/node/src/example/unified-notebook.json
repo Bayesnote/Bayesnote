@@ -1,0 +1,33 @@
+{
+  "cells": [
+    {
+      "id": "ae3ce7db-db36-4e43-80c6-f3d70ecff51f",
+      "type": "code",
+      "source": "res = 1 + 1\nprint(res)",
+      "language": "python",
+      "kernelName": "python3",
+      "backend": "Jupyter",
+      "metadata": {
+        "scrollbar": true,
+        "source_hidden": false,
+        "output_hidden": false
+      },
+      "state": 2,
+      "outputs": []
+    },
+    {
+      "id": "eaaf4fc4-b2eb-43db-b1e4-7f2bb5ec785d",
+      "type": "code",
+      "source": "curl -s 'https://api.github.com/users/lambda' | jq",
+      "language": "zsh",
+      "backend": "Jupyter",
+      "metadata": {
+        "scrollbar": true,
+        "source_hidden": false,
+        "output_hidden": false
+      },
+      "state": 2,
+      "outputs": []
+    }
+  ]
+}

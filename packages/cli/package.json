@@ -1,0 +1,31 @@
+{
+  "name": "@bayesnote/cli",
+  "main": "./lib/index.js",
+  "version": "0.0.1",
+  "bin": {
+    "bayesnote": "./lib/index.js"
+  },
+  "scripts": {
+    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts | bunyan",
+    "build": "del ./lib/**/* && tsc --build ./tsconfig.json && chmod +x ./lib/index.js"
+  },
+  "dependencies": {
+    "@bayesnote/common": "^0.0.1-0.0.1-alpha.4.0",
+    "bunyan": "^1.8.12",
+    "clear": "^0.1.0",
+    "commander": "^5.1.0",
+    "jsonfile": "^6.0.1",
+    "socket.io-client": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/bunyan": "^1.8.6",
+    "@types/clear": "^0.1.0",
+    "@types/jsonfile": "^5.0.0",
+    "@types/node": "^13.13.4",
+    "@types/socket.io-client": "^1.4.33",
+    "del-cli": "^3.0.0",
+    "nodemon": "^2.0.3",
+    "ts-node": "^8.9.1",
+    "typescript": "^3.8.3"
+  }
+}

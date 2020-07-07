@@ -1,0 +1,13 @@
+*/**/node_modules/
+.DS_Store
+config.json
+packages/node/out/
+packages/browser/build/
+packages/cli/lib
+packages/dashboard/build
+node_modules/
+lerna-debug.log
+
+/flow/flow
+.github
+yarn.lock

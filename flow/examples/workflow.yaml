@@ -1,0 +1,14 @@
+name: wf1
+schedule: "*/5 * * * *"
+image: bayesnote:latest
+tasks:
+    - name: nb1
+      params: 
+       aws.region: ["us-west-1","us-west-2"]
+       aws.s3path: ["s3://aws-athena-query-results-791603975154-us-west-1-test", "s3://aws-athena-query-results-791603975154-us-west-2"]
+      next: nb3
+
+    - name: nb2
+      next: nb3
+      
+    - name: nb3

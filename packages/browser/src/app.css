@@ -1,0 +1,16 @@
+body {
+  background-color: #282c34;
+  color: #ffffff;
+  padding: 40px;
+  font-family: Arial;
+  text-align: left;
+  width: 62%;
+  margin:0 auto;
+}
+
+textarea  
+{  
+   font-family:"Monospace";
+   font-size: 13px;   
+   color: #9BD39A;
+}

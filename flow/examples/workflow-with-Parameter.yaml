@@ -1,0 +1,7 @@
+name: wf1
+schedule: "*/5 * * * *"
+image: bayesnote:latest
+tasks:
+    - name: nb1
+      params: 
+       aws.region: ["us-west-1","us-west-2"]
