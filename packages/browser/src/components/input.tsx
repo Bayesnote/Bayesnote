@@ -1,5 +1,6 @@
 import { CellType, ICellViewModel } from '@bayesnote/common/lib/types.js';
 import React from 'react';
+import { Editor } from './monaco.js';
 
 interface Props {
     cellVM: ICellViewModel
@@ -19,12 +20,13 @@ export const Input: React.FC<Props> = ({ cellVM, onInputChange, onKeyDown }) => 
     }
 
     const renderCodeInput = () => {
-        return <textarea
-            style={{ width: '100%', minHeight: "90px", backgroundColor: "#404040" }}
-            value={cellVM.cell.source}
-            // placeholder="code"
-            onKeyDown={onKeyDown}
-            onChange={(event) => onInputChange(event, cellVM)} ></textarea>
+        return  <Editor />
+        // <textarea
+        //     style={{ width: '100%', minHeight: "90px", backgroundColor: "#404040" }}
+        //     value={cellVM.cell.source}
+        //     // placeholder="code"
+        //     onKeyDown={onKeyDown}
+        //     onChange={(event) => onInputChange(event, cellVM)} ></textarea>
 
     }
 

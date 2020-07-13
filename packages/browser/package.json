@@ -23,6 +23,7 @@
     "highlight.js": "^9.18.1",
     "immer": "^6.0.9",
     "monaco-editor": "^0.20.0",
+    "monaco-editor-webpack-plugin": "^1.9.0",
     "monaco-languageclient": "^0.13.0",
     "normalize-url": "^5.0.0",
     "prop-types": "^15.7.2",
@@ -31,6 +32,7 @@
     "react-json-view": "^1.19.1",
     "react-markdown": "^4.3.1",
     "react-mathjax": "^1.0.1",
+    "react-monaco-editor": "^0.39.0",
     "react-redux": "^7.2.0",
     "react-scripts": "3.4.1",
     "react-textarea-autosize": "^8.2.0",
@@ -41,10 +43,10 @@
     "typescript": "^3.8.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -74,9 +76,13 @@
     "@types/styletron-engine-atomic": "^1.1.0",
     "@types/styletron-react": "^5.0.2",
     "@types/styletron-standard": "^2.0.0",
-    "@types/uuid": "^7.0.2"
+    "@types/uuid": "^7.0.2",
+    "react-app-rewired": "^2.1.6"
   },
   "files": [
     "build/"
-  ]
+  ],
+  "compilerOptions": {
+    "isolatedModules": false
+  }
 }

@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
 import { ICellViewModel, INotebookViewModel } from '@bayesnote/common/lib/types.js'
-import Cell from './cell'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import MainToolbar from './main-toolbar'
 import client from '../socket'
+import Cell from './cell'
+import MainToolbar from './main-toolbar'
 
 interface IState {
     notebookVM: INotebookViewModel
