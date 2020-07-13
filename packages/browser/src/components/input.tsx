@@ -20,14 +20,7 @@ export const Input: React.FC<Props> = ({ cellVM, onInputChange, onKeyDown }) => 
     }
 
     const renderCodeInput = () => {
-        return  <Editor />
-        // <textarea
-        //     style={{ width: '100%', minHeight: "90px", backgroundColor: "#404040" }}
-        //     value={cellVM.cell.source}
-        //     // placeholder="code"
-        //     onKeyDown={onKeyDown}
-        //     onChange={(event) => onInputChange(event, cellVM)} ></textarea>
-
+        return <Editor language={cellVM.cell.language} cellVM={cellVM}/>
     }
 
     const renderParameterInput = () => {
