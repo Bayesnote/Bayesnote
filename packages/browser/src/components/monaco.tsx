@@ -20,7 +20,7 @@ export const Editor: React.FC<Props> = ({ cellVM }) => {
 
     const [height, setHeight] = useState(0)
     const [code, setCode] = useState(cellVM.cell.source)
-    var model: monaco.editor.ITextModel | null
+    let model: monaco.editor.ITextModel | null
 
     const editorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
         editor.focus();
