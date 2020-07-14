@@ -13,14 +13,15 @@ const MainToolbar: React.FC<IState> = ({ notebookVM }) => {
     const [notebookName, setNotebookName] = useState('unified-notebook')
 
     const loadNotebook = (cells: ICell[]) => {
-        let temp = {
-            cells
-        }
+        // let temp = {
+        //     cells
+        // }
         let data: INotebookViewModel = {
             notebook: { cells: [] }
         }
-        temp.cells.forEach(cellItem => {
-            data.notebook.cells.push({ cell: cellItem, exportd: '' })
+        cells.forEach(cell => {
+            //TODO: rename exportd
+            data.notebook.cells.push({ cell: cell, exportd: '' })
         })
         console.log("loadExampleNotebook -> data", data)
         store.dispatch({ type: 'loadNotebook', payload: data })
