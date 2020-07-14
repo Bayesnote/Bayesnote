@@ -1,15 +1,17 @@
 import { ICellViewModel, INotebookViewModel } from '@bayesnote/common/lib/types.js'
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
+import SplitPane from 'react-split-pane'
 import client from '../socket'
 import Cell from './cell'
-import MainToolbar from './main-toolbar'
+import Libraries from './libraries'
 
 interface IState {
     notebookVM: INotebookViewModel
 }
 
 const Notebook: React.FC<IState> = ({ notebookVM }) => {
+    //TODO: rename
     const getContent = () => {
         return notebookVM.notebook.cells.map(
             (cellVM: ICellViewModel) => {
@@ -34,8 +36,14 @@ const Notebook: React.FC<IState> = ({ notebookVM }) => {
 
     return (
         <>
-            <MainToolbar />
-            {getContent()}
+            <SplitPane split="vertical" defaultSize="5%">
+                <div>Place Holder</div>
+                <SplitPane split="vertical" defaultSize="15%">
+                    <div style={{ maxHeight: "80%", overflow: 'auto' }}>   <Libraries url={"dummyString"} /></div>
+                    {/* <MainToolbar /> */}
+                    {getContent()}
+                </SplitPane>
+            </SplitPane>
         </>
     )
 }

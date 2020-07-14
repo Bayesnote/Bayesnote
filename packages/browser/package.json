@@ -17,6 +17,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@types/websocket": "^1.0.1",
     "ansi-regex": "^5.0.0",
     "ansi-to-html": "^0.6.14",
     "ansi_up": "^4.0.4",
@@ -32,15 +33,17 @@
     "react-json-view": "^1.19.1",
     "react-markdown": "^4.3.1",
     "react-mathjax": "^1.0.1",
-    "react-monaco-editor": "^0.39.0",
+    "react-monaco-editor": "^0.39.1",
     "react-redux": "^7.2.0",
     "react-scripts": "3.4.1",
+    "react-split-pane": "^0.1.91",
     "react-textarea-autosize": "^8.2.0",
     "redux": "^4.0.5",
     "remark-math": "^2.0.1",
     "socket.io-client": "^2.3.0",
     "styled-components": "^5.0.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "websocket": "^1.0.31"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -81,8 +84,5 @@
   },
   "files": [
     "build/"
-  ],
-  "compilerOptions": {
-    "isolatedModules": false
-  }
+  ]
 }

@@ -47,14 +47,15 @@ func handleStart(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	var f flow
 	yaml.Unmarshal(body, &f)
-	ct.AddFunc(f.Schedule, func() { startDAG() })
+	//TODO:
+	// ct.AddFunc(f.Schedule, func() { startDAG() })
 }
 
 func handleRun(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	var f flow
 	yaml.Unmarshal(body, &f)
-	startDAG()
+	// startDAG()
 }
 
 func handleStop(w http.ResponseWriter, r *http.Request) {
@@ -108,6 +109,9 @@ func handleUpdateContainer(w http.ResponseWriter, r *http.Request) {
 
 // TODO: remove 8 bytes
 func handleListPip(w http.ResponseWriter, r *http.Request) {
+	//TODO: Handle CORS issues
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+
 	vars := mux.Vars(r)
 	containerID := vars["containerID"]
 	cmd := []string{"pip", "list", "--format", "json"}
@@ -126,6 +130,7 @@ func handleListPip(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleInstallPip(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		panic(err)
