@@ -1,6 +1,6 @@
 import { CellType, ICellViewModel } from '@bayesnote/common/lib/types.js';
 import React from 'react';
-import { Editor } from './monaco.js';
+import { Editor } from './monaco';
 
 interface Props {
     cellVM: ICellViewModel
@@ -20,7 +20,7 @@ export const Input: React.FC<Props> = ({ cellVM, onInputChange, onKeyDown }) => 
     }
 
     const renderCodeInput = () => {
-        return <Editor language={cellVM.cell.language} cellVM={cellVM}/>
+        return <Editor cellVM={cellVM} />
     }
 
     const renderParameterInput = () => {
