@@ -159,7 +159,6 @@ export class SocketManager {
         return async (exportVarPayload: IExportVarPayload) => {
             try {
                 const exportVarOutput = await this.backendManager.exportVar(exportVarPayload)
-                console.log("zzzzz")
                 const exportdVarMapValue = this.getexportdVarMapValueWithOutJsonData(
                     this.createexportdVarMapValue(exportVarOutput, exportVarPayload),
                 )

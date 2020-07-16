@@ -101,7 +101,7 @@ export function exampleVariableSharing(): { cells: ICell[] } {
             {
                 id: '646ace57-6412-49d1-95aa-a44846fa401a',
                 type: CellType.CODE,
-                source: "print(name)",
+                source: "#Python\nprint(name)",
                 language: 'python',
                 kernelName: 'python3',
                 backend: 'Jupyter',

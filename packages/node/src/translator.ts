@@ -63,7 +63,7 @@ export class Translator {
         let scriptStringify
         let scriptPrint
         let scriptClean
-
+        //console.log("translateToJSONExportCode", sourceLanguage, kernelName)
         if (['python'].includes(sourceLanguage) && kernelName.startsWith('python3')) {
             scriptImportJSON = `import json\n`
             scriptStringify = `${tempVarName} = json.dumps(${variable})\n`
@@ -79,14 +79,9 @@ export class Translator {
             scriptStringify = `${tempVarName} = toJSON(${variable})`
             scriptPrint = ``
             scriptClean = ``
-        } else if (sourceLanguage === "Scala" && ['apache_toree_scala'].includes(kernelName)) {
-            scriptImportJSON = `import spark.implicits._\n`
-            scriptStringify = `spark.read.json(Seq(jsonStr).toDS)`
-            scriptPrint = ``
-            scriptClean = ``
         } else {
-            scriptImportJSON = `library("rjson")\n`
-            scriptStringify = `fromJSON(${tempVarName})`
+            scriptImportJSON = ``
+            scriptStringify = ``
             scriptPrint = ``
             scriptClean = ``
         }
@@ -94,6 +89,7 @@ export class Translator {
         opts.scriptStringify && (code += scriptStringify)
         opts.scriptPrint && (code += scriptPrint)
         opts.scriptClean && (code += scriptClean)
+
         return code
     }
 
@@ -113,14 +109,10 @@ export class Translator {
             const importJSON = `library("rjson")\n`
             const parse = `${varName} = (fromJSON('${jsonData.trim()}'))\n`
             code = `${importJSON}${parse}`
-        } else if (targetLanguage === "Scala" && ['apache_toree_scala'].includes(kernelName)) {
-            const importJSON = `import spark.implicits._\n`
-            const parse = `val ${varName} = spark.read.json(Seq(${jsonData.trim()}).toDS)\n`
-            code = `${importJSON}${parse}`
         } else {
-            const importJSON = `library("rjson")\n`
-            const parse = `${varName} = (toJSON('${jsonData.trim()}'))\n`
-            code = `${importJSON}${parse}`
+            const importJSON = ``
+            const parse = ``
+            code = ``
         }
 
         console.log("translateFromJSONImportCode", code)

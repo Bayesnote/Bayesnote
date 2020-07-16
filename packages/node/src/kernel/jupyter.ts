@@ -1,31 +1,54 @@
-import { createLogger } from 'bunyan'
-import { KernelMessage, KernelAPI, KernelManager, Kernel, KernelSpecAPI } from '@jupyterlab/services'
-import { ISessionOptions } from '@jupyterlab/services/lib/session/session'
-import { KernelBase, ResultsCallback } from './kernel'
 import {
-    IExecuteResultOutput,
-    IMimeBundle,
-    IStreamOutput,
-    IDiaplayOutput,
-    IClearOutput,
-    IErrorOutput,
-    IStatusOutput,
-    ICellState,
-    ICodeCell,
-    IKernelSpecs,
-    isExecuteResultOutput,
-    isStreamOutput,
-    IExportVarPayload,
-    IexportVarOutput,
-    IexportdVarMapValue,
-    isErrorOutput,
-    isStatusOutput,
-    ICellOutput,
+    ICellOutput, ICellState, IClearOutput,
+
+
+
+    ICodeCell, IDiaplayOutput,
+
+    IErrorOutput, IExecuteResultOutput,
+
+
+
+
+
+
+
+
+
+
+
+
+
+    IexportdVarMapValue, IexportVarOutput, IExportVarPayload, IKernelSpecs, IMimeBundle,
+
+
+
+
+
+
+
+
+
+
+
+
+
+    isErrorOutput, isExecuteResultOutput,
+
+
+
+
+
+    isStatusOutput, isStreamOutput, IStatusOutput, IStreamOutput
 } from '@bayesnote/common/lib/types'
-import { formatStreamText, concatMultilineStringOutput } from '../utils/common'
+import { Kernel, KernelAPI, KernelManager, KernelMessage, KernelSpecAPI } from '@jupyterlab/services'
 import { ISpecModel } from '@jupyterlab/services/lib/kernelspec/restapi'
+import { ISessionOptions } from '@jupyterlab/services/lib/session/session'
+import { createLogger } from 'bunyan'
 import cloneDeep from 'lodash/cloneDeep'
 import { Translator } from '../translator'
+import { concatMultilineStringOutput, formatStreamText } from '../utils/common'
+import { KernelBase, ResultsCallback } from './kernel'
 
 const log = createLogger({ name: 'Kernel' })
 
@@ -101,7 +124,7 @@ export class JupyterKernel extends KernelBase implements IJupyterKernel {
         if (currentKernelName !== cellKernelName) {
             await this.switchToKernel(cellKernelName)
             const info = await this.getKernelInfo()
-            log.info('switch to kernel: ', info?.language_info.name)
+            log.info('Switch kernel for language: ', info?.language_info.name)
         }
     }
 
@@ -330,6 +353,7 @@ export class JupyterKernel extends KernelBase implements IJupyterKernel {
         return code
     }
 
+    //TODO: Debug
     async exportVar(exportVarPayload: IExportVarPayload) {
         const codeToExecute = this.prepareexportCode(exportVarPayload)
         const output = await this.exportRepl(exportVarPayload, codeToExecute)
