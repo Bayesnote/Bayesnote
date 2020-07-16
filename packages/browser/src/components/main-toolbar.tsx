@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import client from '../socket'
 import { store } from '../store'
-import { exampleCells, parameterExampleCells } from '../utils/exampleNotebook'
+import { exampleMultiLanguages, exampleVariableSharing, parameterExampleCells } from '../utils/exampleNotebook'
 
 interface IState {
     notebookVM: INotebookViewModel
@@ -13,9 +13,6 @@ const MainToolbar: React.FC<IState> = ({ notebookVM }) => {
     const [notebookName, setNotebookName] = useState('unified-notebook')
 
     const loadNotebook = (cells: ICell[]) => {
-        // let temp = {
-        //     cells
-        // }
         let data: INotebookViewModel = {
             notebook: { cells: [] }
         }
@@ -28,8 +25,12 @@ const MainToolbar: React.FC<IState> = ({ notebookVM }) => {
     }
 
     // * example notebook data
-    const loadExampleNotebook = () => {
-        loadNotebook(exampleCells().cells)
+    const loadMultiLangExample = () => {
+        loadNotebook(exampleMultiLanguages().cells)
+    }
+
+    const loadVariableSharing = () => {
+        loadNotebook(exampleVariableSharing().cells)
     }
 
     const loadParameterExampleNotebook = () => {
@@ -75,7 +76,10 @@ const MainToolbar: React.FC<IState> = ({ notebookVM }) => {
             padding: '10px', textAlign: 'right'
         }} >
             {/* <span> load: </span> */}
-            < button onClick={loadExampleNotebook} > Load Example Notebook</button >
+            <div>
+                < button onClick={loadMultiLangExample} > Example: Multiple Languages</button >
+                < button onClick={loadVariableSharing} > Example: Variable Sharing</button >
+            </div>
             {/* <button onClick={loadParameterExampleNotebook}>parameter example notebook</button> */}
             {/* <br />
             <button onClick={runNotebook}>run notebook</button>

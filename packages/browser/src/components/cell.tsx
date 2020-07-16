@@ -1,5 +1,5 @@
 import { CellType, ICellViewModel, IKernelSpecs, INotebookViewModel, isParameterCell } from '@bayesnote/common/lib/types.js'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import client from '../socket'
 import { store } from '../store'
@@ -98,10 +98,6 @@ const Cell: React.FC<Props> = ({ cellVM, notebookVM, kernels }) => {
             </div>
         </>)
     }
-
-    useEffect(() => {
-        console.log('hll')
-    }, [])
 
     return (
         <>

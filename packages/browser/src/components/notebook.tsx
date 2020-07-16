@@ -5,6 +5,7 @@ import SplitPane from 'react-split-pane'
 import client from '../socket'
 import Cell from './cell'
 import Libraries from './libraries'
+import MainToolbar from './main-toolbar'
 
 interface IState {
     notebookVM: INotebookViewModel
@@ -12,7 +13,7 @@ interface IState {
 
 const Notebook: React.FC<IState> = ({ notebookVM }) => {
     //TODO: rename
-    const getContent = () => {
+    const loadCells = () => {
         return notebookVM.notebook.cells.map(
             (cellVM: ICellViewModel) => {
                 return <Cell key={cellVM.cell.id} cellVM={cellVM} />
@@ -38,10 +39,14 @@ const Notebook: React.FC<IState> = ({ notebookVM }) => {
         <>
             <SplitPane split="vertical" defaultSize="5%">
                 <div>Place Holder</div>
-                <SplitPane split="vertical" defaultSize="15%">
-                    <div style={{ maxHeight: "80%", overflow: 'auto' }}>   <Libraries url={"dummyString"} /></div>
-                    {/* <MainToolbar /> */}
-                    {getContent()}
+                <SplitPane split="vertical" defaultSize="15%" pane2Style={{ overflow: 'scroll' }} style={{ position: 'relative' }}>
+                    <div style={{ maxHeight: "80%" }}>   <Libraries url={"dummyString"} /></div>
+                    <div style={{ overflowY: "auto" }}>
+                        <MainToolbar />
+                        <div style={{ width: "80%" }}>
+                            {loadCells()}
+                        </div>
+                    </div>
                 </SplitPane>
             </SplitPane>
         </>

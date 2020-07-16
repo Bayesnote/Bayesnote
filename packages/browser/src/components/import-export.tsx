@@ -64,7 +64,7 @@ const RenderImportexportdVar: React.FC<Props> = ({ cellVM, exportdVarMap }) => {
         return flag
     }
 
-    const renderexport = () => {
+    const renderExport = () => {
         return (<>
             {/* export */}
             {/* <span> export var: </span> */}
@@ -77,22 +77,26 @@ const RenderImportexportdVar: React.FC<Props> = ({ cellVM, exportdVarMap }) => {
     const renderImport = () => {
         let disabled = shouldDisableImport()
         return (<>
-            {/* import */}
-            {/* <span>import var: </span> */}
             <select disabled={disabled} value={selectedImportVar} onChange={(e) => { setSelectedImportVar(e.target.value) }}>
                 <option key="-1" label="Import variable" value={JSON.stringify({ id: '', payload: {} })}></option>
                 {getexportdVarMapValueList().map((item, index) => (
-                    <option key={index} label={`${item.payload.exportVar}-${item.id}`} value={JSON.stringify(item)}></option>
+                    <option key={index} label={`${item.payload.exportVar}`} value={JSON.stringify(item)}></option>
                 ))}
             </select>
-            {/* <span> as </span>
-                <input disabled={disabled} type="text" value={variableRename} onChange={(e) => { setVariableRename(e.target.value) }} placeholder="Rename variable" onKeyDown={(e) => { onImportSubmit(e) }} /> */}
+            <span> as </span>
+            <input disabled={disabled}
+                type="text"
+                value={variableRename}
+                onChange={(e) => { setVariableRename(e.target.value) }}
+                placeholder="Rename variable"
+                onKeyDown={(e) => { onImportSubmit(e) }} />
+
         </>)
     }
 
     return ((<>
         <div className="IO-variable" style={{ textAlign: 'right' }} >
-            {renderexport()}
+            {renderExport()}
             {renderImport()}
         </div>
     </>))

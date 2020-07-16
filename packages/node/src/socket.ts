@@ -6,7 +6,7 @@ import {
     IExportVarPayload,
     IKernelInfo,
     INotebookCallbackPayload,
-    INotebookJSON,
+    INotebookJSON
 } from '@bayesnote/common/lib/types'
 import { createLogger } from 'bunyan'
 import { createServer } from 'http'
@@ -159,6 +159,7 @@ export class SocketManager {
         return async (exportVarPayload: IExportVarPayload) => {
             try {
                 const exportVarOutput = await this.backendManager.exportVar(exportVarPayload)
+                console.log("zzzzz")
                 const exportdVarMapValue = this.getexportdVarMapValueWithOutJsonData(
                     this.createexportdVarMapValue(exportVarOutput, exportVarPayload),
                 )
@@ -180,6 +181,7 @@ export class SocketManager {
     }
 
     private onexportVariableImport = (socket: SocketIO.Socket) => {
+
         return async (exportdVarMapValue: IexportdVarMapValue) => {
             try {
                 log.info('import variable exportdVarMapValue')
