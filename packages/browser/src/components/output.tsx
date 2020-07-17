@@ -1,7 +1,6 @@
-import React from 'react'
-import { ICellViewModel, IStreamOutput, isStreamOutput, CellType, isExecuteResultOutput, IExecuteResultOutput, isErrorOutput, IErrorOutput, ICellOutput } from '@bayesnote/common/lib/types.js'
+import { ICellOutput, ICellViewModel, IErrorOutput, IExecuteResultOutput, isErrorOutput, isExecuteResultOutput, isStreamOutput, IStreamOutput } from '@bayesnote/common/lib/types.js'
 import ansiUp from 'ansi_up'
-import ReactMarkdownRenderer from './markdown-renderer'
+import React from 'react'
 import ReactJson from 'react-json-view'
 
 interface Props {
@@ -9,10 +8,6 @@ interface Props {
 }
 
 const Output: React.FC<Props> = ({ cellVM }) => {
-    const renderMarkdownOutput = () => {
-        return <ReactMarkdownRenderer source={cellVM.cell.source} />
-    }
-
     const handleStreamOutput = (output: ICellOutput, id: number) => {
         // eslint-disable-next-line
         let ansiHTML = (new ansiUp).ansi_to_html((output as IStreamOutput).text)
@@ -54,19 +49,15 @@ const Output: React.FC<Props> = ({ cellVM }) => {
             } else if (isErrorOutput(output)) {
                 return handleErrorOutput(output, id)
             } else {
-                // todo
+                //TODO
                 return null
             }
         })
     }
 
-    const render = () => {
-        return cellVM.cell.type === CellType.CODE ? renderCodeOutput() : renderMarkdownOutput()
-    }
-
     return (
         <>
-            {render()}
+            {renderCodeOutput()}
         </>
     )
 }

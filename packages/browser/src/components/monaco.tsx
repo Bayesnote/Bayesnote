@@ -5,7 +5,6 @@ import MonacoEditor from "react-monaco-editor";
 import { store } from '../store';
 
 //TODO: Add code completion
-//TODO: Check javascript highlight
 interface Props {
     cellVM: ICellViewModel
 }

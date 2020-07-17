@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import client from '../socket'
 import { IState } from '../store/reducer'
 
+//TODO:
 interface Props {
     cellVM: ICellViewModel
     exportdVarMap: IexportdVarMap

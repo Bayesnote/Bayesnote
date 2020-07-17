@@ -8,9 +8,7 @@ body {
   margin:0 auto;
 }
 
-textarea  
-{  
-   font-family:"Monospace";
-   font-size: 13px;   
-   color: #9BD39A;
+a {
+  color: #FFF;
+  text-decoration: none;
 }

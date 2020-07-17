@@ -1,15 +1,13 @@
 import { ICellViewModel } from '@bayesnote/common/lib/types.js';
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import client from '../socket';
-import { store } from '../store';
-import {Cell} from './cell';
-
-// interface IState {
-//     notebookVM: INotebookViewModel
-// }
+import { RootState } from '../store/index';
+import { Cell } from './cell';
 
 export const Notebook: React.FC = () => {
-    const notebookVM = store.getState().notebookReducer.notebookVM
+    const notebookVM = useSelector((state: RootState) => state.notebookReducer.notebookVM)
+
     //TODO: rename
     const loadCells = () => {
         return notebookVM.notebook.cells.map(
@@ -41,7 +39,3 @@ export const Notebook: React.FC = () => {
         </>
     )
 }
-
-// const mapStateToProps = (state: IState) => ({ notebookVM: state.notebookVM })
-
-// export default connect(mapStateToProps)(Notebook)
