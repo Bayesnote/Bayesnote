@@ -1,15 +1,15 @@
 import { ICell, INotebookJSON, INotebookViewModel } from '@bayesnote/common/lib/types.js'
 import React, { useState } from 'react'
-import { connect } from 'react-redux'
 import client from '../socket'
 import { store } from '../store'
-import { exampleMultiLanguages, exampleVariableSharing, parameterExampleCells } from '../utils/exampleNotebook'
+import { exampleMultiLanguages, exampleVariableSharing, exampleWorkflow, parameterExampleCells } from '../utils/exampleNotebook'
 
-interface IState {
-    notebookVM: INotebookViewModel
-}
+// interface IState {
+//     notebookVM: INotebookViewModel
+// }
 
-const MainToolbar: React.FC<IState> = ({ notebookVM }) => {
+export const Examples: React.FC = () => {
+    const notebookVM = store.getState().notebookReducer.notebookVM
     const [notebookName, setNotebookName] = useState('unified-notebook')
 
     const loadNotebook = (cells: ICell[]) => {
@@ -29,12 +29,17 @@ const MainToolbar: React.FC<IState> = ({ notebookVM }) => {
         loadNotebook(exampleMultiLanguages().cells)
     }
 
-    const loadVariableSharing = () => {
+    const loadVariableSharingExample = () => {
         loadNotebook(exampleVariableSharing().cells)
     }
 
     const loadParameterExampleNotebook = () => {
         loadNotebook(parameterExampleCells().cells)
+    }
+
+    //TODO:
+    const loadWorkflowExample = () => {
+        loadNotebook(exampleWorkflow().cells)
     }
 
     const getNotebookJSON = (): INotebookJSON => {
@@ -75,25 +80,15 @@ const MainToolbar: React.FC<IState> = ({ notebookVM }) => {
         <div className="mainToolbar" style={{
             padding: '10px', textAlign: 'right'
         }} >
-            {/* <span> load: </span> */}
             <div>
                 < button onClick={loadMultiLangExample} > Example: Multiple Languages</button >
-                < button onClick={loadVariableSharing} > Example: Variable Sharing</button >
+                < button onClick={loadVariableSharingExample} > Example: Variable Sharing</button >
+                < button onClick={loadWorkflowExample} > Example: Workflow</button >
             </div>
-            {/* <button onClick={loadParameterExampleNotebook}>parameter example notebook</button> */}
-            {/* <br />
-            <button onClick={runNotebook}>run notebook</button>
-            <span> | </span>
-            <input onChange={onChangeNotebookName} value={notebookName} type="text" />
-            <a style={{ fontSize: '12px' }} download={`${notebookName}.json`} href={'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(getNotebookJSON(), null, 2))}>download notebook</a>
-            <br />
-            <button onClick={ping}>ping</button>
-            <button onClick={shutDownAllKernels}>shutdown all kernels</button>
-            <button onClick={clearAllOutputs}>clear all outputs</button> */}
         </div >
     )
 }
 
-const mapStateToProps = (state: IState) => ({ notebookVM: state.notebookVM })
+// const mapStateToProps = (state: IState) => ({ notebookVM: state.notebookVM })
 
-export default connect(mapStateToProps)(MainToolbar)
+// export default connect(mapStateToProps)(Examples)

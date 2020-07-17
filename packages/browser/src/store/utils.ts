@@ -9,7 +9,7 @@ import { createEmptyCodeCell } from '@bayesnote/common/lib/utils'
 /* -------------------------------------------------------------------------- */
 export const getCurrentCellVM = (cell: ICell) => {
     let state = store.getState()
-    let currentCells = state.notebookVM.notebook.cells
+    let currentCells = state.notebookReducer.notebookVM.notebook.cells
     let index = currentCells.findIndex(item => item.cell.id === cell.id)
     return currentCells[index]
 }

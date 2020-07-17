@@ -244,6 +244,7 @@ export class JupyterKernel extends KernelBase implements IJupyterKernel {
                     log.info('export repl get error output')
                     rej(output)
                 }
+                log.info("zzz:", tempCell, output)
             })
         })
     }
@@ -355,6 +356,7 @@ export class JupyterKernel extends KernelBase implements IJupyterKernel {
 
     //TODO: Debug
     async exportVar(exportVarPayload: IExportVarPayload) {
+        log.info("xxxxx xxxxxxxxxx: ")
         const codeToExecute = this.prepareexportCode(exportVarPayload)
         const output = await this.exportRepl(exportVarPayload, codeToExecute)
         const exportVarOutput: IexportVarOutput = output

@@ -1,9 +1,7 @@
-import { CellType, ICellViewModel, IKernelSpecs, INotebookViewModel, isParameterCell } from '@bayesnote/common/lib/types.js'
+import { CellType, ICellViewModel, isParameterCell } from '@bayesnote/common/lib/types.js'
 import React from 'react'
-import { connect } from 'react-redux'
 import client from '../socket'
 import { store } from '../store'
-import { IState } from '../store/reducer'
 import { getNotebookKernelInfo } from '../store/utils'
 import Importexport from './import-export'
 import { Input } from './input'
@@ -11,11 +9,14 @@ import Output from './output'
 
 interface Props {
     cellVM: ICellViewModel
-    notebookVM: INotebookViewModel
-    kernels: IKernelSpecs
+    // notebookVM: INotebookViewModel
+    // kernels: IKernelSpecs
 }
 
-const Cell: React.FC<Props> = ({ cellVM, notebookVM, kernels }) => {
+export const Cell: React.FC<Props> = ({ cellVM }) => {
+    const notebookVM = store.getState().notebookReducer.notebookVM
+    const kernels = store.getState().notebookReducer.kernels
+
     const shouldRenderOutput = () => {
         return Boolean(cellVM.cell.outputs.length) || cellVM.cell.type === CellType.MARKDOWN
     }
@@ -46,8 +47,9 @@ const Cell: React.FC<Props> = ({ cellVM, notebookVM, kernels }) => {
         </>
     }
 
+    //onKeyDown={onKeyDown} onInputChange={onInputChange}
     const renderInput = () => {
-        return <Input cellVM={cellVM} onKeyDown={onKeyDown} onInputChange={onInputChange} />
+        return <Input cellVM={cellVM} />
     }
 
     const onAddCell = () => {
@@ -114,4 +116,4 @@ const Cell: React.FC<Props> = ({ cellVM, notebookVM, kernels }) => {
     )
 }
 
-export default connect((state: IState) => ({ notebookVM: state.notebookVM, kernels: state.kernels }))(Cell)
+// export default connect((state: IState) => ({ notebookVM: state.notebookVM, kernels: state.kernels }))(Cell)

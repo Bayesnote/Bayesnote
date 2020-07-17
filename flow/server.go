@@ -44,6 +44,7 @@ func startFlowServer() {
 }
 
 func handleStart(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	body, _ := ioutil.ReadAll(r.Body)
 	var f flow
 	yaml.Unmarshal(body, &f)
@@ -59,16 +60,18 @@ func handleRun(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleStop(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
 	workflow := vars["workflow"]
 	os.Setenv("STOP", workflow)
 }
 
 func handleStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
 	workflow := vars["workflow"]
 	var run DAGRun
-	read(workflow+"-log.json", &run)
+	read("./log/"+workflow+"-log.json", &run)
 	byteJSON, _ := json.Marshal(run)
 	w.Write(byteJSON)
 }

@@ -1,17 +1,15 @@
-import { ICellViewModel, INotebookViewModel } from '@bayesnote/common/lib/types.js'
-import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
-import SplitPane from 'react-split-pane'
-import client from '../socket'
-import Cell from './cell'
-import Libraries from './libraries'
-import MainToolbar from './main-toolbar'
+import { ICellViewModel } from '@bayesnote/common/lib/types.js';
+import React, { useEffect } from 'react';
+import client from '../socket';
+import { store } from '../store';
+import {Cell} from './cell';
 
-interface IState {
-    notebookVM: INotebookViewModel
-}
+// interface IState {
+//     notebookVM: INotebookViewModel
+// }
 
-const Notebook: React.FC<IState> = ({ notebookVM }) => {
+export const Notebook: React.FC = () => {
+    const notebookVM = store.getState().notebookReducer.notebookVM
     //TODO: rename
     const loadCells = () => {
         return notebookVM.notebook.cells.map(
@@ -37,22 +35,13 @@ const Notebook: React.FC<IState> = ({ notebookVM }) => {
 
     return (
         <>
-            <SplitPane split="vertical" defaultSize="5%">
-                <div>Place Holder</div>
-                <SplitPane split="vertical" defaultSize="15%" pane2Style={{ overflow: 'scroll' }} style={{ position: 'relative' }}>
-                    <div style={{ maxHeight: "80%" }}>   <Libraries url={"dummyString"} /></div>
-                    <div style={{ overflowY: "auto" }}>
-                        <MainToolbar />
-                        <div style={{ width: "80%" }}>
-                            {loadCells()}
-                        </div>
-                    </div>
-                </SplitPane>
-            </SplitPane>
+            <div style={{ width: "80%" }}>
+                {loadCells()}
+            </div>
         </>
     )
 }
 
-const mapStateToProps = (state: IState) => ({ notebookVM: state.notebookVM })
+// const mapStateToProps = (state: IState) => ({ notebookVM: state.notebookVM })
 
-export default connect(mapStateToProps)(Notebook)
+// export default connect(mapStateToProps)(Notebook)

@@ -1,11 +1,9 @@
 import {
-  INotebookViewModel,
-  IKernelSpecs,
   ICellViewModel,
-  IexportdVarMap,
+  IexportdVarMap, IKernelSpecs, INotebookViewModel
 } from "@bayesnote/common/lib/types";
-import { createEmptyCodeCellVM } from "./utils";
 import { produce } from "immer";
+import { createEmptyCodeCellVM } from "./utils";
 
 type IAction = {
   type: string;
@@ -54,6 +52,7 @@ export const notebookReducer = (state = initialState, action: IAction) => {
       });
 
     // cellVM
+    //TODO: ?
     case "updateCellSource":
       return produce(state, (draft) => {
         draft.notebookVM.notebook.cells[
@@ -136,3 +135,22 @@ export const notebookReducer = (state = initialState, action: IAction) => {
     return index;
   }
 };
+
+//TODO: Use separate reducer for flow?
+export type FlowState = {
+  flow: string
+};
+
+const flowInitState: FlowState = {
+  flow: ""
+};
+
+export const flowReducer = (state = flowInitState, action: IAction) => {
+  switch (action.type) {
+    // notebook
+    case "updateFlow":
+      return action.payload
+    default:
+      return state;
+  }
+}
