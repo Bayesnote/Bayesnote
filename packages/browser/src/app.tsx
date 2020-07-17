@@ -17,13 +17,13 @@ const App: React.FC = () => {
           <SplitPane split="vertical" defaultSize="5%">
             <div className="Panel-1" >
               <Link to="/notebooks" style={{ color: "#FFF", textDecoration: 'none' }}>Notebooks </Link>
-              <Link to="/libraries" style={{ color: "#FFF", textDecoration: 'none' }}>Libraries </Link>
               <Link to="/workflow" style={{ color: "#FFF", textDecoration: 'none' }}>Workflow </Link>
-              <Link to="/" style={{ color: "#FFF", textDecoration: 'none' }}>Containers </Link>
               <Link to="/" style={{ color: "#FFF", textDecoration: 'none' }}>Dashboard </Link>
               <Link to="/" style={{ color: "#FFF", textDecoration: 'none' }}>Models </Link>
-              <Link to="/" style={{ color: "#FFF", textDecoration: 'none' }}>Clusters </Link>
-              <Link to="/" style={{ color: "#FFF", textDecoration: 'none' }}>Databases </Link>
+              <Link to="/libraries" style={{ color: "#FFF", textDecoration: 'none' }}>Libraries </Link>
+              <Link to="/" style={{ color: "#FFF", textDecoration: 'none' }}>Containers </Link>
+              {/* <Link to="/" style={{ color: "#FFF", textDecoration: 'none' }}>Clusters </Link>
+              <Link to="/" style={{ color: "#FFF", textDecoration: 'none' }}>Databases </Link> */}
             </div>
             <SplitPane split="vertical" defaultSize="15%" pane2Style={{ overflow: 'scroll' }} style={{ position: 'relative' }}>
               <div className="Panel-2" style={{ maxHeight: "80%" }}>

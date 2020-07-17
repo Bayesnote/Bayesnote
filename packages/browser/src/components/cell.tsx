@@ -3,7 +3,6 @@ import React from 'react'
 import client from '../socket'
 import { store } from '../store'
 import { getNotebookKernelInfo } from '../store/utils'
-import Importexport from './import-export'
 import { Input } from './input'
 import Output from './output'
 
@@ -104,7 +103,7 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
     return (
         <>
             {renderToolbar()}
-            <Importexport cellVM={cellVM} />
+            {/* <Importexport cellVM={cellVM} /> */}
             <div className="cell-input">
                 {renderInput()}
             </div>
