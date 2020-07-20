@@ -1,3 +1,5 @@
+//TODO: Refactor. The abstraction is way too complicated.
+
 /* -------------------------------------------------------------------------- */
 /*                                  react vm                                  */
 /* -------------------------------------------------------------------------- */
@@ -69,7 +71,7 @@ export interface ICellBase {
     id: string;
     type: CellType;
     source: string;
-    metadata: ICellMetadata;
+    metadata: ICellMetadata; //TODO
     outputs: ICellOutput[];
     state: ICellState;
 }

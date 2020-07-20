@@ -3,6 +3,8 @@ import {
   IexportdVarMap, IKernelSpecs, INotebookViewModel
 } from "@bayesnote/common/lib/types";
 import { produce } from "immer";
+import { AnyMark } from "vega-lite/build/src/mark";
+import { TopLevelUnitSpec } from 'vega-lite/build/src/spec/unit';
 import { createEmptyCodeCellVM } from "./utils";
 
 type IAction = {
@@ -154,3 +156,57 @@ export const flowReducer = (state = flowInitState, action: IAction) => {
       return state;
   }
 }
+
+export type ChartState = {
+  data: string,
+  spec: TopLevelUnitSpec
+};
+
+//TODO:
+var initSpec: TopLevelUnitSpec = {
+  width: 300,
+  title: "sdf",
+  autosize: {
+    "type": "fit",
+    "contains": "padding"
+  },
+  mark: "bar" as AnyMark,
+  data: { values: "", format: { type: "json" } },
+  "encoding": {
+    "x": { "field": "Origin", "type": "ordinal" },
+    "y": { "field": "Horsepower", "type": "quantitative" }
+  }
+};
+
+const chartInitState: ChartState = {
+  data: "",
+  spec: initSpec
+}
+
+export const ChartReducer = (state = chartInitState, action: IAction) => {
+  switch (action.type) {
+    case "data":
+      return produce(state, (draft) => {
+        const JSON5 = require('json5')
+        console.log(action.payload.data)
+        draft.spec.data = { values: JSON5.parse(action.payload.data), format: { type: "json" } };
+      })
+    //TODO:
+    case 'spec':
+      return produce(state, (draft) => {
+        // console.log("spec: ", action.payload)
+        draft.spec = action.payload;
+      })
+    case 'title':
+      return produce(state, (draft) => {
+        draft.spec.title = action.payload.val;
+      })
+    case 'mark':
+      return produce(state, (draft) => {
+        draft.spec.mark = action.payload.val;
+      })
+    default:
+      return state;
+  }
+}
+

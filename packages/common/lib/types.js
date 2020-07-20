@@ -1,4 +1,5 @@
 "use strict";
+//TODO: Refactor. The abstraction is way too complicated.
 Object.defineProperty(exports, "__esModule", { value: true });
 var NotebookStatus;
 (function (NotebookStatus) {

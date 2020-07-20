@@ -14,7 +14,7 @@ const App: React.FC = () => {
     <div className="App" >
       <BrowserRouter>
         <Provider store={store}>
-          <SplitPane split="vertical" defaultSize="5%">
+          <SplitPane split="vertical" defaultSize="5%" >
             <div className="Panel-1" >
               <Link to="/notebooks" >Notebooks </Link>
               <Link to="/workflow">Workflow </Link>
@@ -30,7 +30,7 @@ const App: React.FC = () => {
                   <Route path='/libraries' component={Libraries} />
                 </Switch>
               </div>
-              <div className="Panel-3" style={{ overflowY: "auto" }}>
+              <div className="Panel-3" style={{ overflowY: "scroll" }}>
                 <Switch>
                   <Route path='/notebooks' component={Notebook} />
                   <Route path='/workflow' component={Flow} />
@@ -40,7 +40,7 @@ const App: React.FC = () => {
           </SplitPane>
         </Provider>
       </BrowserRouter>
-    </div>
+    </div >
   )
 }
 

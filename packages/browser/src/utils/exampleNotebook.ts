@@ -183,6 +183,29 @@ export function exampleWorkflow(): { cells: ICell[] } {
     }
 }
 
+export function exampleChart(): { cells: ICell[] } {
+    return {
+        cells: [
+            {
+                id: '4e698ede-c098-4d84-bbce-516d448c4f97',
+                type: CellType.CODE,
+                source: 'import requests, json\nr = requests.get("https://raw.githubusercontent.com/altair-viz/vega_datasets/master/vega_datasets/_data/cars.json")\njson.dumps(r.json())',
+                language: 'python',
+                kernelName: 'python3',
+                backend: 'Jupyter',
+                metadata: {
+                    scrollbar: false,
+                    source_hidden: false,
+                    output_hidden: false
+                },
+                outputs: [],
+                state: ICellState.Finished,
+            }
+        ]
+    }
+}
+
+
 
 export function parameterExampleCells(): { cells: ICell[] } {
     return {

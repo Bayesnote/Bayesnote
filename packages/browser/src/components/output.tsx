@@ -21,7 +21,8 @@ const Output: React.FC<Props> = ({ cellVM }) => {
         } else if (data['application/json']) {
             return <ReactJson key={id} src={(data['application/json'] as Object)} />
         } else if (data['text/plain']) {
-            return <pre key={id}>{data['text/plain']}</pre>
+            //TODO: should set maxHeight & maxWidth
+            return <pre key={id} style={{ maxHeight: "1000px", maxWidth: "1000px", overflow: "scroll" }}>{data['text/plain']}</pre>
         } else {
             return null
         }

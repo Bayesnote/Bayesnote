@@ -7,9 +7,10 @@
     "lint": "eslint 'src/**/*.{js,ts}' --quiet --fix"
   },
   "dependencies": {
-    "@jupyterlab/services": "^5.0.2",
-    "@nteract/transform-vega": "^7.0.11-alpha.0",
     "@bayesnote/common": "^0.0.1-0.0.1-alpha.4.0",
+    "@jupyterlab/services": "^5.2.0",
+    "@nteract/transform-vega": "^7.0.11-alpha.0",
+    "bunyan": "^1.8.12",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -20,8 +21,7 @@
     "socket.io": "^2.3.0",
     "swagger-ui-express": "^4.1.4",
     "uuid": "^7.0.2",
-    "zeppelin-api-interface": "^1.5.1",
-    "bunyan": "^1.8.12"
+    "zeppelin-api-interface": "^1.5.1"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.6",

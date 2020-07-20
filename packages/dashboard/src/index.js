@@ -334,4 +334,3 @@ store.subscribe(() => {
 const IndexPage = () => (<App />)
 
 export default IndexPage
-t 

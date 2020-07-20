@@ -1,7 +1,7 @@
 import { ICell, INotebookViewModel } from '@bayesnote/common/lib/types.js'
 import React from 'react'
 import { store } from '../store'
-import { exampleMultiLanguages, exampleVariableSharing } from '../utils/exampleNotebook'
+import { exampleChart, exampleMultiLanguages, exampleVariableSharing } from '../utils/exampleNotebook'
 
 export const Examples: React.FC = () => {
 
@@ -24,6 +24,7 @@ export const Examples: React.FC = () => {
             <div>
                 < button onClick={() => loadNotebook(exampleMultiLanguages().cells)} > Example: Multiple Languages</button >
                 < button onClick={() => loadNotebook(exampleVariableSharing().cells)} > Example: Variable Sharing</button >
+                < button onClick={() => loadNotebook(exampleChart().cells)} > Example: Chart</button >
             </div>
         </div >
     )

@@ -1,45 +1,22 @@
 import {
-    ICellOutput, ICellState, IClearOutput,
-
-
-
-    ICodeCell, IDiaplayOutput,
-
-    IErrorOutput, IExecuteResultOutput,
-
-
-
-
-
-
-
-
-
-
-
-
-
-    IexportdVarMapValue, IexportVarOutput, IExportVarPayload, IKernelSpecs, IMimeBundle,
-
-
-
-
-
-
-
-
-
-
-
-
-
-    isErrorOutput, isExecuteResultOutput,
-
-
-
-
-
-    isStatusOutput, isStreamOutput, IStatusOutput, IStreamOutput
+    ICellOutput,
+    ICellState,
+    IClearOutput,
+    ICodeCell,
+    IDiaplayOutput,
+    IErrorOutput,
+    IExecuteResultOutput,
+    IexportdVarMapValue,
+    IexportVarOutput,
+    IExportVarPayload,
+    IKernelSpecs,
+    IMimeBundle,
+    isErrorOutput,
+    isExecuteResultOutput,
+    isStatusOutput,
+    isStreamOutput,
+    IStatusOutput,
+    IStreamOutput,
 } from '@bayesnote/common/lib/types'
 import { Kernel, KernelAPI, KernelManager, KernelMessage, KernelSpecAPI } from '@jupyterlab/services'
 import { ISpecModel } from '@jupyterlab/services/lib/kernelspec/restapi'
@@ -62,6 +39,7 @@ export interface IJupyterKernel {
     importVar(payload: IexportdVarMapValue): Promise<boolean>
 }
 
+//TODO: Should reuse JupyterLab service for processing data
 export class JupyterKernel extends KernelBase implements IJupyterKernel {
     name = 'Jupyter'
     kernel: Kernel.IKernelConnection | undefined
@@ -148,8 +126,11 @@ export class JupyterKernel extends KernelBase implements IJupyterKernel {
                 return this.handleStatusMessage(msg as KernelMessage.IStatusMsg)
             } else if (KernelMessage.isErrorMsg(msg)) {
                 return this.handleError(msg as KernelMessage.IErrorMsg)
+            } else if (KernelMessage.isExecuteInputMsg(msg)) {
+                log.info('Execute_input msg')
             } else {
-                log.warn(`Unknown message ${msg.header.msg_type} : hasData=${'data' in msg.content}`)
+                log.warn(`Unknown message ${msg.header.msg_type} : ${msg}`)
+                console.log(msg)
             }
         } catch (err) {
             log.error('JupyterMessage -> handleIOPub -> err', err)
@@ -244,7 +225,7 @@ export class JupyterKernel extends KernelBase implements IJupyterKernel {
                     log.info('export repl get error output')
                     rej(output)
                 }
-                log.info("zzz:", tempCell, output)
+                log.info('zzz:', tempCell, output)
             })
         })
     }
@@ -356,7 +337,7 @@ export class JupyterKernel extends KernelBase implements IJupyterKernel {
 
     //TODO: Debug
     async exportVar(exportVarPayload: IExportVarPayload) {
-        log.info("xxxxx xxxxxxxxxx: ")
+        log.info('xxxxx xxxxxxxxxx: ')
         const codeToExecute = this.prepareexportCode(exportVarPayload)
         const output = await this.exportRepl(exportVarPayload, codeToExecute)
         const exportVarOutput: IexportVarOutput = output

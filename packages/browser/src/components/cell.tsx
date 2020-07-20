@@ -1,9 +1,10 @@
-import { ICellViewModel } from '@bayesnote/common/lib/types.js'
+import { ICellViewModel, IExecuteResultOutput } from '@bayesnote/common/lib/types.js'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import client from '../socket'
 import { store } from '../store'
 import { RootState } from '../store/index'
+import { Chart } from './chart'
 import { Editor } from './monaco'
 import Output from './output'
 
@@ -17,6 +18,16 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
 
     const onAddCell = () => {
         store.dispatch({ type: 'addCell' })
+    }
+
+    const onAddChart = () => {
+        //get data
+        //TODO: This is error-prone
+        let data = (cellVM.cell.outputs[0] as IExecuteResultOutput).data
+
+        if (data['text/plain']) {
+            store.dispatch({ type: 'data', payload: { data: data['text/plain'] as string } })
+        }
     }
 
     const onChangeCellLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -47,6 +58,7 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
             <div className="bottom-toolbar" style={{ textAlign: 'right' }}>
                 <button onClick={runCell}>Run</button>
                 <button onClick={onAddCell}>Add</button>
+                <button onClick={onAddChart}>Chart</button>
             </div>
         </>)
     }
@@ -55,8 +67,9 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
         <>
             {renderLanguageSelection()}
             {<Editor cellVM={cellVM} />}
-            {<Output cellVM={cellVM} />}
             {renderBottomToolbar()}
+            {<Chart />}
+            {<Output cellVM={cellVM} />}
         </>
     )
 }

@@ -1,9 +1,10 @@
 import { combineReducers, createStore } from "redux";
-import { flowReducer, notebookReducer } from "./reducer";
+import { ChartReducer, flowReducer, notebookReducer } from "./reducer";
 
 export const rootReducer = combineReducers({
   notebookReducer: notebookReducer,
-  flowReducer: flowReducer
+  flowReducer: flowReducer,
+  chartReducer: ChartReducer
 }
 );
 
