@@ -172,10 +172,11 @@ var initSpec: TopLevelUnitSpec = {
   },
   mark: "bar" as AnyMark,
   data: { values: "", format: { type: "json" } },
-  "encoding": {
-    "x": { "field": "Origin", "type": "ordinal" },
-    "y": { "field": "Horsepower", "type": "quantitative" }
-  }
+  encoding: {
+    "x": { "field": "Cylinders", "type": "ordinal" },
+    "y": { "field": "Horsepower", "type": "quantitative" },
+    "color": { "field": "Origin", "type": "ordinal" }
+  },
 };
 
 const chartInitState: ChartState = {
@@ -189,11 +190,9 @@ export const ChartReducer = (state = chartInitState, action: IAction) => {
       return produce(state, (draft) => {
         //TODO:
         draft.spec.data = { values: action.payload.data, format: { type: "json" } };
-        // draft.spec.data = { values: JSON.parse(action.payload.data) };
       })
     case "spec":
       return produce(state, (draft) => {
-        // console.log("spec: ", action.payload)
         draft.spec = action.payload;
       })
     case 'title':
@@ -203,6 +202,26 @@ export const ChartReducer = (state = chartInitState, action: IAction) => {
     case 'mark':
       return produce(state, (draft) => {
         draft.spec.mark = action.payload.val;
+      })
+    case 'x':
+      return produce(state, (draft) => {
+        (draft.spec.encoding!.x! as any).field = action.payload.val;
+      })
+    case 'xtype':
+      return produce(state, (draft) => {
+        (draft.spec.encoding!.x! as any).type = action.payload.val;
+      })
+    case 'y':
+      return produce(state, (draft) => {
+        (draft.spec.encoding!.y! as any).field = action.payload.val;
+      })
+    case 'ytype':
+      return produce(state, (draft) => {
+        (draft.spec.encoding!.y! as any).type = action.payload.val;
+      })
+    case 'color':
+      return produce(state, (draft) => {
+        (draft.spec.encoding!.color! as any).field = action.payload.val;
       })
     default:
       return state;

@@ -7,7 +7,7 @@ import { RootState, store } from '../store/index';
 //TODO: SyntaxError: JSON Parse error: Unexpected identifier "None"
 export const PreviewChart = () => {
     const spec = useSelector((state: RootState) => state.chartReducer.spec)
-    console.log(spec.data)
+    // console.log(spec.data)
     return (
         <div style={{ height: 300, width: 300 }}>
             < Vega spec={spec} actions={false} />
@@ -31,13 +31,11 @@ const ChartEdit = () => {
     //TODO: get column names
     useEffect(() => {
         setCols(getCols((spec.data as any).values))
-        // console.log("Object.keys((spec.data as any).values): ", Object.keys((spec.data as any).values[0]))
     }, [spec.data]);
 
     const getCols = (vals: any) => {
         if (vals) {
-            console.log("Object.keys((spec.data as any).values): ", vals[0])
-            return Object.keys(vals[0])
+            return Object.keys(JSON.parse(vals)[0])
         }
         return [] as string[]
     }
