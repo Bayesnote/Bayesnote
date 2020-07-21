@@ -4,7 +4,7 @@ import SplitPane from 'react-split-pane';
 import { Vega } from 'react-vega';
 import { RootState, store } from '../store/index';
 
-//TODO: SyntaxError: JSON Parse error: Unexpected identifier "None"
+//FIXME: Chart edit cause output re-render
 export const PreviewChart = () => {
     const spec = useSelector((state: RootState) => state.chartReducer.spec)
     // console.log(spec.data)
@@ -27,11 +27,6 @@ const ChartEdit = () => {
         store.dispatch({ type: field, payload: { val } })
     }
 
-    //TODO: get column names
-    useEffect(() => {
-        setCols(getCols((spec.data as any).values))
-    }, [spec.data]);
-
     const getCols = (vals: any) => {
         if (vals) {
             return Object.keys(JSON.parse(vals)[0])
@@ -39,8 +34,10 @@ const ChartEdit = () => {
         return [] as string[]
     }
 
-    //TODO: spec.encoding?.x.type
-    //TODO:(spec.encoding?.color as any).field as string
+    useEffect(() => {
+        setCols(getCols((spec.data as any).values))
+    }, [spec.data]);
+
     return <div>
         <span> Title: </span>
         <input type="text" onChange={e => handleSet(e.target.value, "title")} />
