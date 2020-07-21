@@ -5,7 +5,6 @@ import {
 import { produce } from "immer";
 import { AnyMark } from "vega-lite/build/src/mark";
 import { TopLevelUnitSpec } from 'vega-lite/build/src/spec/unit';
-import { StandardType } from "vega-lite/build/src/type";
 import { createEmptyCodeCellVM } from "./utils";
 
 type IAction = {
@@ -165,9 +164,9 @@ export type ChartState = {
 
 //TODO:
 var initSpec: TopLevelUnitSpec = {
-  width: 300,
-  height:300,
-  title: "",
+  width: 400,
+  height: 300,
+  title: " ",
   autosize: {
     "type": "fit",
     "contains": "padding"

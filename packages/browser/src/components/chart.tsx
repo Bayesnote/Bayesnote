@@ -17,7 +17,6 @@ export const PreviewChart = () => {
 
 const ChartEdit = () => {
     const fieldType = ["none", "quantitative", "ordinal", "nominal"]
-
     const spec = useSelector((state: RootState) => state.chartReducer.spec)
     const [cols, setCols] = useState([] as string[])
 
@@ -55,25 +54,25 @@ const ChartEdit = () => {
 
         <p> </p>
         <span >X-axis:</span>
-        <select onChange={e => { handleSet(e.target.value, "x") }} value={spec.encoding?.x as string}>
+        <select onChange={e => { handleSet(e.target.value, "x") }} value={(spec.encoding!.x! as any).field as string}>
             {cols.map((col, index: number) => <option key={index} >{col}</option>)}
         </select>
-        <select onChange={e => { handleSet(e.target.value, "xtype") }} value={spec.encoding?.x as string}>
+        <select onChange={e => { handleSet(e.target.value, "xtype") }} value={(spec.encoding!.x! as any).type as string}>
             {fieldType.map((type, index: number) => <option key={index} >{type}</option>)}
         </select>
 
         <p> </p>
         <span >Y-axis:</span>
-        <select onChange={e => { handleSet(e.target.value, "y") }} value={spec.encoding?.y as string}>
+        <select onChange={e => { handleSet(e.target.value, "y") }} value={(spec.encoding!.y! as any).field as string}>
             {cols.map((col, index: number) => <option key={index} >{col}</option>)}
         </select>
-        <select onChange={e => { handleSet(e.target.value, "ytype") }} value={spec.encoding?.y as string}>
+        <select onChange={e => { handleSet(e.target.value, "ytype") }} value={(spec.encoding!.y! as any).type as string}>
             {fieldType.map((type, index: number) => <option key={index} >{type}</option>)}
         </select>
 
         <p> </p>
         <span >Break by:</span>
-        <select onChange={e => { handleSet(e.target.value, "color") }}>
+        <select onChange={e => { handleSet(e.target.value, "color") }} value={(spec.encoding!.color! as any).field as string}>
             {cols.map((col, index: number) => <option key={index} >{col}</option>)}
         </select>
 
@@ -87,7 +86,7 @@ export const Chart = ({ renderChart }: { renderChart: boolean }) => {
 
     if (renderChart) {
         return <div>
-            <SplitPane split="vertical" minSize={300}>
+            <SplitPane split="vertical" minSize={400}>
                 <PreviewChart />
                 <ChartEdit />
             </SplitPane>
