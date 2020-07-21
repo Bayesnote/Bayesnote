@@ -9,20 +9,19 @@ import (
 	"time"
 )
 
-//TODO: refactor
+//TODO: Refactor
 
 type request struct {
-	Notebook   notebook `json:"notebook"`
-	Parameters []string `json:"parameters"`
-
-	port string
+	Notebook notebook
+	port     string
 }
 
 type notebook struct {
-	Cells []cells `json:"cells"`
+	Cells []cell `json:"cells"`
+	Name  string `json:"name"`
 }
 
-type cells struct {
+type cell struct {
 	ID         string        `json:"id"`
 	Type       string        `json:"type"`
 	Source     string        `json:"source"`
@@ -56,34 +55,60 @@ type items struct {
 	Description string `json:"description"`
 }
 
-//TODO: only support python
-func (r *request) setParams(params map[string]string) {
-	for k, v := range params {
-		r.Parameters = append(r.Parameters, k+"="+v)
-	}
+//TODO: replace with notebook
+type runResp struct {
+	Cells   []cell `json:"cells"`
+	Success bool   `json:"success"`
 }
 
 //TODO: add ping for API
-func (r *request) run(path string) {
-	fmt.Println("run: ", path)
-	//notebook
-	read(path, r)
-	byteArray, err := json.Marshal(*r)
+func (r *request) run(path string) bool {
+	var n notebook
+	read(path, &n)
+
+	byteArray, err := json.Marshal(n)
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 
-	//Wait for API is ready
-	for i := 0; i < 30; i++ {
-		response, err := http.Post("http://localhost:"+r.port+"/api/v1/job", "application/json", bytes.NewReader(byteArray))
-		if err == nil {
-			fmt.Println(r.port, response.StatusCode)
-			break
-		} else {
-			fmt.Println(r.port, "Wait for API is ready.")
+	for i := 0; i < 10; i++ {
+		if r.ping() == true {
+			resp, err := http.Post("http://localhost:"+r.port+"/api/v1/job", "application/json", bytes.NewBuffer(byteArray))
+			if err != nil {
+				log.Error(err)
+			}
+
+			bodyBytes, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				log.Error(err)
+			}
+			var runResp runResp
+			json.Unmarshal(bodyBytes, &runResp)
+			fmt.Printf("%+v\n", runResp)
+			log.Info(runResp)
+
+			if runResp.Success {
+				return true
+			}
 		}
 		time.Sleep(1 * time.Second)
 	}
+	return false
+}
+
+func (r *request) ping() bool {
+	response, err := http.Get("http://localhost:" + r.port + "/api/v1/ping")
+	if err != nil {
+		log.Error(err)
+		return false
+	}
+
+	if response.StatusCode == 200 {
+		log.Info("Ping: 200")
+		return true
+	}
+
+	return false
 }
 
 func (r *request) status() string {

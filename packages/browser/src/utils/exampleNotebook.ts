@@ -1,6 +1,7 @@
-import { CellType, ICell, ICellState } from '@bayesnote/common/lib/types.js'
+import { CellType, ICellState, ICodeCell } from '@bayesnote/common/lib/types.js'
 
-export function exampleMultiLanguages(): { cells: ICell[] } {
+//TODO: This should move to JSON on disk
+export function exampleMultiLanguages(): { cells: ICodeCell[] } {
     return {
         cells: [
             {
@@ -20,9 +21,9 @@ export function exampleMultiLanguages(): { cells: ICell[] } {
             }, {
                 id: 'a53f768a-1858-4f03-86f6-09c10a1a0f5c',
                 type: CellType.CODE,
-                source: "# R \nvar.1 = c(0,1,2,3)\nvar.1",
+                source: "# R \nvar.1 = c(0,1,2,3)\nprint(var.1)",
                 language: 'r',
-                kernelName: 'r',
+                kernelName: 'ir',
                 backend: 'Jupyter',
                 metadata: {
                     scrollbar: false,
@@ -35,9 +36,9 @@ export function exampleMultiLanguages(): { cells: ICell[] } {
             {
                 id: '9ef575ed-7882-4233-829a-fbbd58eee0e1',
                 type: CellType.CODE,
-                source: "# Spark(Scala) \nspark.version",
+                source: "\nspark.version",
                 language: 'scala',
-                kernelName: 'Apache Toree - Scala',
+                "kernelName": "apache_toree_scala",
                 backend: 'Jupyter',
                 metadata: {
                     scrollbar: false,
@@ -51,7 +52,7 @@ export function exampleMultiLanguages(): { cells: ICell[] } {
     }
 }
 
-export function exampleVariableSharing(): { cells: ICell[] } {
+export function exampleVariableSharing(): { cells: ICodeCell[] } {
     return {
         cells: [
             {
@@ -117,7 +118,7 @@ export function exampleVariableSharing(): { cells: ICell[] } {
     }
 }
 
-export function exampleWorkflow(): { cells: ICell[] } {
+export function exampleWorkflow(): { cells: ICodeCell[] } {
     return {
         cells: [
             {
@@ -183,7 +184,7 @@ export function exampleWorkflow(): { cells: ICell[] } {
     }
 }
 
-export function exampleChart(): { cells: ICell[] } {
+export function exampleChart(): { cells: ICodeCell[] } {
     return {
         cells: [
             {
@@ -202,41 +203,5 @@ export function exampleChart(): { cells: ICell[] } {
                 state: ICellState.Finished,
             }
         ]
-    }
-}
-
-
-
-export function parameterExampleCells(): { cells: ICell[] } {
-    return {
-        cells: [{
-            id: '646ace57-6412-49d1-95aa-a44846fa401a',
-            type: CellType.PARAMETER,
-            source: "myList = ['oliver', 'alice', 'troy']\ndelay = 1",
-            language: 'javascript',
-            kernelName: 'javascript',
-            backend: 'Jupyter',
-            metadata: {
-                scrollbar: false,
-                source_hidden: false,
-                output_hidden: false
-            },
-            outputs: [],
-            state: ICellState.Finished,
-        }, {
-            id: '3df31bb7-49d2-4632-8d8b-246204313b7e',
-            type: CellType.CODE,
-            source: "from time import sleep\n\nfor name in myList:\n  sleep(float(delay))\n  print(name)\n",
-            language: 'python',
-            kernelName: 'python3',
-            backend: 'Jupyter',
-            metadata: {
-                scrollbar: false,
-                source_hidden: false,
-                output_hidden: false
-            },
-            outputs: [],
-            state: ICellState.Finished,
-        }]
     }
 }

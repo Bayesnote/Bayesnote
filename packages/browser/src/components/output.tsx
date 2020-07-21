@@ -1,10 +1,10 @@
-import { ICellOutput, ICellViewModel, IErrorOutput, IExecuteResultOutput, isErrorOutput, isExecuteResultOutput, isStreamOutput, IStreamOutput } from '@bayesnote/common/lib/types.js'
+import { ICellOutput, ICodeCell, IErrorOutput, IExecuteResultOutput, isErrorOutput, isExecuteResultOutput, isStreamOutput, IStreamOutput } from '@bayesnote/common/lib/types.js'
 import ansiUp from 'ansi_up'
 import React from 'react'
 import ReactJson from 'react-json-view'
 
 interface Props {
-    cellVM: ICellViewModel
+    cellVM: ICodeCell
 }
 
 const Output: React.FC<Props> = ({ cellVM }) => {
@@ -22,7 +22,7 @@ const Output: React.FC<Props> = ({ cellVM }) => {
             return <ReactJson key={id} src={(data['application/json'] as Object)} />
         } else if (data['text/plain']) {
             //TODO: Wrap
-            return <pre key={id} style={{ maxHeight: "1000px", maxWidth: "1000px", overflow: "scroll" }}>{data['text/plain']}</pre>
+            return <pre key={id} style={{ maxHeight: "200px", whiteSpace: "pre-wrap", position: "relative" }}>{data['text/plain']}</pre>
         } else {
             return null
         }
@@ -42,7 +42,7 @@ const Output: React.FC<Props> = ({ cellVM }) => {
     }
 
     const renderCodeOutput = () => {
-        return cellVM.cell.outputs.map((output, id) => {
+        return cellVM.outputs.map((output, id) => {
             if (isStreamOutput(output)) {
                 return handleStreamOutput(output, id)
             } else if (isExecuteResultOutput(output)) {

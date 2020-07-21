@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"strconv"
 
@@ -95,7 +94,7 @@ func (d *docker) start(image string) (string, string) {
 
 	p, err := getFreePort()
 	if err != nil {
-		log.Panic(err)
+		log.Error(err)
 	}
 	ps := strconv.Itoa(p)
 
@@ -176,11 +175,11 @@ func (d *docker) runCmd(cmd []string, ID string) *bufio.Reader {
 	}
 	IDResp, err := cli.ContainerExecCreate(ctx, ID, config)
 	if err != nil {
-		log.Panic(err)
+		log.Error(err)
 	}
 	resp, err := cli.ContainerExecAttach(ctx, IDResp.ID, config)
 	if err != nil {
-		log.Panic(err)
+		log.Error(err)
 	}
 
 	return resp.Reader

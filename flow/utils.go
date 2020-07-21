@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net"
 	"os"
 	"strings"
@@ -15,12 +14,12 @@ import (
 func read(path string, target interface{}) {
 	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
-		log.Panic(err)
+		log.Error(err)
 	}
 
 	fByte, err := ioutil.ReadAll(f)
 	if err != nil {
-		log.Panic(err)
+		log.Error(err)
 	}
 
 	if strings.Contains(path, "yaml") {
@@ -29,7 +28,7 @@ func read(path string, target interface{}) {
 	}
 	err = json.Unmarshal(fByte, target)
 	if err != nil {
-		log.Panic(err)
+		log.Error(err)
 	}
 }
 

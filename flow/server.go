@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/robfig/cron/v3"
@@ -20,7 +21,7 @@ func startFlowServer() {
 	r := mux.NewRouter()
 
 	//workflow
-	r.HandleFunc("/workflow/{workflow}", handleStatus).Methods("GET")
+	r.HandleFunc("/workflow", handleStatus).Methods("GET")
 	r.HandleFunc("/workflow/{workflow}/start", handleStart).Methods("POST")
 	r.HandleFunc("/workflow/{workflow}/run", handleRun).Methods("POST")
 	r.HandleFunc("/workflow/{workflow}/stop", handleStop).Methods("POST")
@@ -43,20 +44,34 @@ func startFlowServer() {
 	http.ListenAndServe(":80", r)
 }
 
+//TODO: cross-origin issue
+func handleStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	var f flowLogs
+	f.read()
+	w.Write(f.list())
+}
+
 func handleStart(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	body, _ := ioutil.ReadAll(r.Body)
 	var f flow
 	yaml.Unmarshal(body, &f)
-	//TODO:
-	// ct.AddFunc(f.Schedule, func() { startDAG() })
+	ct.AddFunc(f.Schedule, func() { startDAG(f) })
+
+	//log
+	log.WithFields(logrus.Fields{
+		"name":     f.Name,
+		"schedule": f.Schedule,
+		"status":   "scheduled",
+	}).Info("Flow scheduled")
 }
 
 func handleRun(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	var f flow
 	yaml.Unmarshal(body, &f)
-	// startDAG()
+	startDAG(f)
 }
 
 func handleStop(w http.ResponseWriter, r *http.Request) {
@@ -64,16 +79,6 @@ func handleStop(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	workflow := vars["workflow"]
 	os.Setenv("STOP", workflow)
-}
-
-func handleStatus(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	vars := mux.Vars(r)
-	workflow := vars["workflow"]
-	var run DAGRun
-	read("./log/"+workflow+"-log.json", &run)
-	byteJSON, _ := json.Marshal(run)
-	w.Write(byteJSON)
 }
 
 func handleGetImages(w http.ResponseWriter, r *http.Request) {

@@ -5,9 +5,8 @@ packages/node/out/
 packages/browser/build/
 packages/cli/lib
 packages/dashboard/build
+packages/common/lib
 node_modules/
 lerna-debug.log
 
 /flow/flow
-.github
-yarn.lock
