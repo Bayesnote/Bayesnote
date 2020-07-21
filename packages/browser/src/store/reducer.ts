@@ -5,6 +5,7 @@ import {
 import { produce } from "immer";
 import { AnyMark } from "vega-lite/build/src/mark";
 import { TopLevelUnitSpec } from 'vega-lite/build/src/spec/unit';
+import { StandardType } from "vega-lite/build/src/type";
 import { createEmptyCodeCellVM } from "./utils";
 
 type IAction = {
@@ -165,7 +166,8 @@ export type ChartState = {
 //TODO:
 var initSpec: TopLevelUnitSpec = {
   width: 300,
-  title: "sdf",
+  height:300,
+  title: "",
   autosize: {
     "type": "fit",
     "contains": "padding"
@@ -173,9 +175,9 @@ var initSpec: TopLevelUnitSpec = {
   mark: "bar" as AnyMark,
   data: { values: "", format: { type: "json" } },
   encoding: {
-    "x": { "field": "Cylinders", "type": "ordinal" },
-    "y": { "field": "Horsepower", "type": "quantitative" },
-    "color": { "field": "Origin", "type": "ordinal" }
+    "x": { "field": "", "type": "ordinal" },
+    "y": { "field": "", "type": "quantitative" },
+    "color": { "field": "", "type": "ordinal" }
   },
 };
 
