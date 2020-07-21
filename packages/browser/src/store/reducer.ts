@@ -187,12 +187,11 @@ export const ChartReducer = (state = chartInitState, action: IAction) => {
   switch (action.type) {
     case "data":
       return produce(state, (draft) => {
-        const JSON5 = require('json5')
+        //TODO:
         console.log(action.payload.data)
-        draft.spec.data = { values: JSON5.parse(action.payload.data), format: { type: "json" } };
+        draft.spec.data = { values: JSON.parse(action.payload.data) };
       })
-    //TODO:
-    case 'spec':
+    case "spec":
       return produce(state, (draft) => {
         // console.log("spec: ", action.payload)
         draft.spec = action.payload;

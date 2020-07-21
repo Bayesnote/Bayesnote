@@ -26,7 +26,8 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
         let data = (cellVM.cell.outputs[0] as IExecuteResultOutput).data
 
         if (data['text/plain']) {
-            store.dispatch({ type: 'data', payload: { data: data['text/plain'] as string } })
+            const dataWithoutSingleQuote = data['text/plain'].substr(1, data['text/plain'].length - 2).replace(/'/g, "\\'")
+            store.dispatch({ type: 'data', payload: { data: dataWithoutSingleQuote } })
         }
     }
 
