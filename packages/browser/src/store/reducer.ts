@@ -188,8 +188,8 @@ export const ChartReducer = (state = chartInitState, action: IAction) => {
     case "data":
       return produce(state, (draft) => {
         //TODO:
-        console.log(action.payload.data)
-        draft.spec.data = { values: JSON.parse(action.payload.data) };
+        draft.spec.data = { values: action.payload.data, format: { type: "json" } };
+        // draft.spec.data = { values: JSON.parse(action.payload.data) };
       })
     case "spec":
       return produce(state, (draft) => {

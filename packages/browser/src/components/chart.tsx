@@ -7,7 +7,7 @@ import { RootState, store } from '../store/index';
 //TODO: SyntaxError: JSON Parse error: Unexpected identifier "None"
 export const PreviewChart = () => {
     const spec = useSelector((state: RootState) => state.chartReducer.spec)
-
+    console.log(spec.data)
     return (
         <div style={{ height: 300, width: 300 }}>
             < Vega spec={spec} actions={false} />
