@@ -83,12 +83,16 @@ const ChartEdit = () => {
 
 }
 
-export const Chart = () => {
+export const Chart = ({ renderChart }: { renderChart: boolean }) => {
 
-    return <div>
-        <SplitPane split="vertical" minSize={300}>
-            <PreviewChart />
-            <ChartEdit />
-        </SplitPane>
-    </div>
+    if (renderChart) {
+        return <div>
+            <SplitPane split="vertical" minSize={300}>
+                <PreviewChart />
+                <ChartEdit />
+            </SplitPane>
+        </div>
+    }
+
+    return null
 }

@@ -1,5 +1,5 @@
 import { ICellViewModel, IExecuteResultOutput } from '@bayesnote/common/lib/types.js'
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import client from '../socket'
 import { store } from '../store'
@@ -15,13 +15,13 @@ interface Props {
 export const Cell: React.FC<Props> = ({ cellVM }) => {
     const notebookVM = useSelector((state: RootState) => state.notebookReducer.notebookVM)
     const kernels = useSelector((state: RootState) => state.notebookReducer.kernels)
+    const [renderChart, setRenderChart] = useState(false)
 
     const onAddCell = () => {
         store.dispatch({ type: 'addCell' })
     }
 
     const onAddChart = () => {
-        //get data
         //TODO: This is error-prone
         let data = (cellVM.cell.outputs[0] as IExecuteResultOutput).data
 
@@ -29,6 +29,7 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
             const dataWithoutSingleQuote = data['text/plain'].substr(1, data['text/plain'].length - 2).replace(/'/g, "\\'")
             store.dispatch({ type: 'data', payload: { data: dataWithoutSingleQuote } })
         }
+        setRenderChart(true)
     }
 
     const onChangeCellLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -70,7 +71,7 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
             {<Editor cellVM={cellVM} />}
             {renderBottomToolbar()}
             {<Output cellVM={cellVM} />}
-            {<Chart />}
+            {<Chart renderChart={renderChart}/>}
         </>
     )
 }
