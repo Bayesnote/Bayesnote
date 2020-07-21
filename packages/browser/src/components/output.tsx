@@ -22,7 +22,7 @@ const Output: React.FC<Props> = ({ cellVM }) => {
             return <ReactJson key={id} src={(data['application/json'] as Object)} />
         } else if (data['text/plain']) {
             //TODO: Wrap
-            return <pre key={id} style={{ maxHeight: "1000px", maxWidth: "1000px", overflow: "scroll" }}>{data['text/plain']}</pre>
+            return <pre key={id} style={{ maxHeight: "200px", whiteSpace: "pre-wrap", position: "relative" }}>{data['text/plain']}</pre>
         } else {
             return null
         }

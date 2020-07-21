@@ -69,8 +69,8 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
             {renderLanguageSelection()}
             {<Editor cellVM={cellVM} />}
             {renderBottomToolbar()}
-            {<Chart />}
             {<Output cellVM={cellVM} />}
+            {<Chart />}
         </>
     )
 }
