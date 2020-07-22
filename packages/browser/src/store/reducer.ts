@@ -229,3 +229,23 @@ export const ChartReducer = (state = chartInitState, action: IAction) => {
   }
 }
 
+export type ChartListState = {
+  specs: TopLevelUnitSpec[]
+};
+
+const chartListInitState: ChartListState = {
+  specs: [] as TopLevelUnitSpec[]
+}
+
+
+export const ChartListReducer = (state = chartListInitState, action: IAction) => {
+  switch (action.type) {
+    case "save":
+      return produce(state, (draft) => {
+        //TODO:
+        draft.specs.push(action.payload.val as TopLevelUnitSpec)
+      })
+    default:
+      return state;
+  }
+}

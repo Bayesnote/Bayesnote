@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useDrag } from 'react-dnd';
 import { useSelector } from 'react-redux';
 import SplitPane from 'react-split-pane';
 import { Vega } from 'react-vega';
+import { TopLevelUnitSpec } from "vega-lite/build/src/spec/unit";
 import { RootState, store } from '../store/index';
 
 //FIXME: Chart edit cause output re-render
-export const PreviewChart = () => {
+const PreviewChart = () => {
     const spec = useSelector((state: RootState) => state.chartReducer.spec)
     // console.log(spec.data)
     return (
@@ -20,7 +22,8 @@ const ChartEdit = () => {
     const spec = useSelector((state: RootState) => state.chartReducer.spec)
     const [cols, setCols] = useState([] as string[])
 
-    function handleSave() {
+    const handleSave = () => {
+        store.dispatch({ type: "save", payload: { spec } })
     }
 
     const handleSet = (val: string, field: string) => {
@@ -77,6 +80,36 @@ const ChartEdit = () => {
         <button onClick={() => handleSave()}> Save </ button>
     </div >
 
+}
+
+const ChartList = () => {
+    const specs = useSelector((state: RootState) => state.chartListReducer.specs)
+    const chartList = specs.map((spec, index) => <li > <ChartItem index={index} spec={spec} /> </li>)
+    return (<ul> {chartList} </ul>)
+}
+
+interface props {
+    spec: TopLevelUnitSpec,
+    index: number
+}
+
+const ChartItem: React.FC<props> = ({ spec, index }) => {
+    const ItemTypes = {
+        CHART: 'chart',
+    }
+
+    const [{ isDragging }, drag] = useDrag({
+        item: { index: index, type: ItemTypes.CHART },
+        collect: (monitor) => ({
+            isDragging: !!monitor.isDragging()
+        }),
+    })
+
+    return (
+        <div ref={drag}>
+            {spec.title}
+        </div>
+    )
 }
 
 export const Chart = ({ renderChart }: { renderChart: boolean }) => {
