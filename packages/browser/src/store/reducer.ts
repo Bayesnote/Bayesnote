@@ -242,7 +242,6 @@ export const ChartListReducer = (state = chartListInitState, action: IAction) =>
   switch (action.type) {
     case "save":
       return produce(state, (draft) => {
-        //TODO:
         draft.specs.push(action.payload.val as TopLevelUnitSpec)
       })
     default:

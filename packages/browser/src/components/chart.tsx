@@ -23,7 +23,7 @@ const ChartEdit = () => {
     const [cols, setCols] = useState([] as string[])
 
     const handleSave = () => {
-        store.dispatch({ type: "save", payload: { spec } })
+        store.dispatch({ type: "save", payload: { val: spec } })
     }
 
     const handleSet = (val: string, field: string) => {
@@ -82,10 +82,11 @@ const ChartEdit = () => {
 
 }
 
-const ChartList = () => {
+export const ChartList: React.FC = () => {
     const specs = useSelector((state: RootState) => state.chartListReducer.specs)
-    const chartList = specs.map((spec, index) => <li > <ChartItem index={index} spec={spec} /> </li>)
-    return (<ul> {chartList} </ul>)
+    const chartList = specs.map((spec, index) => <li key={index}> <ChartItem index={index} spec={spec} /> </li>)
+    console.log("ChartList: ", chartList)
+    return <ul> {chartList} </ul>
 }
 
 interface props {

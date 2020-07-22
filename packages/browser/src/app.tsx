@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import "./app.css";
+import { Dashboard } from './components/dashboard';
 import { Examples } from './components/examples';
 import { Libraries } from "./components/libraries";
 import { Notebook } from './components/notebook';
@@ -18,7 +19,7 @@ const App: React.FC = () => {
             <div className="Panel-1" >
               <Link to="/notebooks" >Notebooks </Link>
               <Link to="/workflow">Workflow </Link>
-              <Link to="/" >Dashboard </Link>
+              <Link to="/dashboard" >Dashboard </Link>
               <Link to="/" >Models </Link>
               <Link to="/libraries">Libraries </Link>
               <Link to="/">Containers </Link>
@@ -28,6 +29,7 @@ const App: React.FC = () => {
                 <Switch>
                   <Route path='/notebooks' component={Examples} />
                   <Route path='/libraries' component={Libraries} />
+                  <Route path='/dashboard' component={Dashboard} />
                 </Switch>
               </div>
               <div className="Panel-3" style={{ overflowY: "scroll" }}>
