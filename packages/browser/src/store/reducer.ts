@@ -267,6 +267,7 @@ export const dashboardReducer = (state = dashbaordInitState, action: IAction) =>
       })
     case "setLayouts":
       return produce(state, (draft) => {
+        console.log("setLayouts:", action.payload.val)
         draft.layouts.push(action.payload.val as GridLayout.Layout)
       })
     default:

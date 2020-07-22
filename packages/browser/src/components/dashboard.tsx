@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDrop } from 'react-dnd';
 import GridLayout, { WidthProvider } from "react-grid-layout";
+import "react-grid-layout/css/styles.css";
 import { useSelector } from 'react-redux';
 import "react-resizable/css/styles.css";
 import { RootState, store } from "../store";
@@ -19,6 +20,7 @@ export const Board: React.FC = () => {
     const charts = useSelector((state: RootState) => state.dashboardReducer.charts)
     //TODO: set initial layout: minW? 
     const layouts = useSelector((state: RootState) => state.dashboardReducer.layouts)
+    const [curLayouts, setCurLayouts] = useState(layouts)
 
     const [{ item }, drop] = useDrop({
         accept: ItemTypes.CHART,
@@ -33,20 +35,17 @@ export const Board: React.FC = () => {
         }
     }, [item, sourceCharts]);
 
-    useEffect(() => {
-        store.dispatch({ type: "setLayouts", payload: { val: layouts } })
-    }, [layouts]);
+    const handleLayoutChange = (layouts: any) => {
+        setCurLayouts(layouts)
+    }
 
-    //TODO
-    // const handleLayoutChange = (layouts: any) => {
-    //     console.log("handleLayoutChange")
-    //     store.dispatch({ type: "setLayouts", payload: { val: layouts } })
-    // }
-    //onLayoutChange={handleLayoutChange}
+    const handleSave = () => {
+        // store.dispatch({ type: "setLayouts", payload: { val: layouts } })
+    }
 
     return (
         <div ref={drop}>
-            <GridLayoutWidth layout={layouts} >
+            <GridLayoutWidth layout={curLayouts} onLayoutChange={handleLayoutChange}>
                 {charts.map((chart, index) => <ChartContainer key={"chart" + index} id={"chart" + index} chart={chart} />)}
             </GridLayoutWidth>
         </div>
