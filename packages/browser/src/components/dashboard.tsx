@@ -33,17 +33,20 @@ export const Board: React.FC = () => {
         }
     }, [item, sourceCharts]);
 
-    // useEffect(() => {
-    //     store.dispatch({ type: "setLayouts", payload: { val: layouts } })
-    // }, [layouts]);
-
-    const handleLayoutChange = (layouts: any) => {
+    useEffect(() => {
         store.dispatch({ type: "setLayouts", payload: { val: layouts } })
-    }
+    }, [layouts]);
+
+    //TODO
+    // const handleLayoutChange = (layouts: any) => {
+    //     console.log("handleLayoutChange")
+    //     store.dispatch({ type: "setLayouts", payload: { val: layouts } })
+    // }
+    //onLayoutChange={handleLayoutChange}
 
     return (
         <div ref={drop}>
-            <GridLayoutWidth layout={layouts} onLayoutChange={handleLayoutChange}>
+            <GridLayoutWidth layout={layouts} >
                 {charts.map((chart, index) => <ChartContainer key={"chart" + index} id={"chart" + index} chart={chart} />)}
             </GridLayoutWidth>
         </div>
