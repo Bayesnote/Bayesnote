@@ -3,6 +3,7 @@ import {
   IexportdVarMap, IKernelSpecs, INotebookViewModel
 } from "@bayesnote/common/lib/types";
 import { produce } from "immer";
+import GridLayout from "react-grid-layout";
 import { AnyMark } from "vega-lite/build/src/mark";
 import { TopLevelUnitSpec } from 'vega-lite/build/src/spec/unit';
 import { createEmptyCodeCellVM } from "./utils";
@@ -157,11 +158,6 @@ export const flowReducer = (state = flowInitState, action: IAction) => {
   }
 }
 
-export type ChartState = {
-  data: string,
-  spec: TopLevelUnitSpec
-};
-
 //TODO:
 var initSpec: TopLevelUnitSpec = {
   width: 400,
@@ -180,12 +176,17 @@ var initSpec: TopLevelUnitSpec = {
   },
 };
 
+export type ChartState = {
+  data: string,
+  spec: TopLevelUnitSpec
+};
+
 const chartInitState: ChartState = {
   data: "",
   spec: initSpec
 }
 
-export const ChartReducer = (state = chartInitState, action: IAction) => {
+export const chartReducer = (state = chartInitState, action: IAction) => {
   switch (action.type) {
     case "data":
       return produce(state, (draft) => {
@@ -237,8 +238,7 @@ const chartListInitState: ChartListState = {
   specs: [] as TopLevelUnitSpec[]
 }
 
-
-export const ChartListReducer = (state = chartListInitState, action: IAction) => {
+export const chartListReducer = (state = chartListInitState, action: IAction) => {
   switch (action.type) {
     case "save":
       return produce(state, (draft) => {
@@ -246,5 +246,30 @@ export const ChartListReducer = (state = chartListInitState, action: IAction) =>
       })
     default:
       return state;
+  }
+}
+
+export type dashboardState = {
+  charts: TopLevelUnitSpec[]
+  layouts: GridLayout.Layout[]
+};
+
+const dashbaordInitState = {
+  charts: [] as TopLevelUnitSpec[],
+  layouts: [] as GridLayout.Layout[]
+}
+
+export const dashboardReducer = (state = dashbaordInitState, action: IAction) => {
+  switch (action.type) {
+    case "addChart":
+      return produce(state, (draft) => {
+        draft.charts.push(action.payload.val as TopLevelUnitSpec)
+      })
+    case "setLayouts":
+      return produce(state, (draft) => {
+        draft.layouts.push(action.payload.val as GridLayout.Layout)
+      })
+    default:
+      return state
   }
 }

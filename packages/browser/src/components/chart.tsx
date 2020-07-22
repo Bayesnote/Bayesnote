@@ -126,3 +126,28 @@ export const Chart = ({ renderChart }: { renderChart: boolean }) => {
 
     return null
 }
+
+//TODO: remove any
+interface chartContainerProps {
+    key: string
+    children?: any,
+    id: string,
+    chart: TopLevelUnitSpec,
+    style?: any,
+}
+
+export const ChartContainer: React.FC<chartContainerProps> = ({ children, id, chart, style, ...props }) => {
+    const width = parseInt(style.width, 10) - 10; //Match draggable handle
+    const height = parseInt(style.height, 10);
+
+    useEffect(() => {
+        store.dispatch({ type: "changeStyle", payload: { width: width, height: height } })
+    }, [width, height])
+
+    return (
+        <div className="grid-item_graph" style={style} {...props}>
+            {<Vega spec={chart} actions={false} width={width} height={height} />}
+            {children}
+        </div>
+    )
+};
