@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import { useDrop } from 'react-dnd';
 import GridLayout, { WidthProvider } from "react-grid-layout";
 import { useSelector } from 'react-redux';
+import "react-resizable/css/styles.css";
 import { RootState, store } from "../store";
 import { ChartContainer } from "./chart";
 const GridLayoutWidth = WidthProvider(GridLayout)
 
-//TODO: read/write storage
 //TODO: resizable
 //TODO: dashboardList
 export const Board: React.FC = () => {
