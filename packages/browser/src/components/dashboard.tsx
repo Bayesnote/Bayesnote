@@ -6,16 +6,9 @@ import { RootState, store } from "../store";
 import { ChartContainer } from "./chart";
 const GridLayoutWidth = WidthProvider(GridLayout)
 
-// export const Dashboard: React.FC = () => {
-
-//     return <>
-//         <DndProvider backend={HTML5Backend}>
-//             < ChartList />
-//             < Board />
-//         </DndProvider>
-//     </>
-// }
-
+//TODO: read/write storage
+//TODO: resizable
+//TODO: dashboardList
 export const Board: React.FC = () => {
     //TODO: remove this duplicate
     const ItemTypes = {
