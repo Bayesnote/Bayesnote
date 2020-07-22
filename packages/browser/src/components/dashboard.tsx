@@ -5,7 +5,7 @@ import "react-grid-layout/css/styles.css";
 import { useSelector } from 'react-redux';
 import "react-resizable/css/styles.css";
 import { RootState, store } from "../store";
-import { ChartContainer } from "./chart";
+import { ChartContainer, ChartList } from "./chart";
 const GridLayoutWidth = WidthProvider(GridLayout)
 
 //TODO: resizable
@@ -18,6 +18,7 @@ export const Board: React.FC = () => {
 
     const sourceCharts = useSelector((state: RootState) => state.chartListReducer.specs)
     const charts = useSelector((state: RootState) => state.dashboardReducer.charts)
+    console.log("charts: ", charts)
     //TODO: set initial layout: minW? 
     const layouts = useSelector((state: RootState) => state.dashboardReducer.layouts)
     const [curLayouts, setCurLayouts] = useState(layouts)
@@ -39,10 +40,6 @@ export const Board: React.FC = () => {
         setCurLayouts(layouts)
     }
 
-    const handleSave = () => {
-        // store.dispatch({ type: "setLayouts", payload: { val: layouts } })
-    }
-
     return (
         <div ref={drop}>
             <GridLayoutWidth layout={curLayouts} onLayoutChange={handleLayoutChange}>
@@ -51,3 +48,45 @@ export const Board: React.FC = () => {
         </div>
     );
 };
+
+const DashboardList = () => {
+    const dashboard = useSelector((state: RootState) => state.dashboardReducer.charts)
+    const layouts = useSelector((state: RootState) => state.dashboardReducer.layouts)
+    //show
+    const titles = useSelector((state: RootState) => state.dashboardListReducer.titles)
+    const dashboardFromList = useSelector((state: RootState) => state.dashboardListReducer.dashboards)
+    const layoutsFromList = useSelector((state: RootState) => state.dashboardListReducer.layouts)
+    console.log("useSelector -> handleClick -> showBoard", dashboardFromList)
+    //edit
+    const [title, setTitle] = useState("")
+
+    function handleSave() {
+        store.dispatch({ type: "save", payload: { dashboard: dashboard, layouts: layouts, title: title } })
+    }
+
+    function handleClick(index: any) {
+        console.log("handleClick -> showBoard", dashboardFromList, layoutsFromList)
+        store.dispatch({ type: "showBoard", payload: { dashboard: dashboardFromList[index], layouts: layoutsFromList[index] } })
+    }
+
+    return (
+        <>
+            <div>Dashboards: </div>
+            <ul >
+                {titles.map((title, index) => <li onClick={() => handleClick(index)}> {title}</li>)}
+            </ul>
+
+            <span>Dashboard Title: </span>
+            <input type="text" onChange={e => setTitle(e.target.value)} />
+            <button onClick={() => handleSave()}> Save </ button>
+        </>
+    )
+}
+
+export const DashboardNav: React.FC = () => {
+
+    return <>
+        <ChartList />
+        <DashboardList />
+    </>
+}

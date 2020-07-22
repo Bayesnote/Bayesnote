@@ -1,5 +1,5 @@
 import { combineReducers, createStore } from "redux";
-import { chartListReducer, chartReducer, dashboardReducer, flowReducer, notebookReducer } from "./reducer";
+import { chartListReducer, chartReducer, dashboardListReducer, dashboardReducer, flowReducer, notebookReducer } from "./reducer";
 
 export const rootReducer = combineReducers({
   notebookReducer: notebookReducer,
@@ -7,6 +7,7 @@ export const rootReducer = combineReducers({
   chartReducer: chartReducer,
   chartListReducer: chartListReducer,
   dashboardReducer: dashboardReducer,
+  dashboardListReducer: dashboardListReducer,
 }
 );
 

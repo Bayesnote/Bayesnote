@@ -270,7 +270,42 @@ export const dashboardReducer = (state = dashbaordInitState, action: IAction) =>
         console.log("setLayouts:", action.payload.val)
         draft.layouts.push(action.payload.val as GridLayout.Layout)
       })
+    case "showBoard":
+      return produce(state, (draft) => {
+        console.log("showBoard", action.payload)
+        draft.charts = action.payload.dashboard
+        draft.layouts = action.payload.layouts
+      })
     default:
       return state
   }
 }
+
+export type dashboardListState = {
+  titles: string[],
+  dashboards: any,
+  layouts: GridLayout.Layout[],
+}
+
+const dashbaordListInitState = {
+  titles: [] as string[],
+  dashboards: [] as any[],
+  layouts: [] as GridLayout.Layout[]
+}
+
+//TODO: debug
+export const dashboardListReducer = (state = dashbaordListInitState, action: IAction) => {
+  switch (action.type) {
+    case "save":
+      return produce(state, (draft) => {
+        //TODO: simplify
+        console.log("saveDashboard", action.payload)
+        draft.titles.push(action.payload.title)
+        draft.dashboards.push(action.payload.dashboards)
+        draft.layouts.push(action.payload.layouts)  //empty
+      })
+    default:
+      return state
+  }
+}
+

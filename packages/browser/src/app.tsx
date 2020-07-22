@@ -5,8 +5,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import "./app.css";
-import { ChartList } from "./components/chart";
-import { Board } from './components/dashboard';
+import { Board, DashboardNav } from './components/dashboard';
 import { Examples } from './components/examples';
 import { Libraries } from "./components/libraries";
 import { Notebook } from './components/notebook';
@@ -33,7 +32,7 @@ const App: React.FC = () => {
                   <Switch>
                     <Route path='/notebooks' component={Examples} />
                     <Route path='/libraries' component={Libraries} />
-                    <Route path='/dashboard' component={ChartList} />
+                    <Route path='/dashboard' component={DashboardNav} />
                   </Switch>
                 </div>
                 <div className="Panel-3" style={{ overflowY: "scroll" }}>

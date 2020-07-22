@@ -85,7 +85,6 @@ const ChartEdit = () => {
 export const ChartList: React.FC = () => {
     const specs = useSelector((state: RootState) => state.chartListReducer.specs)
     const chartList = specs.map((spec, index) => <li key={index}> <ChartItem index={index} spec={spec} /> </li>)
-    console.log("ChartList: ", chartList)
     return <ul> {chartList} </ul>
 }
 
@@ -106,11 +105,16 @@ const ChartItem: React.FC<props> = ({ spec, index }) => {
         }),
     })
 
-    return (
-        <div ref={drag}>
-            {spec.title}
-        </div>
-    )
+    //TODO:
+    if (spec && spec.title) {
+        return (
+            <div ref={drag}>
+                {spec.title}
+            </div>
+        )
+    }
+
+    return <div></div>
 }
 
 export const Chart = ({ renderChart }: { renderChart: boolean }) => {
