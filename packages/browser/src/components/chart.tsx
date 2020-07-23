@@ -136,13 +136,15 @@ interface chartContainerProps {
     key: string
     children?: any,
     id: string,
-    chart: TopLevelUnitSpec,
     style?: any,
+    chartIndex: number
 }
 
-export const ChartContainer: React.FC<chartContainerProps> = ({ children, id, chart, style, ...props }) => {
+//TODO: init drag does not respect spec dimension
+export const ChartContainer: React.FC<chartContainerProps> = ({ children, id, style, chartIndex, ...props }) => {
     const width = parseInt(style.width, 10) - 10; //Match draggable handle
     const height = parseInt(style.height, 10);
+    const specs = useSelector((state: RootState) => state.chartListReducer.specs)
 
     useEffect(() => {
         store.dispatch({ type: "changeStyle", payload: { width: width, height: height } })
@@ -150,7 +152,7 @@ export const ChartContainer: React.FC<chartContainerProps> = ({ children, id, ch
 
     return (
         <div className="grid-item_graph" style={style} {...props}>
-            {<Vega spec={chart} actions={false} width={width} height={height} />}
+            {<Vega spec={specs[chartIndex]} actions={false} width={width} height={height} />}
             {children}
         </div>
     )

@@ -10,6 +10,7 @@ const GridLayoutWidth = WidthProvider(GridLayout)
 
 //TODO: resizable
 //TODO: dashboardList
+//TODO: consistent naming
 export const Board: React.FC = () => {
     //TODO: remove this duplicate
     const ItemTypes = {
@@ -32,7 +33,7 @@ export const Board: React.FC = () => {
 
     useEffect(() => {
         if (item) {
-            store.dispatch({ type: "addChart", payload: { val: sourceCharts[item.index] } })
+            store.dispatch({ type: "addChart", payload: { val: item.index } })
         }
     }, [item, sourceCharts]);
 
@@ -43,7 +44,7 @@ export const Board: React.FC = () => {
     return (
         <div ref={drop}>
             <GridLayoutWidth layout={curLayouts} onLayoutChange={handleLayoutChange}>
-                {charts.map((chart, index) => <ChartContainer key={"chart" + index} id={"chart" + index} chart={chart} />)}
+                {charts.map((chart, index) => <ChartContainer key={"chart" + index} id={"chart" + index} chartIndex={chart}/>)}
             </GridLayoutWidth>
         </div>
     );

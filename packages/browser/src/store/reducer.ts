@@ -225,6 +225,11 @@ export const chartReducer = (state = chartInitState, action: IAction) => {
       return produce(state, (draft) => {
         (draft.spec.encoding!.color! as any).field = action.payload.val;
       })
+    case 'changeStyle':
+      return produce(state, (draft) => {
+        draft.spec.width = action.payload.width;
+        draft.spec.height = action.payload.height;
+      })
     default:
       return state;
   }
@@ -240,7 +245,7 @@ const chartListInitState: ChartListState = {
 
 export const chartListReducer = (state = chartListInitState, action: IAction) => {
   switch (action.type) {
-    case "saveChart":
+    case "saveChart ":
       return produce(state, (draft) => {
         draft.specs.push(action.payload.val as TopLevelUnitSpec)
       })
@@ -250,12 +255,13 @@ export const chartListReducer = (state = chartListInitState, action: IAction) =>
 }
 
 export type dashboardState = {
-  charts: TopLevelUnitSpec[]
+  charts: string[]
   layouts: GridLayout.Layout[]
 };
 
 const dashbaordInitState = {
-  charts: [] as TopLevelUnitSpec[],
+  //Pointer to charts
+  charts: [] as number[],
   layouts: [] as GridLayout.Layout[]
 }
 
@@ -263,7 +269,8 @@ export const dashboardReducer = (state = dashbaordInitState, action: IAction) =>
   switch (action.type) {
     case "addChart":
       return produce(state, (draft) => {
-        draft.charts.push(action.payload.val as TopLevelUnitSpec)
+        //This should be updated if chart updated
+        draft.charts.push(action.payload.val)
       })
     case "setLayouts":
       return produce(state, (draft) => {
@@ -301,7 +308,7 @@ export const dashboardListReducer = (state = dashbaordListInitState, action: IAc
         //TODO: simplify
         console.log("saveDashboard", action.payload)
         draft.titles.push(action.payload.title)
-        draft.dashboards.push(action.payload.dashboards)
+        draft.dashboards.push(action.payload.dashboard)
         draft.layouts.push(action.payload.layouts)  //empty
       })
     default:
