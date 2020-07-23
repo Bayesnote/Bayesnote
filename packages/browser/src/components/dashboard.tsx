@@ -61,7 +61,7 @@ const DashboardList = () => {
     const [title, setTitle] = useState("")
 
     function handleSave() {
-        store.dispatch({ type: "save", payload: { dashboard: dashboard, layouts: layouts, title: title } })
+        store.dispatch({ type: "saveDashboard", payload: { dashboard: dashboard, layouts: layouts, title: title } })
     }
 
     function handleClick(index: any) {

@@ -23,7 +23,7 @@ const ChartEdit = () => {
     const [cols, setCols] = useState([] as string[])
 
     const handleSave = () => {
-        store.dispatch({ type: "save", payload: { val: spec } })
+        store.dispatch({ type: "saveChart", payload: { val: spec } })
     }
 
     const handleSet = (val: string, field: string) => {

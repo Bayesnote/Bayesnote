@@ -240,7 +240,7 @@ const chartListInitState: ChartListState = {
 
 export const chartListReducer = (state = chartListInitState, action: IAction) => {
   switch (action.type) {
-    case "save":
+    case "saveChart":
       return produce(state, (draft) => {
         draft.specs.push(action.payload.val as TopLevelUnitSpec)
       })
@@ -296,7 +296,7 @@ const dashbaordListInitState = {
 //TODO: debug
 export const dashboardListReducer = (state = dashbaordListInitState, action: IAction) => {
   switch (action.type) {
-    case "save":
+    case "saveDashboard":
       return produce(state, (draft) => {
         //TODO: simplify
         console.log("saveDashboard", action.payload)
