@@ -85,7 +85,10 @@ const ChartEdit = () => {
 export const ChartList: React.FC = () => {
     const specs = useSelector((state: RootState) => state.chartListReducer.specs)
     const chartList = specs.map((spec, index) => <li key={index}> <ChartItem index={index} spec={spec} /> </li>)
-    return <ul> {chartList} </ul>
+    return <div>
+        <div>Chart List:</div>
+        <ul> {chartList} </ul>
+    </div>
 }
 
 interface props {
