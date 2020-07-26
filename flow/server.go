@@ -75,13 +75,14 @@ func handleStop(w http.ResponseWriter, r *http.Request) {
 
 func handleStatus(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	vars := mux.Vars(r)
-	workflow := vars["workflow"]
-	var run DAGRun
+	// vars := mux.Vars(r)
+	// workflow := vars["workflow"]
+	// var run DAGRun
 	//TODO: change path & parse workflow name
-	read("./log/"+workflow+"-log.json", &run)
-	byteJSON, _ := json.Marshal(run)
-	w.Write(byteJSON)
+	// read("flow.log", &run)
+	// byteJSON, _ := json.Marshal(run)
+	// w.Write(byteJSON)
+	http.ServeFile(w, r, "flow.log")
 }
 
 func handleGetImages(w http.ResponseWriter, r *http.Request) {

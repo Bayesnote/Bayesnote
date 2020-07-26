@@ -17,8 +17,8 @@ func main() {
 }
 
 func initLogger() {
-	log.Formatter = new(logrus.JSONFormatter)
-	file, err := os.OpenFile("flow.log", os.O_CREATE|os.O_WRONLY, 0666)
+	// log.Formatter = new(logrus.JSONFormatter)
+	file, err := os.OpenFile("flow.log", os.O_APPEND|os.O_WRONLY, 0666)
 	if err == nil {
 		log.Out = file
 	} else {
