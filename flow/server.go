@@ -21,7 +21,7 @@ func startFlowServer() {
 	r := mux.NewRouter()
 
 	//workflow
-	r.HandleFunc("/workflow/{workflow}", handleStatus).Methods("GET")
+	r.HandleFunc("/workflow", handleStatus).Methods("GET")
 	r.HandleFunc("/workflow/{workflow}/start", handleStart).Methods("POST")
 	r.HandleFunc("/workflow/{workflow}/run", handleRun).Methods("POST")
 	r.HandleFunc("/workflow/{workflow}/stop", handleStop).Methods("POST")
@@ -75,13 +75,6 @@ func handleStop(w http.ResponseWriter, r *http.Request) {
 
 func handleStatus(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	// vars := mux.Vars(r)
-	// workflow := vars["workflow"]
-	// var run DAGRun
-	//TODO: change path & parse workflow name
-	// read("flow.log", &run)
-	// byteJSON, _ := json.Marshal(run)
-	// w.Write(byteJSON)
 	http.ServeFile(w, r, "flow.log")
 }
 

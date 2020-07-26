@@ -1,1 +1,2 @@
-time="2020-07-26T13:23:40+08:00" level=info msg="Flow scheduled" name=wf1 schedule= status=scheduled
+{"level":"info","msg":"Flow scheduled","name":"wf1","schedule":"","status":"scheduled","time":"2020-07-26T14:17:50+08:00"}
+{"level":"info","msg":"Flow scheduled","name":"wf1","schedule":"","status":"scheduled","time":"2020-07-26T14:17:50+08:00"}

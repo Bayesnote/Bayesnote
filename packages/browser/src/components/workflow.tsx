@@ -1,8 +1,9 @@
 import { ICellViewModel } from '@bayesnote/common/lib/types.js';
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LazyLog } from 'react-lazylog';
 import MonacoEditor from "react-monaco-editor";
+import { useTable } from 'react-table';
 import { store } from '../store';
 
 interface Props {
@@ -12,10 +13,11 @@ interface Props {
 //TODO: Add a status bar for runs 
 //TODO: Pretty print log. Show Run button
 export const Flow: React.FC<Props> = ({ cellVM }) => {
-    const url = "http://localhost:80/workflow/wf1"
+    const url = "http://localhost:80/workflow"
 
     //TODO: add margin below
     return <div style={{ width: "80%" }}>
+        <FlowTable />
         <FlowEditor />
         <div style={{ textAlign: "right" }}>
             <ToolBar />
@@ -24,6 +26,79 @@ export const Flow: React.FC<Props> = ({ cellVM }) => {
             <LazyLog extraLines={1} enableSearch url={url} caseInsensitive />
         </div>
     </div >
+}
+
+//TODO: this is ugly
+const url = "http://localhost:80/workflow"
+
+//This is should reside out of react-table component.
+const columns = [
+    {
+        Header: 'Flow Name',
+        accessor: 'name',
+    },
+    {
+        Header: 'Schedule',
+        accessor: 'schedule',
+    },
+    {
+        Header: 'Status',
+        accessor: 'status',
+    },
+    {
+        Header: 'Time',
+        accessor: 'time',
+    }
+];
+
+//TODO: CSS 
+const FlowTable: React.FC = () => {
+    const [data, setData] = useState([{ name: "No Flow created", schedule: "", status: "", time: "" }] as any)
+
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows,
+        prepareRow,
+    } = useTable({
+        columns,
+        data,
+    });
+
+    useEffect(() => {
+        fetch(url).
+            then(response => response.text()).
+            then(data => "[" + data.replace(/\n/g, ",") + "]").
+            then(data => JSON.parse(data)).
+            then(data => setData(data))
+    }, [columns, data])
+
+    return (
+        <table {...getTableProps()}>
+            <thead>
+                {headerGroups.map(headerGroup => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map(column => (
+                            <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                        ))}
+                    </tr>
+                ))}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+                {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                        <tr {...row.getRowProps()}>
+                            {row.cells.map(cell => {
+                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                            })}
+                        </tr>
+                    )
+                })}
+            </tbody>
+        </table>
+    );
 }
 
 const ToolBar: React.FC = () => {
