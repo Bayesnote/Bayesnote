@@ -1,9 +1,11 @@
 import { ICell, INotebookViewModel } from '@bayesnote/common/lib/types.js'
 import React from 'react'
+import { useHistory } from "react-router"
 import { store } from '../store'
 import { exampleChart, exampleMultiLanguages, exampleVariableSharing } from '../utils/exampleNotebook'
 
 export const Examples: React.FC = () => {
+    let history = useHistory()
 
     const loadNotebook = (cells: ICell[]) => {
         let data: INotebookViewModel = {
@@ -21,10 +23,11 @@ export const Examples: React.FC = () => {
         <div className="mainToolbar" style={{
             padding: '10px', textAlign: 'right'
         }} >
-            <div>
+            <div >
                 < button onClick={() => loadNotebook(exampleMultiLanguages().cells)} > Example: Multiple Languages</button >
                 < button onClick={() => loadNotebook(exampleVariableSharing().cells)} > Example: Variable Sharing</button >
                 < button onClick={() => loadNotebook(exampleChart().cells)} > Example: Chart</button >
+                < button onClick={() => history.push("/workflow")} > Example: Notebook Flow</button >
             </div>
         </div >
     )

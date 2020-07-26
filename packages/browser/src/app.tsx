@@ -20,24 +20,22 @@ const App: React.FC = () => {
           <DndProvider backend={HTML5Backend}>
             <SplitPane split="vertical" defaultSize="5%" >
               <div className="Panel-1" >
-                <Link to="/notebooks" >Notebooks </Link>
+                <Link to="/example" >Example </Link>
+                <Link to="/notebook" >Notebooks </Link>
                 <Link to="/workflow">Workflow </Link>
                 <Link to="/dashboard" >Dashboard </Link>
-                <Link to="/" >Models </Link>
-                <Link to="/libraries">Libraries </Link>
-                <Link to="/">Containers </Link>
               </div>
               <SplitPane split="vertical" defaultSize="15%" pane2Style={{ overflow: 'scroll' }} style={{ position: 'relative' }}>
                 <div className="Panel-2" style={{ maxHeight: "80%" }}>
                   <Switch>
-                    <Route path='/notebooks' component={Examples} />
+                    <Route path={["/", "/example"]} component={Examples} />
                     <Route path='/libraries' component={Libraries} />
                     <Route path='/dashboard' component={DashboardNav} />
                   </Switch>
                 </div>
                 <div className="Panel-3" style={{ overflowY: "scroll" }}>
                   <Switch>
-                    <Route path='/notebooks' component={Notebook} />
+                    <Route path={["/notebook", "/example"]} component={Notebook} />
                     <Route path='/workflow' component={Flow} />
                     <Route path='/dashboard' component={Board} />
                   </Switch>
