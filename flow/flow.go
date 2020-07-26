@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/Sirupsen/logrus"
 )
 
 /*
@@ -75,16 +76,25 @@ type DAGRun struct {
 	DAGs []DAG
 }
 
+func startDAG(f flow) {
+	var d = newDAG(f)
+	d.start()
+
+	log.WithFields(logrus.Fields{
+		"name":     f.Name,
+		"schedule": f.Schedule,
+		"status":   "running",
+	}).Info("Flow running")
+}
+
 func newDAG(f flow) *DAG {
 	d := &DAG{Name: f.Name}
 	d.setVertex(f)
 	d.setEdges()
-	d.initLog()
 	return d
 }
 
 func (d *DAG) start() {
-	log.Println("started")
 	d.msgCh = make(chan event)
 	//vertex listen
 	go d.emit()
@@ -157,7 +167,10 @@ func (d *DAG) handleDone() {
 	for {
 		time.Sleep(1 * time.Second)
 		if d.isAllDone() == true {
-			log.Println("done")
+			log.WithFields(logrus.Fields{
+				"name":   d.Name,
+				"status": "done",
+			}).Info("Flow done")
 			close(d.msgCh)
 			break
 		}
@@ -168,7 +181,6 @@ func (d *DAG) listen() {
 	go d.getStopSignal()
 	//msgChan forward msg while update status
 	for msg := range d.msgCh {
-		d.updateStatus()
 		d.msgCh <- msg
 	}
 }
@@ -190,25 +202,6 @@ func (d *DAG) stopAllcontainers() {
 	for i := range d.Vertices {
 		d.Vertices[i].stopContainer()
 	}
-}
-
-func (d *DAG) initLog() {
-	path := d.Name + "-log.json"
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		d.Time = time.Now()
-		var emptyArray []DAG
-		run := DAGRun{DAGs: append(emptyArray, *d)}
-		write(path, run)
-	}
-}
-
-//TODO: update upon request?
-func (d *DAG) updateStatus() {
-	path := d.Name + "-log.json"
-	var run DAGRun
-	read(path, &run)
-	run.DAGs = append(run.DAGs, *d)
-	write(path, run)
 }
 
 func (d *DAG) isAllDone() bool {

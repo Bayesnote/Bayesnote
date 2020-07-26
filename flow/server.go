@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/robfig/cron/v3"
@@ -48,15 +49,21 @@ func handleStart(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	var f flow
 	yaml.Unmarshal(body, &f)
-	//TODO:
-	// ct.AddFunc(f.Schedule, func() { startDAG() })
+	ct.AddFunc(f.Schedule, func() { startDAG(f) })
+
+	//log
+	log.WithFields(logrus.Fields{
+		"name":     f.Name,
+		"schedule": f.Schedule,
+		"status":   "scheduled",
+	}).Info("Flow scheduled")
 }
 
 func handleRun(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	var f flow
 	yaml.Unmarshal(body, &f)
-	// startDAG()
+	startDAG(f)
 }
 
 func handleStop(w http.ResponseWriter, r *http.Request) {
@@ -71,6 +78,7 @@ func handleStatus(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	workflow := vars["workflow"]
 	var run DAGRun
+	//TODO: change path & parse workflow name
 	read("./log/"+workflow+"-log.json", &run)
 	byteJSON, _ := json.Marshal(run)
 	w.Write(byteJSON)
