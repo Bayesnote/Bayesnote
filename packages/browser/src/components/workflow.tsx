@@ -16,6 +16,7 @@ interface Props {
 //TODO: Add a status bar for runs 
 //TODO: Pretty print log. Show Run button
 export const Flow: React.FC<Props> = ({ cellVM }) => {
+    //TODO: Log does not load
     const url = "http://localhost:80/workflow"
 
     //TODO: add margin below
@@ -68,7 +69,7 @@ const columns = [
 const FlowTable: React.FC = () => {
     //TODO: logic to handle workflow
     //TODO: Group into operation
-    const [data, setData] = useState([{ name: "No Flow created", schedule: "", status: "", time: "" }] as any)
+    const [data, setData] = useState([{ name: "", schedule: "", status: "", time: "" }] as any)
 
     const {
         getTableProps,
@@ -83,9 +84,7 @@ const FlowTable: React.FC = () => {
 
     useEffect(() => {
         fetch(url).
-            then(response => response.text()).
-            then(data => "[" + data.replace(/\n/g, ",") + "]").
-            then(data => JSON.parse(data)).
+            then(response => response.json()).
             then(data => setData(data))
     }, [columns, data])
 

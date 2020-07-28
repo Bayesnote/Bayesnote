@@ -75,7 +75,9 @@ func handleStop(w http.ResponseWriter, r *http.Request) {
 
 func handleStatus(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	http.ServeFile(w, r, "flow.log")
+	var f flowLogs
+	f.read()
+	w.Write(f.list())
 }
 
 func handleGetImages(w http.ResponseWriter, r *http.Request) {

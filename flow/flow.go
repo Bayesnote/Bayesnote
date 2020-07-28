@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Sirupsen/logrus"
@@ -316,4 +319,54 @@ func runNotebook(nb string, p map[string]string, port string, statusChan chan ev
 			statusChan <- rst
 		}
 	}
+}
+
+//process log
+type flowLog struct {
+	Level    string    `json:"level"`
+	Msg      string    `json:"msg"`
+	Name     string    `json:"name"`
+	Schedule string    `json:"schedule"`
+	Status   string    `json:"status"`
+	Time     time.Time `json:"time"`
+}
+
+type flowLogs []flowLog
+
+func (l *flowLogs) read() {
+	f, err := ioutil.ReadFile("flow.log")
+	if err != nil {
+		log.Error("Fail to read flow.log")
+	}
+	//string -> JSON string
+	fs := string(f)
+	fs = "[" + strings.Replace(fs, "\n", ",", -1) + "]"
+	json.Unmarshal([]byte(fs), l)
+	//fmt.Println(l)
+}
+
+//list the last status of all workflow without any dups
+func (l *flowLogs) list() []byte {
+	d := map[string]flowLog{}
+	for _, v := range *l {
+		if val, ok := d[v.Name]; ok {
+			if v.Time.Sub(val.Time) > 0 {
+				d[v.Name] = v
+			}
+		} else {
+			d[v.Name] = v
+		}
+	}
+
+	wf := []flowLog{}
+	for _, v := range d {
+		wf = append(wf, v)
+	}
+
+	jsonByte, err := json.Marshal(wf)
+	if err != nil {
+		log.Error("Failed to convert log to JSON byte")
+	}
+
+	return jsonByte
 }
