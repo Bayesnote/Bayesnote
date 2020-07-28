@@ -18,7 +18,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Provider store={store}>
           <DndProvider backend={HTML5Backend}>
-            <SplitPane split="vertical" defaultSize="5%" >
+            <SplitPane split="vertical" defaultSize="5%">
               <div className="Panel-1" >
                 <Link to="/example" >Example </Link>
                 <Link to="/notebook" >Notebooks </Link>
