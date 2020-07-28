@@ -1,6 +1,7 @@
 import { ICellViewModel } from '@bayesnote/common/lib/types.js';
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import React, { useEffect, useState } from 'react';
+import { LazyLog } from 'react-lazylog';
 import MonacoEditor from "react-monaco-editor";
 import { useTable } from 'react-table';
 // @ts-ignore
@@ -18,30 +19,26 @@ export const Flow: React.FC<Props> = ({ cellVM }) => {
     const url = "http://localhost:80/workflow"
 
     //TODO: add margin below
-    return <Tabs>
-        <TabList>
-            <Tab>Flow</Tab>
-            <Tab>Editor</Tab>
-        </TabList>
+    return <div style={{ width: "60%" }}>
+        <Tabs>
+            <TabList>
+                <Tab>Flow</Tab>
+                <Tab>Editor</Tab>
+                <Tab>Log</Tab>
+            </TabList>
 
-        <TabPanel>
-            <h2> <FlowTable /></h2>
-        </TabPanel>
-        <TabPanel>
-            <h2>  <FlowEditor /></h2>
-        </TabPanel>
-    </Tabs>
-
-    // <div style={{ width: "80%" }}>
-    //     <FlowTable />
-    //     <FlowEditor />
-    //     <div style={{ textAlign: "right" }}>
-    //         <ToolBar />
-    //     </div>
-    //     <div style={{ height: 400 }}>
-    //         <LazyLog extraLines={1} enableSearch url={url} caseInsensitive />
-    //     </div>
-    // </div >
+            <TabPanel>
+                <h2> <FlowTable /></h2>
+            </TabPanel>
+            <TabPanel>
+                <h2>  <FlowEditor /></h2>
+                <ToolBar />
+            </TabPanel>
+            <TabPanel>
+                <LazyLog extraLines={1} enableSearch url={url} caseInsensitive />
+            </TabPanel>
+        </Tabs>
+    </div >
 }
 
 //TODO: this is ugly

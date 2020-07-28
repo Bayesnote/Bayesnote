@@ -6,6 +6,7 @@ body {
   text-align: left;
   width: 62%;
   margin:0 auto;
+   font-size: 13px;
 }
 
 a {
@@ -13,9 +14,6 @@ a {
   text-decoration: none;
 }
 
-body {
-  font: normal medium/1.4 sans-serif;
-}
 table {
   border-collapse: collapse;
   width: 100%;
@@ -24,7 +22,5 @@ th, td {
   padding: 0.25rem;
   text-align: left;
   border: 1px solid #ccc;
+  font-size: 13px;
 }
-/* tbody tr:nth-child(odd) {
-  background: #eee;
-} */
