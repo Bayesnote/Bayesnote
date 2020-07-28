@@ -19,6 +19,8 @@ TODO:
 - global status for clean up
 */
 
+//TODO: Fix container bug
+
 //raw
 type flow struct {
 	Name     string `yaml:"name"`

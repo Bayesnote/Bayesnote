@@ -15,6 +15,7 @@ interface Props {
 
 //TODO: Add a status bar for runs 
 //TODO: Pretty print log. Show Run button
+//TODO: Integrate with docker & libraries
 export const Flow: React.FC<Props> = ({ cellVM }) => {
     //TODO: Log does not load
     const url = "http://localhost:80/workflow"

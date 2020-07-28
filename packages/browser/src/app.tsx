@@ -28,7 +28,7 @@ const App: React.FC = () => {
               <SplitPane split="vertical" defaultSize="15%" pane2Style={{ overflow: 'scroll' }} style={{ position: 'relative' }}>
                 <div className="Panel-2" style={{ maxHeight: "80%" }}>
                   <Switch>
-                    <Route path={["/", "/example"]} component={Examples} />
+                    <Route path={["/example"]} component={Examples} />
                     <Route path='/libraries' component={Libraries} />
                     <Route path='/dashboard' component={DashboardNav} />
                   </Switch>

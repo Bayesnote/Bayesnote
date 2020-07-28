@@ -50,6 +50,7 @@ export const Board: React.FC = () => {
     );
 };
 
+//TODO: Fix 2 dashbaord reducer
 const DashboardList = () => {
     const dashboard = useSelector((state: RootState) => state.dashboardReducer.charts)
     const layouts = useSelector((state: RootState) => state.dashboardReducer.layouts)
