@@ -21,7 +21,6 @@ export const Board: React.FC = () => {
     const charts = useSelector((state: RootState) => state.dashboardReducer.charts)
     //TODO: set initial layout: minW? 
     const layouts = useSelector((state: RootState) => state.dashboardReducer.layouts)
-    const [curLayouts, setCurLayouts] = useState(layouts)
 
     const [{ item }, drop] = useDrop({
         accept: ItemTypes.CHART,
@@ -36,18 +35,13 @@ export const Board: React.FC = () => {
         }
     }, [item, sourceCharts]);
 
-    useEffect(() => {
-        setCurLayouts(layouts)
-    }, [layouts])
-
     const handleLayoutChange = (layouts: any) => {
-        setCurLayouts(layouts)
         store.dispatch({ type: "setLayouts", payload: { val: layouts } })
     }
 
     return (
         <div ref={drop}>
-            <GridLayoutWidth layout={curLayouts} onLayoutChange={handleLayoutChange}>
+            <GridLayoutWidth layout={layouts} onLayoutChange={handleLayoutChange}>
                 {charts.map((chart, index) => <ChartContainer key={"chart" + index} id={"chart" + index} chartIndex={chart} />)}
             </GridLayoutWidth>
         </div>

@@ -245,7 +245,7 @@ const chartListInitState: ChartListState = {
 
 export const chartListReducer = (state = chartListInitState, action: IAction) => {
   switch (action.type) {
-    case "saveChart ":
+    case "saveChart":
       return produce(state, (draft) => {
         //TODO: Failed to update chart
         draft.specs.push(action.payload.val as TopLevelUnitSpec)
