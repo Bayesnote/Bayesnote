@@ -11,5 +11,3 @@ lerna-debug.log
 storage/
 
 /flow/flow
-.github
-yarn.lock
