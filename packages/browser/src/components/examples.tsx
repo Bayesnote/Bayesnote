@@ -2,7 +2,6 @@ import { ICell, INotebookViewModel } from '@bayesnote/common/lib/types.js'
 import React from 'react'
 import { useHistory } from "react-router"
 import { store } from '../store'
-import { preloadedState } from '../utils/dashboardState.json'
 import { exampleChart, exampleMultiLanguages, exampleVariableSharing } from '../utils/exampleNotebook'
 
 export const Examples: React.FC = () => {

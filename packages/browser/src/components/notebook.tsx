@@ -1,8 +1,8 @@
 import { ICellViewModel } from '@bayesnote/common/lib/types.js';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import client from '../socket';
-import { RootState } from '../store/index';
+import { RootState, store } from '../store/index';
 import { Cell } from './cell';
 
 export const Notebook: React.FC = () => {
@@ -34,8 +34,34 @@ export const Notebook: React.FC = () => {
     return (
         <>
             <div style={{ width: "80%" }}>
+                <div style={{ float: "right" }}>
+                    < NotebookToolbar />
+                </div>
                 {loadCells()}
             </div>
         </>
     )
+}
+
+const NotebookToolbar: React.FC = () => {
+    const notebookVM = useSelector((state: RootState) => state.notebookReducer.notebookVM)
+    const [name, setName] = useState("");
+
+    const handleNew = () => {
+
+    }
+
+    const handleSave = () => {
+        store.dispatch({
+            type: "updateNotebookName",
+            payload: { name },
+        });
+        client.emit("notebook.save", notebookVM)
+    }
+
+    return <div>
+        <input type="text" onChange={e => setName(e.target.value)} />
+        <button onClick={handleNew}>New</button>
+        <button onClick={handleSave}>Save</button>
+    </div>
 }

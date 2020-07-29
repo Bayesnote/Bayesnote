@@ -1,4 +1,5 @@
 export interface INotebookViewModel {
+    name?: string;
     notebook: INotebook;
 }
 export interface ICellViewModel {

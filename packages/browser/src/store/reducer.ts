@@ -23,6 +23,7 @@ const initialState: IState = {
     notebook: {
       cells: [createEmptyCodeCellVM()],
     },
+    name: ""
   },
   kernels: [],
   exportdVarMap: {},
@@ -35,7 +36,10 @@ export const notebookReducer = (state = initialState, action: IAction) => {
       return produce(state, (draft) => {
         draft.notebookVM.notebook = action.payload.notebook;
       });
-
+    case "updateNotebookName":
+      return produce(state, (draft) => {
+        draft.notebookVM.name = action.payload.name;
+      });
     case "clearAllOutputs":
       return produce(state, (draft) => {
         draft.notebookVM.notebook.cells.forEach(

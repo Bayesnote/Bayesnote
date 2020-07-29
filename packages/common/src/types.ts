@@ -3,8 +3,9 @@
 /* -------------------------------------------------------------------------- */
 /*                                  react vm                                  */
 /* -------------------------------------------------------------------------- */
-// notebook vm in react
+// TODO: Why ViewModel?
 export interface INotebookViewModel {
+    name?: string,
     notebook: INotebook
 }
 

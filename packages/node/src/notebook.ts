@@ -8,6 +8,7 @@ import {
     INotebookCallback,
     INotebookJSON,
     INotebookStatus,
+    INotebookViewModel,
     IResponse,
     isClearOutput,
     isErrorOutput,
@@ -21,7 +22,7 @@ import {
 } from '@bayesnote/common/lib/types'
 import { createEmptyCodeCell } from '@bayesnote/common/lib/utils'
 import { createLogger } from 'bunyan'
-import jsonfile from 'jsonfile'
+import jsonfile, { Path } from 'jsonfile'
 import cloneDeep from 'lodash/cloneDeep'
 import uniqBy from 'lodash/uniqBy'
 import path from 'path'
@@ -31,6 +32,7 @@ import { BackendManager } from './backend'
 const log = createLogger({ name: 'NotebookManager' })
 
 namespace File {
+    //TODO: This is ugly
     export const read = (url: string): Promise<INotebookJSON> => {
         return new Promise((res, rej) => {
             const absUrl = path.resolve(__dirname, url)
@@ -44,12 +46,26 @@ namespace File {
             })
         })
     }
+
+    export const write = (notebookVM: INotebookViewModel) => {
+        //TODO: handle name conflicts
+        let fileName = 'Undefined'
+        if (notebookVM.name) {
+            fileName = notebookVM.name
+        }
+        const writePath: Path = path.resolve(`../../storage/` + fileName + `.json`)
+        jsonfile.writeFile(writePath, notebookVM, function (err) {
+            if (err) console.error(err)
+            log.info('Notebook saved')
+        })
+    }
 }
 
 export interface INotebookManager {
     notebookJson: INotebookJSON | undefined
     loadNotebook(url: string): Promise<INotebookJSON | void>
     loadNotebookJSON(notebook: INotebookJSON): Promise<void>
+    saveNotebook(notebook: INotebookViewModel): void
     prepareNotebook(parameters: string[], clean: boolean): Promise<void>
     runNotebook(notebookCallback: INotebookCallback, silent: boolean): Promise<boolean>
     runNotebookAsync(silent: boolean): Promise<string>
@@ -200,6 +216,10 @@ export class NotebookManager implements INotebookManager {
         // todo verify notebook json data
         // this.verify(notebook)
         this.notebookJson = notebook as INotebookJSON
+    }
+
+    saveNotebook(notebook: INotebookViewModel) {
+        File.write(notebook)
     }
 
     // prepare notebook

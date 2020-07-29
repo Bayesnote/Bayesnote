@@ -2,7 +2,6 @@
   "name": "@bayesnote/browser",
   "version": "0.0.1",
   "dependencies": {
-    "@bayesnote/common": "^0.0.1-0.0.1-alpha.4.0",
     "@jupyterlab/coreutils": "^4.0.2",
     "@jupyterlab/nbformat": "^2.0.1",
     "@nteract/data-explorer": "^8.0.3",
