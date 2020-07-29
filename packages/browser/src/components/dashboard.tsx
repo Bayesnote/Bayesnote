@@ -19,7 +19,6 @@ export const Board: React.FC = () => {
 
     const sourceCharts = useSelector((state: RootState) => state.chartListReducer.specs)
     const charts = useSelector((state: RootState) => state.dashboardReducer.charts)
-    console.log("charts: ", charts)
     //TODO: set initial layout: minW? 
     const layouts = useSelector((state: RootState) => state.dashboardReducer.layouts)
     const [curLayouts, setCurLayouts] = useState(layouts)
@@ -37,14 +36,19 @@ export const Board: React.FC = () => {
         }
     }, [item, sourceCharts]);
 
+    useEffect(() => {
+        setCurLayouts(layouts)
+    }, [layouts])
+
     const handleLayoutChange = (layouts: any) => {
         setCurLayouts(layouts)
+        store.dispatch({ type: "setLayouts", payload: { val: layouts } })
     }
 
     return (
         <div ref={drop}>
             <GridLayoutWidth layout={curLayouts} onLayoutChange={handleLayoutChange}>
-                {charts.map((chart, index) => <ChartContainer key={"chart" + index} id={"chart" + index} chartIndex={chart}/>)}
+                {charts.map((chart, index) => <ChartContainer key={"chart" + index} id={"chart" + index} chartIndex={chart} />)}
             </GridLayoutWidth>
         </div>
     );
@@ -58,7 +62,6 @@ const DashboardList = () => {
     const titles = useSelector((state: RootState) => state.dashboardListReducer.titles)
     const dashboardFromList = useSelector((state: RootState) => state.dashboardListReducer.dashboards)
     const layoutsFromList = useSelector((state: RootState) => state.dashboardListReducer.layouts)
-    console.log("useSelector -> handleClick -> showBoard", dashboardFromList)
     //edit
     const [title, setTitle] = useState("")
 
@@ -67,7 +70,6 @@ const DashboardList = () => {
     }
 
     function handleClick(index: any) {
-        console.log("handleClick -> showBoard", dashboardFromList, layoutsFromList)
         store.dispatch({ type: "showBoard", payload: { dashboard: dashboardFromList[index], layouts: layoutsFromList[index] } })
     }
 

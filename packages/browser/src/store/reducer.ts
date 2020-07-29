@@ -248,7 +248,6 @@ export const chartListReducer = (state = chartListInitState, action: IAction) =>
     case "saveChart ":
       return produce(state, (draft) => {
         //TODO: Failed to update chart
-        console.log("saveChart", action.payload)
         draft.specs.push(action.payload.val as TopLevelUnitSpec)
       })
     default:
@@ -276,12 +275,10 @@ export const dashboardReducer = (state = dashbaordInitState, action: IAction) =>
       })
     case "setLayouts":
       return produce(state, (draft) => {
-        console.log("setLayouts:", action.payload.val)
-        draft.layouts.push(action.payload.val as GridLayout.Layout)
+        draft.layouts = action.payload.val as GridLayout.Layout[]
       })
     case "showBoard":
       return produce(state, (draft) => {
-        console.log("showBoard", action.payload)
         draft.charts = action.payload.dashboard
         draft.layouts = action.payload.layouts
       })
@@ -308,7 +305,6 @@ export const dashboardListReducer = (state = dashbaordListInitState, action: IAc
     case "saveDashboard":
       return produce(state, (draft) => {
         //TODO: simplify
-        console.log("saveDashboard", action.payload)
         draft.titles.push(action.payload.title)
         draft.dashboards.push(action.payload.dashboard)
         draft.layouts.push(action.payload.layouts)  //empty
