@@ -1,9 +1,10 @@
 // import { createLogger } from 'bunyan'
 import { isNotebookIdle, NotebookStatus } from '@bayesnote/common/lib/types'
+import { createLogger } from 'bunyan'
 import express, { Request, Response } from 'express'
 import { NotebookManager } from './notebook'
 
-// const log = createLogger({ name: 'Notebook router' })
+const log = createLogger({ name: 'Notebook router' })
 const PREFIX = '/api/v1'
 
 // sync run job with or without outputs
@@ -11,6 +12,7 @@ const PREFIX = '/api/v1'
 const run = (notebookManager: NotebookManager, silent = true, clean = true) => {
     return async (req: Request, res: Response) => {
         const { cells } = req.body
+        log.info(cells)
         await notebookManager.loadNotebookJSON(cells)
         const { success, output } = await notebookManager.runNotebook()
         res.json({ notebook: output, success: success })
@@ -39,10 +41,18 @@ const interrupt = (notebookManager: NotebookManager) => {
     }
 }
 
+const ping = () => {
+    return (req: Request, res: Response) => {
+        res.status(200).json(null)
+    }
+}
+
 export const createRouter = () => {
     return (notebookManager: NotebookManager) => {
         const router = express.Router()
-        // * notebook job routers
+        // ping
+        router.get(`${PREFIX}/ping`, ping())
+        // notebook
         router.post(`${PREFIX}/job`, run(notebookManager, false))
         router.get(`${PREFIX}/job`, getStatus(notebookManager))
         router.delete(`${PREFIX}/job`, interrupt(notebookManager))

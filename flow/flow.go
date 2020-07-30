@@ -238,7 +238,8 @@ func (v *vertex) handleEvent(e event) {
 		v.Status = e.status
 		switch en := e.status; en {
 		case "succeeded":
-			v.stopContainer()
+			//TODO: 
+			//v.stopContainer()
 		case "failed":
 			// TODO: need msgChan to retry or notify DAG?
 			//v.run(msgChan)
@@ -271,7 +272,11 @@ func (v *vertex) run(msgChan chan event) {
 	if len(v.upstream) == 0 && v.Status != "succeeded" && v.Status != "running" && v.retry > 0 {
 		v.Status = "running"
 		v.retry--
-		v.startContainer()
+		if v.image != "none" {
+			v.startContainer()
+		} else {
+			v.port = "8889"
+		}
 		go runNotebook(v.Name, v.params, v.port, msgChan)
 	}
 }
@@ -296,27 +301,32 @@ func runNotebook(nb string, p map[string]string, port string, statusChan chan ev
 	//make request
 	var r request
 	r.port = port
-	r.run("./storage/" + nb + ".json")
 
-	//init event
+	sucess := r.run("../storage/" + nb + ".json")
+
 	rst := event{name: nb}
 
-	//Poll status
-	for {
-		time.Sleep(1 * time.Second)
-		fmt.Println("Get status: ", nb, rst.status)
-		if r.status() == "" || r.status() == "IDLE" {
-			rst.status = "succeeded"
-			statusChan <- rst
-			break
-			//TODO: other status
-		} else if r.status() == "RUNNING" {
-			continue
-		} else {
-			rst.status = "failed"
-			statusChan <- rst
-		}
+	if sucess {
+		rst.status = "succeeded"
+		statusChan <- rst
 	}
+
+	// //Poll status
+	// for {
+	// 	time.Sleep(1 * time.Second)
+	// 	fmt.Println("Get status: ", nb, rst.status)
+	// 	if r.status() == "" || r.status() == "IDLE" {
+	// 		rst.status = "succeeded"
+	// 		statusChan <- rst
+	// 		break
+	// 		//TODO: other status
+	// 	} else if r.status() == "RUNNING" {
+	// 		continue
+	// 	} else {
+	// 		rst.status = "failed"
+	// 		statusChan <- rst
+	// 	}
+	// }
 }
 
 //process log

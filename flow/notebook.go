@@ -12,8 +12,8 @@ import (
 //TODO: refactor
 
 type request struct {
-	Notebook   notebook `json:"notebook"`
-	port string
+	Notebook notebook
+	port     string
 }
 
 type notebook struct {
@@ -54,26 +54,60 @@ type items struct {
 	Description string `json:"description"`
 }
 
+type runResp struct {
+	Notebook notebook `json:"notebook"`
+	Success  bool     `json:"success"`
+}
+
 //TODO: add ping for API
-func (r *request) run(path string) {
+func (r *request) run(path string) bool {
 	var n notebook
-	read(path, n)
+	read(path, &n)
+	fmt.Printf("%+v\n", n)
+
 	byteArray, err := json.Marshal(n)
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
-
+	// fmt.Printf(string(byteArray))
 	//Wait for API is ready
-	for i := 0; i < 30; i++ {
-		response, err := http.Post("http://localhost:"+r.port+"/api/v1/job", "application/json", bytes.NewReader(byteArray))
-		if err == nil {
-			fmt.Println(r.port, response.StatusCode)
-			break
-		} else {
-			fmt.Println(r.port, "Wait for API is ready.")
+	for i := 0; i < 10; i++ {
+		if r.ping() == true {
+			resp, err := http.Post("http://localhost:"+r.port+"/api/v1/job", "application/json", bytes.NewBuffer(byteArray))
+			if err != nil {
+				log.Error(err)
+			}
+
+			bodyBytes, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				log.Error(err)
+			}
+			var runResp runResp
+			json.Unmarshal(bodyBytes, &runResp)
+
+			if runResp.Success {
+				return true
+			}
 		}
+		log.Info("Wait")
 		time.Sleep(1 * time.Second)
 	}
+	return false
+}
+
+func (r *request) ping() bool {
+	response, err := http.Get("http://localhost:" + r.port + "/api/v1/ping")
+	if err != nil {
+		log.Error(err)
+		return false
+	}
+
+	if response.StatusCode == 200 {
+		log.Info("Ping: 200")
+		return true
+	}
+
+	return false
 }
 
 func (r *request) status() string {
