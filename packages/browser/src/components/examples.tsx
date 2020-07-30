@@ -10,7 +10,6 @@ export const Examples: React.FC = () => {
     const loadNotebook = (cells: ICodeCell[]) => {
         let notebook: INotebook = { cells: [] }
         cells.forEach(cell => notebook.cells.push(cell))
-        console.log("loadExampleNotebook -> data", notebook)
         store.dispatch({ type: 'loadNotebook', payload: notebook })
     }
 

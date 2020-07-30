@@ -32,7 +32,7 @@ export const notebookReducer = (state = initialState, action: IAction) => {
     // notebook
     case "loadNotebook":
       return produce(state, (draft) => {
-        draft.notebookVM.cells = action.payload.notebook;
+        draft.notebookVM.cells = action.payload.cells;
       });
     case "updateNotebookName":
       return produce(state, (draft) => {
