@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-//TODO: refactor
+//TODO: Refactor
 
 type request struct {
 	Notebook notebook
@@ -17,10 +17,11 @@ type request struct {
 }
 
 type notebook struct {
-	Cells []cells `json:"cells"`
+	Cells []cell `json:"cells"`
+	Name  string `json:"name"`
 }
 
-type cells struct {
+type cell struct {
 	ID         string        `json:"id"`
 	Type       string        `json:"type"`
 	Source     string        `json:"source"`
@@ -54,23 +55,22 @@ type items struct {
 	Description string `json:"description"`
 }
 
+//TODO: replace with notebook
 type runResp struct {
-	Notebook notebook `json:"notebook"`
-	Success  bool     `json:"success"`
+	Cells   []cell `json:"cells"`
+	Success bool   `json:"success"`
 }
 
 //TODO: add ping for API
 func (r *request) run(path string) bool {
 	var n notebook
 	read(path, &n)
-	fmt.Printf("%+v\n", n)
 
 	byteArray, err := json.Marshal(n)
 	if err != nil {
 		log.Error(err)
 	}
-	// fmt.Printf(string(byteArray))
-	//Wait for API is ready
+
 	for i := 0; i < 10; i++ {
 		if r.ping() == true {
 			resp, err := http.Post("http://localhost:"+r.port+"/api/v1/job", "application/json", bytes.NewBuffer(byteArray))
@@ -84,12 +84,13 @@ func (r *request) run(path string) bool {
 			}
 			var runResp runResp
 			json.Unmarshal(bodyBytes, &runResp)
+			fmt.Printf("%+v\n", runResp)
+			log.Info(runResp)
 
 			if runResp.Success {
 				return true
 			}
 		}
-		log.Info("Wait")
 		time.Sleep(1 * time.Second)
 	}
 	return false

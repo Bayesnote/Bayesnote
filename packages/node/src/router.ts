@@ -15,7 +15,7 @@ const run = (notebookManager: NotebookManager, silent = true, clean = true) => {
         log.info(cells)
         await notebookManager.loadNotebookJSON(cells)
         const { success, output } = await notebookManager.runNotebook()
-        res.json({ notebook: output, success: success })
+        res.json({ cells: output, success: success })
     }
 }
 

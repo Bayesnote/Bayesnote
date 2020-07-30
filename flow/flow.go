@@ -302,31 +302,14 @@ func runNotebook(nb string, p map[string]string, port string, statusChan chan ev
 	var r request
 	r.port = port
 
-	sucess := r.run("../storage/" + nb + ".json")
+	success := r.run("../storage/" + nb + ".json")
 
 	rst := event{name: nb}
 
-	if sucess {
+	if success {
 		rst.status = "succeeded"
 		statusChan <- rst
 	}
-
-	// //Poll status
-	// for {
-	// 	time.Sleep(1 * time.Second)
-	// 	fmt.Println("Get status: ", nb, rst.status)
-	// 	if r.status() == "" || r.status() == "IDLE" {
-	// 		rst.status = "succeeded"
-	// 		statusChan <- rst
-	// 		break
-	// 		//TODO: other status
-	// 	} else if r.status() == "RUNNING" {
-	// 		continue
-	// 	} else {
-	// 		rst.status = "failed"
-	// 		statusChan <- rst
-	// 	}
-	// }
 }
 
 //process log
