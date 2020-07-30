@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -20,6 +19,11 @@ TODO:
 */
 
 //TODO: Fix container bug
+/*
+1. spin up many containers
+2. wait for APIs for too long
+3. does not turn off containers
+*/
 
 //raw
 type flow struct {
@@ -113,14 +117,9 @@ func (d *DAG) start() {
 
 func (d *DAG) setVertex(f flow) {
 	for _, t := range f.Tasks {
-		if len(t.Params) == 0 {
-			v := vertex{Name: t.Name, next: t.Next}
-			d.Vertices = append(d.Vertices, v)
-		} else {
-			d.setParams(t)
-		}
+		v := vertex{Name: t.Name, next: t.Next}
+		d.Vertices = append(d.Vertices, v)
 	}
-
 	d.setRetry()
 	d.setImage(f)
 }
@@ -132,19 +131,19 @@ func (d *DAG) setImage(f flow) {
 	}
 }
 
-func (d *DAG) setParams(t task) {
-	for _, v := range t.Params {
-		for i := 0; i < len(v); i++ {
-			temp := map[string]string{}
-			for ik, iv := range t.Params {
-				temp[ik] = iv[i]
-			}
-			v := vertex{Name: t.Name + "-" + strconv.Itoa(i), params: temp, next: t.Next}
-			d.Vertices = append(d.Vertices, v)
-		}
-		break
-	}
-}
+// func (d *DAG) setParams(t task) {
+// 	for _, v := range t.Params {
+// 		for i := 0; i < len(v); i++ {
+// 			temp := map[string]string{}
+// 			for ik, iv := range t.Params {
+// 				temp[ik] = iv[i]
+// 			}
+// 			v := vertex{Name: t.Name + "-" + strconv.Itoa(i), params: temp, next: t.Next}
+// 			d.Vertices = append(d.Vertices, v)
+// 		}
+// 		break
+// 	}
+// }
 
 func (d *DAG) setEdges() {
 	for i := range d.Vertices {
@@ -176,7 +175,6 @@ func (d *DAG) handleDone() {
 				"name":   d.Name,
 				"status": "done",
 			}).Info("Flow done")
-			close(d.msgCh)
 			break
 		}
 	}
@@ -294,13 +292,11 @@ func (v *vertex) removeUpstream(up string) {
 }
 
 func runNotebook(nb string, p map[string]string, port string, statusChan chan event) {
-	fmt.Println("runNotebook: ", nb)
+	log.Info("runNotebook: ", nb)
 	//make request
 	var r request
-	r.setParams(p)
 	r.port = port
-
-	r.run(nb + ".json")
+	r.run("./storage/" + nb + ".json")
 
 	//init event
 	rst := event{name: nb}

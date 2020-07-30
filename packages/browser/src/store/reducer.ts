@@ -1,6 +1,6 @@
 import {
-  ICellViewModel,
-  IexportdVarMap, IKernelSpecs, INotebookViewModel
+  ICodeCell,
+  IexportdVarMap, IKernelSpecs, INotebook
 } from "@bayesnote/common/lib/types";
 import { produce } from "immer";
 import GridLayout from "react-grid-layout";
@@ -13,16 +13,14 @@ type IAction = {
   payload?: any;
 };
 export type IState = {
-  notebookVM: INotebookViewModel;
+  notebookVM: INotebook;
   kernels: IKernelSpecs;
   exportdVarMap: IexportdVarMap;
 };
 
 const initialState: IState = {
   notebookVM: {
-    notebook: {
-      cells: [createEmptyCodeCellVM()],
-    },
+    cells: [createEmptyCodeCellVM()],
     name: ""
   },
   kernels: [],
@@ -34,7 +32,7 @@ export const notebookReducer = (state = initialState, action: IAction) => {
     // notebook
     case "loadNotebook":
       return produce(state, (draft) => {
-        draft.notebookVM.notebook = action.payload.notebook;
+        draft.notebookVM.cells = action.payload.notebook;
       });
     case "updateNotebookName":
       return produce(state, (draft) => {
@@ -42,78 +40,78 @@ export const notebookReducer = (state = initialState, action: IAction) => {
       });
     case "clearAllOutputs":
       return produce(state, (draft) => {
-        draft.notebookVM.notebook.cells.forEach(
-          (cell) => (cell.cell.outputs = [])
+        draft.notebookVM.cells.forEach(
+          (cell) => (cell.outputs = [])
         );
       });
 
     // cell
     case "addCell":
       return produce(state, (draft) => {
-        draft.notebookVM.notebook.cells.push(createEmptyCodeCellVM());
+        draft.notebookVM.cells.push(createEmptyCodeCellVM());
       });
 
     case "updateCells":
       return produce(state, (draft) => {
-        draft.notebookVM.notebook.cells = action.payload;
+        draft.notebookVM.cells = action.payload;
       });
 
     // cellVM
     //TODO: ?
     case "updateCellSource":
       return produce(state, (draft) => {
-        draft.notebookVM.notebook.cells[
+        draft.notebookVM.cells[
           findCellIndex(action.payload.cellVM)
-        ].cell.source = action.payload.source;
+        ].source = action.payload.source;
       });
 
-    case "updateCellExported":
-      return produce(state, (draft) => {
-        draft.notebookVM.notebook.cells[
-          findCellIndex(action.payload.cellVM)
-        ].exportd = action.payload.exportd;
-      });
+    //TODO:
+    // case "updateCellExported":
+    //   return produce(state, (draft) => {
+    //     draft.notebookVM.cells[
+    //       findCellIndex(action.payload.cellVM)
+    //     ].exportd = action.payload.exportd;
+    //   });
 
     case "updateCellOutputs":
       return produce(state, (draft) => {
-        draft.notebookVM.notebook.cells[
+        draft.notebookVM.cells[
           findCellIndex(action.payload.cellVM)
-        ].cell.outputs = action.payload.msg;
+        ].outputs = action.payload.msg;
       });
 
     case "appendCellOutputs":
       return produce(state, (draft) => {
-        draft.notebookVM.notebook.cells[
+        draft.notebookVM.cells[
           findCellIndex(action.payload.cellVM)
-        ].cell.outputs.push(action.payload.msg);
+        ].outputs.push(action.payload.msg);
       });
 
     case "updateCellState":
       return produce(state, (draft) => {
-        draft.notebookVM.notebook.cells[
+        draft.notebookVM.cells[
           findCellIndex(action.payload.cellVM)
-        ].cell.state = action.payload.state;
+        ].state = action.payload.state;
       });
 
     case "clearCellOutput":
       return produce(state, (draft) => {
-        draft.notebookVM.notebook.cells[
+        draft.notebookVM.cells[
           findCellIndex(action.payload.cellVM)
-        ].cell.outputs = [];
+        ].outputs = [];
       });
 
     case "changeCellType":
       return produce(state, (draft) => {
-        draft.notebookVM.notebook.cells[
+        draft.notebookVM.cells[
           findCellIndex(action.payload.cellVM)
-        ].cell.type = action.payload.type;
+        ].type = action.payload.type;
       });
 
     case "changeCellLanguage":
       return produce(state, (draft) => {
         let cell =
-          draft.notebookVM.notebook.cells[findCellIndex(action.payload.cellVM)]
-            .cell;
+          draft.notebookVM.cells[findCellIndex(action.payload.cellVM)];
         let { languageWithBackend } = action.payload;
         cell.language = languageWithBackend.language;
         cell.kernelName = languageWithBackend.kernelName;
@@ -135,9 +133,9 @@ export const notebookReducer = (state = initialState, action: IAction) => {
       return state;
   }
 
-  function findCellIndex(cellVM: ICellViewModel) {
-    const index = state.notebookVM.notebook.cells.findIndex(
-      (cell) => cell.cell.id === cellVM.cell.id
+  function findCellIndex(cellVM: ICodeCell) {
+    const index = state.notebookVM.cells.findIndex(
+      (cell) => cell.id === cellVM.id
     );
     return index;
   }

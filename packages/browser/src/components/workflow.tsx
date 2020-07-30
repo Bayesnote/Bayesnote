@@ -1,4 +1,4 @@
-import { ICellViewModel } from '@bayesnote/common/lib/types.js';
+import { ICodeCell } from '@bayesnote/common/lib/types.js';
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import React, { useEffect, useState } from 'react';
 import { LazyLog } from 'react-lazylog';
@@ -10,7 +10,7 @@ import 'react-tabs/style/react-tabs.css';
 import { store } from '../store';
 
 interface Props {
-    cellVM: ICellViewModel
+    cellVM: ICodeCell
 }
 
 //TODO: Add a status bar for runs 
@@ -137,7 +137,15 @@ const ToolBar: React.FC = () => {
         }).then(Response => console.log((Response.status)))
     }
 
+    const hadnleRun = () => {
+        const url = "http://localhost:80/workflow/wf1/run"
+        fetch(url, {
+            method: "POST"
+        }).then(Response => console.log((Response.status)))
+    }
+
     return <div>
+        <button onClick={hadnleRun}>Test Run</button>
         <button onClick={handleStart}>Start</button>
         <button onClick={handleStop}>Stop</button>
     </div>

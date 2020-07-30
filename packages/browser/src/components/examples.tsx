@@ -1,4 +1,4 @@
-import { ICell, INotebookViewModel } from '@bayesnote/common/lib/types.js'
+import { ICodeCell, INotebook } from '@bayesnote/common/lib/types.js'
 import React from 'react'
 import { useHistory } from "react-router"
 import { store } from '../store'
@@ -7,16 +7,11 @@ import { exampleChart, exampleMultiLanguages, exampleVariableSharing } from '../
 export const Examples: React.FC = () => {
     let history = useHistory()
 
-    const loadNotebook = (cells: ICell[]) => {
-        let data: INotebookViewModel = {
-            notebook: { cells: [] }
-        }
-        cells.forEach(cell => {
-            //TODO: rename exportd
-            data.notebook.cells.push({ cell: cell, exportd: '' })
-        })
-        console.log("loadExampleNotebook -> data", data)
-        store.dispatch({ type: 'loadNotebook', payload: data })
+    const loadNotebook = (cells: ICodeCell[]) => {
+        let notebook: INotebook = { cells: [] }
+        cells.forEach(cell => notebook.cells.push(cell))
+        console.log("loadExampleNotebook -> data", notebook)
+        store.dispatch({ type: 'loadNotebook', payload: notebook })
     }
 
     const loadDashboard = () => {
@@ -206,7 +201,7 @@ const dashboardExampleState = {
 //TODO
 /*
 const getNotebookJSON = (): INotebookJSON => {
-    let notebook = notebookVM.notebook
+    let notebook = notebookVM
     let cellVMs = notebook.cells
     let cells = cellVMs.map(vm => vm.cell)
     let notebookJSON = {

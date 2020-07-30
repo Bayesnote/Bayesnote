@@ -1,4 +1,4 @@
-import { ICellViewModel, IExecuteResultOutput } from '@bayesnote/common/lib/types.js'
+import { ICodeCell, IExecuteResultOutput } from '@bayesnote/common/lib/types.js'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import client from '../socket'
@@ -9,7 +9,7 @@ import { Editor } from './monaco'
 import Output from './output'
 
 interface Props {
-    cellVM: ICellViewModel
+    cellVM: ICodeCell
 }
 
 export const Cell: React.FC<Props> = ({ cellVM }) => {
@@ -23,7 +23,7 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
 
     const onAddChart = () => {
         //TODO: This is error-prone
-        let data = (cellVM.cell.outputs[0] as IExecuteResultOutput).data
+        let data = (cellVM.outputs[0] as IExecuteResultOutput).data
 
         if (data['text/plain']) {
             const dataWithoutSingleQuote = data['text/plain'].substr(1, data['text/plain'].length - 2).replace(/'/g, "\\'")
@@ -39,11 +39,11 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
 
     //TODO
     const interruptCell = () => {
-        client.emit('cell.interrupt', cellVM.cell)
+        client.emit('cell.interrupt', cellVM)
     }
 
     const runCell = () => {
-        client.emit('cell.run', cellVM.cell)
+        client.emit('cell.run', cellVM)
     }
 
     const renderLanguageSelection = () => {
@@ -71,7 +71,7 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
             {<Editor cellVM={cellVM} />}
             {renderBottomToolbar()}
             {<Output cellVM={cellVM} />}
-            {<Chart renderChart={renderChart}/>}
+            {<Chart renderChart={renderChart} />}
         </>
     )
 }

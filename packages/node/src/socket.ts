@@ -5,9 +5,7 @@ import {
     IexportVarOutput,
     IExportVarPayload,
     IKernelInfo,
-    INotebookCallbackPayload,
-    INotebookJSON,
-    INotebookViewModel,
+    INotebook,
 } from '@bayesnote/common/lib/types'
 import { createLogger } from 'bunyan'
 import { createServer } from 'http'
@@ -55,7 +53,7 @@ export class SocketManager {
         socket.on('cell.run', this.onCellRun(socket))
         socket.on('cell.interrupt', this.onCellInterrupt(socket))
         // run notebook
-        socket.on('notebook.run', this.onNotebookRun(socket))
+        // socket.on('notebook.run', this.onNotebookRun(socket))
         // export
         socket.on('export.variable', this.onexportVariable(socket))
         socket.on('export.variable.list', this.onexportVariableList(socket))
@@ -116,13 +114,9 @@ export class SocketManager {
     private onCellRun = (socket: SocketIO.Socket) => {
         return async (cell: ICodeCell, kernelInfo?: IKernelInfo) => {
             try {
-                // if (isParameterCell(cell) && kernelInfo) {
-                //     const res = await this.backendManager.executeParameter(cell, kernelInfo)
-                // } else {
                 await this.backendManager.execute(cell, (msg) => {
                     socket.emit('cell.run.ok', { msg, cell })
                 })
-                // }
             } catch (error) {
                 log.error(error)
             }
@@ -139,26 +133,26 @@ export class SocketManager {
         }
     }
 
-    private onNotebookRun = (socket: SocketIO.Socket) => {
-        return async (notebook: INotebookJSON, parameters: string[], clean = true) => {
-            try {
-                await this.notebookManager.loadNotebookJSON(notebook)
-                await this.notebookManager.prepareNotebook(parameters, clean)
-                await this.notebookManager.runNotebook((payload: INotebookCallbackPayload) => {
-                    if (payload.finish) {
-                        socket.emit('notebook.run.ok', payload)
-                    } else {
-                        socket.emit('notebook.run.progress', payload)
-                    }
-                }, false)
-            } catch (error) {
-                log.error(error)
-            }
-        }
-    }
+    // private onNotebookRun = (socket: SocketIO.Socket) => {
+    //     return async (notebook: INotebook, clean = true) => {
+    //         try {
+    //             await this.notebookManager.loadNotebookJSON(notebook)
+    //             //TODO: Fix this
+    //             // await this.notebookManager.runNotebook((payload: INotebookCallbackPayload) => {
+    //             //     if (payload.finish) {
+    //             //         socket.emit('notebook.run.ok', payload)
+    //             //     } else {
+    //             //         socket.emit('notebook.run.progress', payload)
+    //             //     }
+    //             // }, false)
+    //         } catch (error) {
+    //             log.error(error)
+    //         }
+    //     }
+    // }
 
     private onNotebookSave = (socket: SocketIO.Socket) => {
-        return (notebook: INotebookViewModel) => {
+        return (notebook: INotebook) => {
             this.notebookManager.saveNotebook(notebook)
         }
     }
@@ -167,6 +161,7 @@ export class SocketManager {
         return async (exportVarPayload: IExportVarPayload) => {
             try {
                 const exportVarOutput = await this.backendManager.exportVar(exportVarPayload)
+                //TODO: This naming is a joke
                 const exportdVarMapValue = this.getexportdVarMapValueWithOutJsonData(
                     this.createexportdVarMapValue(exportVarOutput, exportVarPayload),
                 )

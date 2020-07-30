@@ -1,4 +1,4 @@
-import { ICellViewModel } from '@bayesnote/common/lib/types.js';
+import { ICodeCell } from '@bayesnote/common/lib/types.js';
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import React, { useState } from 'react';
 import MonacoEditor from "react-monaco-editor";
@@ -6,7 +6,7 @@ import { store } from '../store';
 
 //TODO: Add code completion
 interface Props {
-    cellVM: ICellViewModel
+    cellVM: ICodeCell
 }
 
 export const Editor: React.FC<Props> = ({ cellVM }) => {
@@ -18,7 +18,7 @@ export const Editor: React.FC<Props> = ({ cellVM }) => {
     var model: monaco.editor.ITextModel | null
 
     const [height, setHeight] = useState(0)
-    const [code, setCode] = useState(cellVM.cell.source)
+    const [code, setCode] = useState(cellVM.source)
 
     const editorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
         editor.focus();
@@ -41,7 +41,7 @@ export const Editor: React.FC<Props> = ({ cellVM }) => {
         <MonacoEditor
             height={height}
             theme="vs-dark"
-            language={cellVM.cell.language}
+            language={cellVM.language}
             value={code}
             options={options}
             onChange={onChange}

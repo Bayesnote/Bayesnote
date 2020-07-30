@@ -1,6 +1,6 @@
-import { CellType, ICell, ICellState } from '@bayesnote/common/lib/types.js'
+import { CellType, ICellState, ICodeCell } from '@bayesnote/common/lib/types.js'
 
-export function exampleMultiLanguages(): { cells: ICell[] } {
+export function exampleMultiLanguages(): { cells: ICodeCell[] } {
     return {
         cells: [
             {
@@ -51,7 +51,7 @@ export function exampleMultiLanguages(): { cells: ICell[] } {
     }
 }
 
-export function exampleVariableSharing(): { cells: ICell[] } {
+export function exampleVariableSharing(): { cells: ICodeCell[] } {
     return {
         cells: [
             {
@@ -117,7 +117,7 @@ export function exampleVariableSharing(): { cells: ICell[] } {
     }
 }
 
-export function exampleWorkflow(): { cells: ICell[] } {
+export function exampleWorkflow(): { cells: ICodeCell[] } {
     return {
         cells: [
             {
@@ -183,7 +183,7 @@ export function exampleWorkflow(): { cells: ICell[] } {
     }
 }
 
-export function exampleChart(): { cells: ICell[] } {
+export function exampleChart(): { cells: ICodeCell[] } {
     return {
         cells: [
             {
@@ -202,41 +202,5 @@ export function exampleChart(): { cells: ICell[] } {
                 state: ICellState.Finished,
             }
         ]
-    }
-}
-
-
-
-export function parameterExampleCells(): { cells: ICell[] } {
-    return {
-        cells: [{
-            id: '646ace57-6412-49d1-95aa-a44846fa401a',
-            type: CellType.PARAMETER,
-            source: "myList = ['oliver', 'alice', 'troy']\ndelay = 1",
-            language: 'javascript',
-            kernelName: 'javascript',
-            backend: 'Jupyter',
-            metadata: {
-                scrollbar: false,
-                source_hidden: false,
-                output_hidden: false
-            },
-            outputs: [],
-            state: ICellState.Finished,
-        }, {
-            id: '3df31bb7-49d2-4632-8d8b-246204313b7e',
-            type: CellType.CODE,
-            source: "from time import sleep\n\nfor name in myList:\n  sleep(float(delay))\n  print(name)\n",
-            language: 'python',
-            kernelName: 'python3',
-            backend: 'Jupyter',
-            metadata: {
-                scrollbar: false,
-                source_hidden: false,
-                output_hidden: false
-            },
-            outputs: [],
-            state: ICellState.Finished,
-        }]
     }
 }

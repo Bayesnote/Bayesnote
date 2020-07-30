@@ -1,4 +1,4 @@
-import { ICellViewModel } from '@bayesnote/common/lib/types.js';
+import { ICodeCell } from '@bayesnote/common/lib/types.js';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import client from '../socket';
@@ -10,9 +10,9 @@ export const Notebook: React.FC = () => {
 
     //TODO: rename
     const loadCells = () => {
-        return notebookVM.notebook.cells.map(
-            (cellVM: ICellViewModel) => {
-                return <Cell key={cellVM.cell.id} cellVM={cellVM} />
+        return notebookVM.cells.map(
+            (cellVM: ICodeCell) => {
+                return <Cell key={cellVM.id} cellVM={cellVM} />
             })
     }
 
@@ -47,6 +47,7 @@ const NotebookToolbar: React.FC = () => {
     const notebookVM = useSelector((state: RootState) => state.notebookReducer.notebookVM)
     const [name, setName] = useState("");
 
+    //TODO:
     const handleNew = () => {
 
     }

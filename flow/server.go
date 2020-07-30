@@ -44,6 +44,14 @@ func startFlowServer() {
 	http.ListenAndServe(":80", r)
 }
 
+//TODO: cross-origin issue
+func handleStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	var f flowLogs
+	f.read()
+	w.Write(f.list())
+}
+
 func handleStart(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	body, _ := ioutil.ReadAll(r.Body)
@@ -71,13 +79,6 @@ func handleStop(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	workflow := vars["workflow"]
 	os.Setenv("STOP", workflow)
-}
-
-func handleStatus(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	var f flowLogs
-	f.read()
-	w.Write(f.list())
 }
 
 func handleGetImages(w http.ResponseWriter, r *http.Request) {

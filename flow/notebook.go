@@ -13,8 +13,6 @@ import (
 
 type request struct {
 	Notebook   notebook `json:"notebook"`
-	Parameters []string `json:"parameters"`
-
 	port string
 }
 
@@ -56,19 +54,11 @@ type items struct {
 	Description string `json:"description"`
 }
 
-//TODO: only support python
-func (r *request) setParams(params map[string]string) {
-	for k, v := range params {
-		r.Parameters = append(r.Parameters, k+"="+v)
-	}
-}
-
 //TODO: add ping for API
 func (r *request) run(path string) {
-	fmt.Println("run: ", path)
-	//notebook
-	read(path, r)
-	byteArray, err := json.Marshal(*r)
+	var n notebook
+	read(path, n)
+	byteArray, err := json.Marshal(n)
 	if err != nil {
 		panic(err)
 	}

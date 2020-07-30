@@ -1,2 +1,104 @@
 {"level":"info","msg":"Flow scheduled","name":"wf1","schedule":"","status":"scheduled","time":"2020-07-26T14:17:50+08:00"}
-{"level":"info","msg":"Flow scheduled","name":"wf1","schedule":"","status":"scheduled","time":"2020-07-26T14:17:50+08:00"}
+{"level":"info","msg":"Flow scheduled","name":"wf1","schedule":"","status":"scheduled","time":"2020-07-26T14:17:50+08:00"}{"level":"info","msg":"Flow scheduled","name":"","schedule":"","status":"scheduled","time":"2020-07-29T18:40:41+08:00"}
+{"level":"info","msg":"Flow done","name":"","status":"done","time":"2020-07-29T18:42:20+08:00"}
+{"level":"info","msg":"Flow done","name":"","status":"done","time":"2020-07-29T18:42:21+08:00"}
+{"level":"info","msg":"Flow done","name":"","status":"done","time":"2020-07-29T18:42:39+08:00"}
+{"level":"info","msg":"Flow done","name":"","status":"done","time":"2020-07-29T18:47:34+08:00"}
+{"level":"info","msg":"Free port allocated: 59502","time":"2020-07-29T18:48:41+08:00"}
+{"level":"info","msg":"Free port allocated: 59503","time":"2020-07-29T18:48:41+08:00"}
+{"level":"info","msg":"Container started: 5826b6051a511b8506b32bb8f23e01854f9c0eccd87f4616c52da565400725e1","time":"2020-07-29T18:48:46+08:00"}
+{"level":"panic","msg":"open ./storage/nb2.json: no such file or directory","time":"2020-07-29T18:48:46+08:00"}
+{"level":"info","msg":"Free port allocated: 59649","time":"2020-07-29T18:49:05+08:00"}
+{"level":"info","msg":"Free port allocated: 59648","time":"2020-07-29T18:49:05+08:00"}
+{"level":"info","msg":"Container started: 6c12e13472e4af48ada8525af31a350a56bc76d003bd02aaa034d30d76479eb2","time":"2020-07-29T18:49:06+08:00"}
+{"level":"panic","msg":"open ./storage/nb2.json: no such file or directory","time":"2020-07-29T18:49:06+08:00"}
+{"level":"info","msg":"Free port allocated: 60827","time":"2020-07-29T18:52:35+08:00"}
+{"level":"info","msg":"Free port allocated: 60828","time":"2020-07-29T18:52:35+08:00"}
+{"level":"info","msg":"Container started: 3a9f9f3d6c314a087f7b3a10bc490da509fe674d5571c8cfce9b56ef8fcee6f3","time":"2020-07-29T18:52:36+08:00"}
+{"level":"error","msg":"open ./storage/nb2.json: no such file or directory","time":"2020-07-29T18:52:36+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T18:52:36+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T18:52:36+08:00"}
+{"level":"info","msg":"Container started: d411b80bacc93e2e1c4f9734f5e6e11d318ab047e26f81b7732dec2bca5128a3","time":"2020-07-29T18:52:36+08:00"}
+{"level":"error","msg":"open ./storage/nb1.json: no such file or directory","time":"2020-07-29T18:52:36+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T18:52:36+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T18:52:36+08:00"}
+{"level":"info","msg":"Flow done","name":"","status":"done","time":"2020-07-29T19:49:59+08:00"}
+{"level":"info","msg":"Flow done","name":"","status":"done","time":"2020-07-29T19:50:50+08:00"}
+{"level":"info","msg":"Flow running","name":"","schedule":"","status":"running","time":"2020-07-29T19:50:50+08:00"}
+{"level":"info","msg":"Free port allocated: 60440","time":"2020-07-29T19:51:09+08:00"}
+{"level":"info","msg":"Free port allocated: 60441","time":"2020-07-29T19:51:09+08:00"}
+{"level":"info","msg":"Container started: d1cf6d6973001cb8feb2f7510e98c130ce9dd8f26894464457fe11c132ea6a98","time":"2020-07-29T19:51:10+08:00"}
+{"level":"error","msg":"open ./storage/nb1.json: no such file or directory","time":"2020-07-29T19:51:10+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T19:51:10+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T19:51:10+08:00"}
+{"level":"info","msg":"Container started: f0d8b1e429ba9b1dad325dc99c26812e3127aa60b3d937274303b9e8132c0a6d","time":"2020-07-29T19:51:10+08:00"}
+{"level":"error","msg":"open ./storage/nb2.json: no such file or directory","time":"2020-07-29T19:51:10+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T19:51:10+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T19:51:10+08:00"}
+{"level":"info","msg":"Free port allocated: 61311","time":"2020-07-29T19:53:54+08:00"}
+{"level":"info","msg":"Free port allocated: 61312","time":"2020-07-29T19:53:54+08:00"}
+{"level":"info","msg":"Container started: d8aa8c91580083433eb94747bdf2a7adde135ee596fa20501af4031b24aed296","time":"2020-07-29T19:53:55+08:00"}
+{"level":"info","msg":"runNotebook: nb2","time":"2020-07-29T19:53:55+08:00"}
+{"level":"error","msg":"open ./storage/nb2.json: no such file or directory","time":"2020-07-29T19:53:55+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T19:53:55+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T19:53:55+08:00"}
+{"level":"info","msg":"Container started: ab848d6e2038f897f9f637dadee537f82f92dc426a05d9e50ba88a49a88935ad","time":"2020-07-29T19:53:55+08:00"}
+{"level":"info","msg":"runNotebook: nb1","time":"2020-07-29T19:53:55+08:00"}
+{"level":"error","msg":"open ./storage/nb1.json: no such file or directory","time":"2020-07-29T19:53:55+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T19:53:55+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T19:53:55+08:00"}
+{"level":"info","msg":"Free port allocated: 62774","time":"2020-07-29T19:58:38+08:00"}
+{"level":"info","msg":"Free port allocated: 62781","time":"2020-07-29T19:58:38+08:00"}
+{"level":"info","msg":"Container started: 27b36bb1437b2c7db17a0ccf146fee173afdbe496b8ba7520434811bef24d1ff","time":"2020-07-29T19:58:38+08:00"}
+{"level":"info","msg":"runNotebook: nb2","time":"2020-07-29T19:58:38+08:00"}
+{"level":"error","msg":"open ./storage/nb2.json: no such file or directory","time":"2020-07-29T19:58:38+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T19:58:38+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T19:58:38+08:00"}
+{"level":"info","msg":"Container started: 76afedc8e06c0f0ce5158ff1d7a0047644acecd7a290aaa5df33a6fbb099b4a6","time":"2020-07-29T19:58:38+08:00"}
+{"level":"info","msg":"runNotebook: nb1","time":"2020-07-29T19:58:38+08:00"}
+{"level":"error","msg":"open ./storage/nb1.json: no such file or directory","time":"2020-07-29T19:58:38+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T19:58:38+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T19:58:38+08:00"}
+{"level":"info","msg":"Free port allocated: 62794","time":"2020-07-29T19:58:39+08:00"}
+{"level":"info","msg":"Free port allocated: 62801","time":"2020-07-29T19:58:39+08:00"}
+{"level":"info","msg":"Container started: b4112b1c6fbf83405d0e29864508ad1fef8f9deca15cf3a80586a671a57d7dc8","time":"2020-07-29T19:58:40+08:00"}
+{"level":"info","msg":"runNotebook: nb1","time":"2020-07-29T19:58:40+08:00"}
+{"level":"error","msg":"open ./storage/nb1.json: no such file or directory","time":"2020-07-29T19:58:40+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T19:58:40+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T19:58:40+08:00"}
+{"level":"info","msg":"Flow done","name":"wf1","status":"done","time":"2020-07-29T19:58:40+08:00"}
+{"level":"info","msg":"Flow running","name":"wf1","schedule":"*/5 * * * *","status":"running","time":"2020-07-29T19:58:40+08:00"}
+{"level":"info","msg":"Container started: 92c5226df0a8220e41f6b845a934f94063fe60c0970982e317a37bbd0280fe5d","time":"2020-07-29T19:58:40+08:00"}
+{"level":"info","msg":"runNotebook: nb2","time":"2020-07-29T19:58:40+08:00"}
+{"level":"error","msg":"open ./storage/nb2.json: no such file or directory","time":"2020-07-29T19:58:40+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T19:58:40+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T19:58:40+08:00"}
+{"level":"info","msg":"Free port allocated: 65286","time":"2020-07-29T20:06:15+08:00"}
+{"level":"info","msg":"Container started: 03fb5ea83e65b03cbcb8c7e7118d0c806c071b59b70d1c5e6041d8a4c1c4260b","time":"2020-07-29T20:06:15+08:00"}
+{"level":"info","msg":"runNotebook: exampleNotebook","time":"2020-07-29T20:06:15+08:00"}
+{"level":"error","msg":"open ./storage/exampleNotebook.json: no such file or directory","time":"2020-07-29T20:06:15+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T20:06:15+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T20:06:15+08:00"}
+{"level":"info","msg":"Free port allocated: 49308","time":"2020-07-29T20:07:22+08:00"}
+{"level":"info","msg":"Container started: 4c5da2b870edd33cb4de41762a450a21975d0159eb13719b1add4cd90c51463f","time":"2020-07-29T20:07:22+08:00"}
+{"level":"info","msg":"runNotebook: exampleNotebook","time":"2020-07-29T20:07:22+08:00"}
+{"level":"error","msg":"open ./storage/exampleNotebook.json: no such file or directory","time":"2020-07-29T20:07:22+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T20:07:22+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T20:07:22+08:00"}
+{"level":"info","msg":"Free port allocated: 49321","time":"2020-07-29T20:07:23+08:00"}
+{"level":"info","msg":"Flow done","name":"wf1","status":"done","time":"2020-07-29T20:07:24+08:00"}
+{"level":"info","msg":"Flow running","name":"wf1","schedule":"*/5 * * * *","status":"running","time":"2020-07-29T20:07:24+08:00"}
+{"level":"info","msg":"Container started: 7e521631ac4583f9b51c1577d95b2354674b82224a2653de4b13fd511c0145bf","time":"2020-07-29T20:07:25+08:00"}
+{"level":"info","msg":"runNotebook: exampleNotebook","time":"2020-07-29T20:07:25+08:00"}
+{"level":"error","msg":"open ./storage/exampleNotebook.json: no such file or directory","time":"2020-07-29T20:07:25+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T20:07:25+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T20:07:25+08:00"}
+{"level":"info","msg":"Free port allocated: 51684","time":"2020-07-29T20:11:12+08:00"}
+{"level":"info","msg":"Container started: ca0cfcb96f0ec5d67e36f2ebb07a1875502e2ef08f7613341eeac6d2eed84e52","time":"2020-07-29T20:11:13+08:00"}
+{"level":"info","msg":"runNotebook: exampleNotebook","time":"2020-07-29T20:11:13+08:00"}
+{"level":"error","msg":"open ./storage/exampleNotebook.json: no such file or directory","time":"2020-07-29T20:11:13+08:00"}
+{"level":"error","msg":"invalid argument","time":"2020-07-29T20:11:13+08:00"}
+{"level":"error","msg":"unexpected end of JSON input","time":"2020-07-29T20:11:13+08:00"}
+{"level":"info","msg":"Container stopped: ca0cfcb96f0ec5d67e36f2ebb07a1875502e2ef08f7613341eeac6d2eed84e52","time":"2020-07-29T20:11:18+08:00"}
+{"level":"info","msg":"Flow done","name":"wf1","status":"done","time":"2020-07-29T20:11:18+08:00"}
+{"level":"info","msg":"Flow running","name":"wf1","schedule":"*/5 * * * *","status":"running","time":"2020-07-29T20:11:18+08:00"}
