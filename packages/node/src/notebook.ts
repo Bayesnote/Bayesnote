@@ -8,7 +8,6 @@ import {
     isClearOutput,
     isErrorOutput,
     isExecuteResultOutput,
-    isNotebookIdle,
     isNotebookRunning,
     isStatusOutput,
     isStreamOutput,
@@ -54,24 +53,11 @@ namespace File {
     }
 }
 
-export interface INotebookManager {
-    notebook: INotebook | undefined
-    loadNotebook(url: string): Promise<INotebook | void>
-    loadNotebookJSON(notebook: INotebook): Promise<void>
-    saveNotebook(notebook: INotebook): void
-    // prepareNotebook(parameters: string[], clean: boolean): Promise<void>
-    runNotebook(silent: boolean): Promise<boolean>
-    // runNotebookAsync(silent: boolean): Promise<string>
-    getAsyncNotebookResult(id: string): INotebook | undefined
-    queryStatus(): NotebookStatus
-    interrupt(): void
-}
-
 interface IStore {
     [key: string]: INotebook | undefined
 }
 
-export class NotebookManager implements INotebookManager {
+export class NotebookManager {
     notebook: INotebook | undefined
     parameters: string[] = []
     backendManager: BackendManager
@@ -87,6 +73,7 @@ export class NotebookManager implements INotebookManager {
         const msg: ICellOutput = res.msg
         const cell: ICodeCell = res.cell
         if (isExecuteResultOutput(msg)) {
+            log.info('handleRunCellSuccess')
             this.handleExecuteResult(msg as IExecuteResultOutput, cell)
         } else if (isStatusOutput(msg)) {
             // handleStatusOutput(msg as IStatusOutput, cell)
@@ -133,11 +120,9 @@ export class NotebookManager implements INotebookManager {
         return jsonData
     }
 
-    // parse notebook json file
+    //TODO: verify JSON
     async loadNotebookJSON(notebook: INotebook) {
-        log.info('Load notebook json')
-        // todo verify notebook json data
-        // this.verify(notebook)
+        log.info('Load notebook')
         this.notebook = notebook as INotebook
     }
 
@@ -145,68 +130,28 @@ export class NotebookManager implements INotebookManager {
         File.write(notebook)
     }
 
-    // run notebook in silent mode
-    async runNotebook(silent = true) {
-        log.info('Run notebook json')
-        if (!this.notebook) return false
-        if (!isNotebookRunning) return false
-        // start
-        const cells = this.notebook.cells
-        //TODO: UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'length' of null
-        const length = cells.length
-        let finish = false
-        const kernelInfo = this.getNotebookKernelInfo(cells)
-        log.info('Notebook cell length: ', length)
+    //TODO: fix return type
+    async runNotebook(): Promise<any> {
+        log.info('Run notebook')
+        if (!this.notebook) return { success: false }
+        if (!isNotebookRunning) return { success: false }
+
         // running
         this.notebookStatus = NotebookStatus.RUNNING
-        for (const [index, cell] of Object.entries(cells)) {
+        for (const [index, cell] of Object.entries(this.notebook)) {
             await this.backendManager.execute(cell, (output: ICellOutput) => {
-                if (silent) {
-                    // ignore
-                } else {
-                    this.handleRunCellSuccess({ msg: output, cell })
-                }
+                this.handleRunCellSuccess({ msg: output, cell })
             })
-            // }
-            log.info(`Executing cell: ${Number(index) + 1} / ${length}`)
-            // notebookCallback({ current: Number(index), length, finish })
-            // if interrupt
+
             if (this.interruptSignal) {
                 break
             }
         }
+
         // finished
-        finish = true
-        this.interruptSignal = false
         this.notebookStatus = NotebookStatus.IDLE
-        const _notebookJSON = cloneDeep(this.notebook)
-        _notebookJSON.cells = cells
-        // notebookCallback({ current: length - 1, length, finish, notebookJSON: _notebookJSON })
-        log.info(`Executing finished`)
-        log.info(`Notebook cells: `, JSON.stringify(cells, null, 1))
-        return true
-    }
 
-    // run notebook async
-    // async runNotebookAsync(silent: boolean) {
-    //     const id = uuid()
-    //     this.runNotebook((payload: any) => {
-    //         if (payload.finish) {
-    //             this.store[id] = payload.notebookJSON
-    //         }
-    //     }, silent)
-    //     return id
-    // }
-
-    // get async running notebook result
-    getAsyncNotebookResult(id: string) {
-        if (!this.store[id]) {
-            return undefined
-        }
-        if (!isNotebookIdle(this.queryStatus())) {
-            return undefined
-        }
-        return this.store[id]
+        return { success: true, output: cloneDeep(this.notebook) }
     }
 
     // query status

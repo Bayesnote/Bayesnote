@@ -1,57 +1,24 @@
 // import { createLogger } from 'bunyan'
 import { isNotebookIdle, NotebookStatus } from '@bayesnote/common/lib/types'
 import express, { Request, Response } from 'express'
-import { INotebookManager } from './notebook'
+import { NotebookManager } from './notebook'
 
 // const log = createLogger({ name: 'Notebook router' })
 const PREFIX = '/api/v1'
 
 // sync run job with or without outputs
 //TODO: This is duplicate with socket.io
-const runSync = (notebookManager: INotebookManager, silent = true, clean = true) => {
+const run = (notebookManager: NotebookManager, silent = true, clean = true) => {
     return async (req: Request, res: Response) => {
-        const { notebook, parameters } = req.body // todo verify notebook json
-        await notebookManager.loadNotebookJSON(notebook)
-        let _notebookJSON
-        // const finish = await notebookManager.runNotebook((payload) => {
-        //     if (payload.finish) {
-        //         _notebookJSON = payload.notebookJSON
-        //     }
-        // }, silent)
-        res.json({ data: _notebookJSON, msg: '' })
+        const { cells } = req.body
+        await notebookManager.loadNotebookJSON(cells)
+        const { success, output } = await notebookManager.runNotebook()
+        res.json({ notebook: output, success: success })
     }
 }
 
-// async run job with or without outputs
-// const runAsync = (notebookManager: INotebookManager, silent = true, clean = true) => {
-//     return async (req: Request, res: Response) => {
-//         const { notebook, parameters } = req.body // todo verify notebook json
-//         await notebookManager.loadNotebookJSON(notebook)
-//         if (parameters && parameters.length) {
-//             await notebookManager.prepareNotebook(parameters, clean)
-//         }
-//         const id = await notebookManager.runNotebookAsync(silent)
-//         res.json({ data: id, msg: '' })
-//     }
-// }
-
-// const getAsyncNotebookResult = (notebookManager: INotebookManager) => {
-//     return (req: Request, res: Response) => {
-//         const id = req.params.id
-//         if (!id) {
-//             res.json({ data: null, msg: 'Please pass id param' })
-//         }
-//         const result: INotebookJSON | undefined = notebookManager.getAsyncNotebookResult(id)
-//         if (result) {
-//             res.json({ data: result, msg: '' })
-//         } else {
-//             res.json({ data: null, msg: 'Did not get notebookJSON.' })
-//         }
-//     }
-// }
-
 // get job status
-const getStatus = (notebookManager: INotebookManager) => {
+const getStatus = (notebookManager: NotebookManager) => {
     return (req: Request, res: Response) => {
         const statusCode = notebookManager.queryStatus()
         const statusName = NotebookStatus[statusCode]
@@ -60,7 +27,7 @@ const getStatus = (notebookManager: INotebookManager) => {
 }
 
 // interrupt
-const interrupt = (notebookManager: INotebookManager) => {
+const interrupt = (notebookManager: NotebookManager) => {
     return (req: Request, res: Response) => {
         const status = notebookManager.queryStatus()
         if (isNotebookIdle(status)) {
@@ -73,12 +40,10 @@ const interrupt = (notebookManager: INotebookManager) => {
 }
 
 export const createRouter = () => {
-    return (notebookManager: INotebookManager) => {
+    return (notebookManager: NotebookManager) => {
         const router = express.Router()
         // * notebook job routers
-        router.post(`${PREFIX}/job`, runSync(notebookManager, false))
-        // router.post(`${PREFIX}/job-async`, runAsync(notebookManager, false))
-        // router.get(`${PREFIX}/job-async/:id`, getAsyncNotebookResult(notebookManager))
+        router.post(`${PREFIX}/job`, run(notebookManager, false))
         router.get(`${PREFIX}/job`, getStatus(notebookManager))
         router.delete(`${PREFIX}/job`, interrupt(notebookManager))
         return router
