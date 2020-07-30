@@ -13,7 +13,6 @@ interface Props {
 }
 
 export const Cell: React.FC<Props> = ({ cellVM }) => {
-    const notebookVM = useSelector((state: RootState) => state.notebookReducer.notebookVM)
     const kernels = useSelector((state: RootState) => state.notebookReducer.kernels)
     const [renderChart, setRenderChart] = useState(false)
 
@@ -47,8 +46,9 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
     }
 
     const renderLanguageSelection = () => {
+
         return <>
-            <select name="" id="" onChange={onChangeCellLanguage}>
+            <select name="" id="" onChange={onChangeCellLanguage} value={JSON.stringify({ kernelName: cellVM.kernelName, language: cellVM.language, backend: cellVM.backend })}>
                 {kernels.map((kernel, index: number) =>
                     <option key={index} value={JSON.stringify({ kernelName: kernel.name, language: kernel.language, backend: kernel.backend })}>{kernel.displayName}</option>)}
             </select>

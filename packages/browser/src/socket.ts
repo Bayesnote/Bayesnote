@@ -37,6 +37,8 @@ function handleSocketID(id: string) {
   console.log("handleSocketID -> id", id);
 }
 
+//TODO: dups?
+//TODO: handle text/plain
 function handleRunCellSuccess(res: IResponse) {
   let msg: ICellOutput = res.msg;
   let cell: ICodeCell = res.cell;
@@ -51,7 +53,7 @@ function handleRunCellSuccess(res: IResponse) {
   } else if (isClearOutput(msg)) {
     handleClearOutput(msg as IClearOutput, cell);
   } else {
-    console.warn(`Unknown message ${msg.type} : called by cell ${cell.id}`);
+    console.warn(`Socket -> Unknown message ${JSON.stringify(msg)}. Called by cell ${cell.id}`);
   }
 }
 

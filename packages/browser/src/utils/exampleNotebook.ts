@@ -1,5 +1,6 @@
 import { CellType, ICellState, ICodeCell } from '@bayesnote/common/lib/types.js'
 
+//TODO: This should move to JSON on disk
 export function exampleMultiLanguages(): { cells: ICodeCell[] } {
     return {
         cells: [
@@ -20,9 +21,9 @@ export function exampleMultiLanguages(): { cells: ICodeCell[] } {
             }, {
                 id: 'a53f768a-1858-4f03-86f6-09c10a1a0f5c',
                 type: CellType.CODE,
-                source: "# R \nvar.1 = c(0,1,2,3)\nvar.1",
+                source: "# R \nvar.1 = c(0,1,2,3)\nprint(var.1)",
                 language: 'r',
-                kernelName: 'r',
+                kernelName: 'ir',
                 backend: 'Jupyter',
                 metadata: {
                     scrollbar: false,
@@ -35,9 +36,9 @@ export function exampleMultiLanguages(): { cells: ICodeCell[] } {
             {
                 id: '9ef575ed-7882-4233-829a-fbbd58eee0e1',
                 type: CellType.CODE,
-                source: "# Spark(Scala) \nspark.version",
+                source: "\nspark.version",
                 language: 'scala',
-                kernelName: 'Apache Toree - Scala',
+                "kernelName": "apache_toree_scala",
                 backend: 'Jupyter',
                 metadata: {
                     scrollbar: false,
