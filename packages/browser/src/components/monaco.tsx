@@ -1,6 +1,6 @@
 import { ICodeCell } from '@bayesnote/common/lib/types.js';
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MonacoEditor from "react-monaco-editor";
 import { store } from '../store';
 
@@ -36,6 +36,10 @@ export const Editor: React.FC<Props> = ({ cellVM }) => {
         setCode(newValue)
         store.dispatch({ type: 'updateCellSource', payload: { cellVM: cellVM, source: newValue } })
     }
+
+    useEffect(() =>
+        setCode(cellVM.source)
+        , [cellVM])
 
     return (
         <MonacoEditor

@@ -1,16 +1,18 @@
 import { ICodeCell, INotebook } from '@bayesnote/common/lib/types.js'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from "react-router"
 import { store } from '../store'
-import { exampleChart, exampleMultiLanguages, exampleVariableSharing } from '../utils/exampleNotebook'
+import { exampleChart, exampleMultiLanguages } from '../utils/exampleNotebook'
 
 export const Examples: React.FC = () => {
     let history = useHistory()
+    const [example, setExample] = useState(0)
 
     const loadNotebook = (cells: ICodeCell[]) => {
         let notebook: INotebook = { cells: [] }
         cells.forEach(cell => notebook.cells.push(cell))
         store.dispatch({ type: 'loadNotebook', payload: notebook })
+        setExample(example + 1)
     }
 
     const loadDashboard = () => {
@@ -26,7 +28,7 @@ export const Examples: React.FC = () => {
         }} >
             <div >
                 < button onClick={() => loadNotebook(exampleMultiLanguages().cells)} > Example: Multiple Languages</button >
-                < button onClick={() => loadNotebook(exampleVariableSharing().cells)} > Example: Variable Sharing</button >
+                {/* < button onClick={() => loadNotebook(exampleVariableSharing().cells)} > Example: Variable Sharing</button > */}
                 < button onClick={() => loadNotebook(exampleChart().cells)} > Example: Chart</button >
                 < button onClick={() => loadDashboard()} > Example: Dashboard</button >
                 < button onClick={() => history.push("/workflow")} > Example: Notebook Flow</button >
