@@ -28,10 +28,10 @@ Make chart rights from notebook.
 ![](.github/chart.png)
 
 Build dashboards by drag & drop.
-![](.github/drag.png)
+![](.github/drag.gif)
 
 
-![](.github/dashboard.png)
+![](.github/dashboard.gif)
 
 Define workflow by a YAML file. In this example, the name of the workflow is "wf1", the schedule is "every 5 minute" in cron expression. The optional "Image" field refers to docker image used for running notebooks. The noteflow: Run notebook "nb1" and "nb2" first; If all are successful, run notebook "nb3".
 (The user interface for defining workflow is under development.)
