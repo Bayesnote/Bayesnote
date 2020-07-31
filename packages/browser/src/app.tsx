@@ -2,7 +2,7 @@ import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { Provider } from 'react-redux';
-import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Link, Redirect, Route, Switch } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import "./app.css";
 import { Board, DashboardNav } from './components/dashboard';
@@ -35,6 +35,9 @@ const App: React.FC = () => {
                 </div>
                 <div className="Panel-3" style={{ overflowY: "scroll" }}>
                   <Switch>
+                    <Route exact path="/">
+                      <Redirect to="/example" />
+                    </Route>
                     <Route path={["/notebook", "/example"]} component={Notebook} />
                     <Route path='/workflow' component={Flow} />
                     <Route path='/dashboard' component={Board} />
