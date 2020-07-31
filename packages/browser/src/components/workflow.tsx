@@ -71,6 +71,7 @@ const FlowTable: React.FC = () => {
     //TODO: logic to handle workflow
     //TODO: Group into operation
     const [data, setData] = useState([{ name: "", schedule: "", status: "", time: "" }] as any)
+    console.log("data", data)
 
     const {
         getTableProps,
@@ -87,7 +88,7 @@ const FlowTable: React.FC = () => {
         fetch(url).
             then(response => response.json()).
             then(data => setData(data))
-    }, [columns, data])
+    }, [])
 
     return (
         <table {...getTableProps()}>

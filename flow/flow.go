@@ -238,7 +238,7 @@ func (v *vertex) handleEvent(e event) {
 		v.Status = e.status
 		switch en := e.status; en {
 		case "succeeded":
-			//TODO: 
+			//TODO:
 			//v.stopContainer()
 		case "failed":
 			// TODO: need msgChan to retry or notify DAG?
@@ -332,8 +332,9 @@ func (l *flowLogs) read() {
 	//string -> JSON string
 	fs := string(f)
 	fs = "[" + strings.Replace(fs, "\n", ",", -1) + "]"
+	i := strings.LastIndex(fs, ",")
+	fs = fs[:i] + fs[i+1:]
 	json.Unmarshal([]byte(fs), l)
-	//fmt.Println(l)
 }
 
 //list the last status of all workflow without any dups
@@ -351,7 +352,9 @@ func (l *flowLogs) list() []byte {
 
 	wf := []flowLog{}
 	for _, v := range d {
-		wf = append(wf, v)
+		if len(v.Name) > 0 {
+			wf = append(wf, v)
+		}
 	}
 
 	jsonByte, err := json.Marshal(wf)

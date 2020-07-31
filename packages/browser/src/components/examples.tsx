@@ -1,5 +1,5 @@
 import { ICodeCell, INotebook } from '@bayesnote/common/lib/types.js'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from "react-router"
 import { store } from '../store'
 import { exampleChart, exampleMultiLanguages } from '../utils/exampleNotebook'
@@ -20,6 +20,7 @@ export const Examples: React.FC = () => {
         const layouts = dashboardExampleState.dashboardListReducer.layouts[0]
         store.dispatch({ type: "saveChart", payload: { val: spec } })
         store.dispatch({ type: "saveDashboard", payload: { dashboard: [0, 0], layouts: layouts, title: 'example' } })
+        history.push("/dashboard")
     }
 
     return (
