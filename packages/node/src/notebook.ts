@@ -1,37 +1,31 @@
 import {
-    CellType,
-    ICell,
     ICellOutput,
     ICodeCell,
     IExecuteResultOutput,
     IKernelInfo,
-    INotebookCallback,
-    INotebookJSON,
-    INotebookStatus,
+    INotebook,
     IResponse,
     isClearOutput,
     isErrorOutput,
     isExecuteResultOutput,
-    isNotebookIdle,
     isNotebookRunning,
     isStatusOutput,
     isStreamOutput,
     IStreamOutput,
     NotebookStatus,
 } from '@bayesnote/common/lib/types'
-import { createEmptyCodeCell } from '@bayesnote/common/lib/utils'
 import { createLogger } from 'bunyan'
-import jsonfile from 'jsonfile'
+import jsonfile, { Path } from 'jsonfile'
 import cloneDeep from 'lodash/cloneDeep'
 import uniqBy from 'lodash/uniqBy'
 import path from 'path'
-import { v4 as uuid } from 'uuid'
 import { BackendManager } from './backend'
 
 const log = createLogger({ name: 'NotebookManager' })
 
 namespace File {
-    export const read = (url: string): Promise<INotebookJSON> => {
+    //TODO: This is ugly
+    export const read = (url: string): Promise<INotebook> => {
         return new Promise((res, rej) => {
             const absUrl = path.resolve(__dirname, url)
             log.info('Read notebook: ', absUrl)
@@ -44,29 +38,30 @@ namespace File {
             })
         })
     }
-}
 
-export interface INotebookManager {
-    notebookJson: INotebookJSON | undefined
-    loadNotebook(url: string): Promise<INotebookJSON | void>
-    loadNotebookJSON(notebook: INotebookJSON): Promise<void>
-    prepareNotebook(parameters: string[], clean: boolean): Promise<void>
-    runNotebook(notebookCallback: INotebookCallback, silent: boolean): Promise<boolean>
-    runNotebookAsync(silent: boolean): Promise<string>
-    getAsyncNotebookResult(id: string): INotebookJSON | undefined
-    queryStatus(): INotebookStatus
-    interrupt(): void
+    export const write = (notebookVM: INotebook) => {
+        //TODO: handle name conflicts
+        let fileName = 'Undefined'
+        if (notebookVM.name) {
+            fileName = notebookVM.name
+        }
+        const writePath: Path = path.resolve(`../../storage/` + fileName + `.json`)
+        jsonfile.writeFile(writePath, notebookVM, function (err) {
+            if (err) console.error(err)
+            log.info('Notebook saved')
+        })
+    }
 }
 
 interface IStore {
-    [key: string]: INotebookJSON | undefined
+    [key: string]: INotebook | undefined
 }
 
-export class NotebookManager implements INotebookManager {
-    notebookJson: INotebookJSON | undefined
+export class NotebookManager {
+    notebook: INotebook | undefined
     parameters: string[] = []
     backendManager: BackendManager
-    notebookStatus: INotebookStatus = NotebookStatus.IDLE
+    notebookStatus: NotebookStatus = NotebookStatus.IDLE
     interruptSignal = false
     store: IStore = {}
 
@@ -76,8 +71,9 @@ export class NotebookManager implements INotebookManager {
 
     private handleRunCellSuccess(res: IResponse) {
         const msg: ICellOutput = res.msg
-        const cell: ICell = res.cell
+        const cell: ICodeCell = res.cell
         if (isExecuteResultOutput(msg)) {
+            log.info('handleRunCellSuccess')
             this.handleExecuteResult(msg as IExecuteResultOutput, cell)
         } else if (isStatusOutput(msg)) {
             // handleStatusOutput(msg as IStatusOutput, cell)
@@ -92,11 +88,11 @@ export class NotebookManager implements INotebookManager {
         }
     }
 
-    private handleExecuteResult(msg: IExecuteResultOutput, cell: ICell) {
+    private handleExecuteResult(msg: IExecuteResultOutput, cell: ICodeCell) {
         cell.outputs = [msg]
     }
 
-    private handleStreamOutput(msg: IStreamOutput, cell: ICell) {
+    private handleStreamOutput(msg: IStreamOutput, cell: ICodeCell) {
         cell.outputs.push(msg)
     }
 
@@ -110,76 +106,6 @@ export class NotebookManager implements INotebookManager {
         return info
     }
 
-    // notebook modifier
-    private hasParameters = (parameters: string[]) => {
-        return parameters && parameters.length
-    }
-
-    private findFirstInjectedParameterCellIndex = (notebook: INotebookJSON): number => {
-        return notebook.cells.findIndex((cell) => cell.type === CellType.INJECTED_PARAMETER)
-    }
-
-    private findFirstParameterCellIndex = (notebook: INotebookJSON): number => {
-        return notebook.cells.findIndex((cell) => cell.type === CellType.PARAMETER)
-    }
-
-    private hasParameterCell = (index: number) => {
-        const flag = index !== -1
-        log.info(`Has ${flag ? '' : 'no '}parameter cell`)
-        return flag
-    }
-
-    private hasInjectedParameterCell = (index: number) => {
-        const flag = index !== -1
-        log.info(`Has ${flag ? '' : 'no '}injected parameter cell`)
-        return flag
-    }
-
-    private prepareParameterCell = (parameters: string[]) => {
-        log.info('Preparing parameter cell')
-        const cell = createEmptyCodeCell()
-        cell.type = CellType.INJECTED_PARAMETER
-        cell.source = parameters.join('\n')
-        cell.language = 'javascript'
-        cell.backend = 'Jupyter'
-        return cell
-    }
-
-    private injectParameterCell = (json: INotebookJSON, cell: ICodeCell, index: number) => {
-        log.info('Injecting parameter cell')
-        if (index > -1) {
-            json.cells.splice(index + 1, 0, cell)
-        } else {
-            json.cells.unshift(cell)
-        }
-    }
-
-    private replaceInjectedParameterCell = (json: INotebookJSON, cell: ICodeCell, index: number) => {
-        json.cells.splice(index, 1, cell)
-    }
-
-    private handleParameters = (
-        firstParameterCellIndex: number,
-        firstInjectedParameterCellIndex: number,
-        notebook: INotebookJSON,
-        parameters: string[],
-    ) => {
-        log.warn('handle parameters', firstParameterCellIndex, firstInjectedParameterCellIndex, notebook, parameters)
-        const cell = this.prepareParameterCell(parameters)
-        this.hasParameterCell(firstParameterCellIndex)
-        if (this.hasInjectedParameterCell(firstInjectedParameterCellIndex)) {
-            // Replace it when notebook has injectedParameterCell
-            this.replaceInjectedParameterCell(notebook, cell, firstInjectedParameterCellIndex)
-        } else {
-            // Inject it when notebook has no injectedParameterCell
-            this.injectParameterCell(notebook, cell, firstParameterCellIndex)
-        }
-    }
-
-    private cleanAllInjectedParameterCell = (notebook: INotebookJSON) => {
-        notebook.cells = notebook.cells.filter((cell) => cell.type !== CellType.INJECTED_PARAMETER)
-    }
-
     // read notebook json file
     async loadNotebook(url: string) {
         log.info('Load notebook')
@@ -189,108 +115,43 @@ export class NotebookManager implements INotebookManager {
         // todo verify notebook json data
         // this.verify(jsonData)
         if (jsonData) {
-            this.notebookJson = jsonData as INotebookJSON
+            this.notebook = jsonData as INotebook
         }
         return jsonData
     }
 
-    // parse notebook json file
-    async loadNotebookJSON(notebook: INotebookJSON) {
-        log.info('Load notebook json')
-        // todo verify notebook json data
-        // this.verify(notebook)
-        this.notebookJson = notebook as INotebookJSON
+    //TODO: verify JSON
+    async loadNotebookJSON(notebook: INotebook) {
+        log.info('Load notebook')
+        this.notebook = notebook as INotebook
     }
 
-    // prepare notebook
-    async prepareNotebook(parameters: string[], clean = true) {
-        log.info('prepare notebook json')
-        if (!this.notebookJson) return
-        if (clean) {
-            this.cleanAllInjectedParameterCell(this.notebookJson)
-        }
-        if (this.hasParameters(parameters)) {
-            const firstInjectedParameterCellIndex = this.findFirstInjectedParameterCellIndex(this.notebookJson)
-            const firstParameterCellIndex = this.findFirstParameterCellIndex(this.notebookJson)
-            this.handleParameters(
-                firstParameterCellIndex,
-                firstInjectedParameterCellIndex,
-                this.notebookJson,
-                parameters,
-            )
-        }
-        log.warn(this.notebookJson)
+    saveNotebook(notebook: INotebook) {
+        File.write(notebook)
     }
 
-    // run notebook in silent mode
-    async runNotebook(notebookCallback: INotebookCallback, silent = true) {
-        log.info('Run notebook json')
-        if (!this.notebookJson) return false
-        if (!isNotebookRunning) return false
-        // start
-        const cells = this.notebookJson.cells
-        const length = cells.length
-        let finish = false
-        const kernelInfo = this.getNotebookKernelInfo(cells)
-        log.info('Notebook cell length: ', length)
+    //TODO: fix return type
+    async runNotebook(): Promise<any> {
+        log.info('Run notebook')
+        if (!this.notebook) return { success: false }
+        if (!isNotebookRunning) return { success: false }
+
         // running
         this.notebookStatus = NotebookStatus.RUNNING
-        for (const [index, cell] of Object.entries(cells)) {
-            // if (isParameterCell(cell)) {
-            //     // parameter cell
-            //     await this.backendManager.executeParameter(cell, kernelInfo)
-            // } else if (isInjectedParameterCell(cell)) {
-            //     // injected parameter cell
-            //     await this.backendManager.executeParameter(cell, kernelInfo)
-            // } else {
-            // code cell
+        for (const [index, cell] of Object.entries(this.notebook)) {
             await this.backendManager.execute(cell, (output: ICellOutput) => {
-                if (silent) {
-                    // ignore
-                } else {
-                    this.handleRunCellSuccess({ msg: output, cell })
-                }
+                this.handleRunCellSuccess({ msg: output, cell })
             })
-            // }
-            log.info(`Executing cell: ${Number(index) + 1} / ${length}`)
-            notebookCallback({ current: Number(index), length, finish })
-            // if interrupt
+
             if (this.interruptSignal) {
                 break
             }
         }
+
         // finished
-        finish = true
-        this.interruptSignal = false
         this.notebookStatus = NotebookStatus.IDLE
-        const _notebookJSON = cloneDeep(this.notebookJson)
-        _notebookJSON.cells = cells
-        notebookCallback({ current: length - 1, length, finish, notebookJSON: _notebookJSON })
-        log.info(`Executing finished`)
-        log.info(`Notebook cells: `, JSON.stringify(cells, null, 1))
-        return true
-    }
 
-    // run notebook async
-    async runNotebookAsync(silent: boolean) {
-        const id = uuid()
-        this.runNotebook((payload) => {
-            if (payload.finish) {
-                this.store[id] = payload.notebookJSON
-            }
-        }, silent)
-        return id
-    }
-
-    // get async running notebook result
-    getAsyncNotebookResult(id: string) {
-        if (!this.store[id]) {
-            return undefined
-        }
-        if (!isNotebookIdle(this.queryStatus())) {
-            return undefined
-        }
-        return this.store[id]
+        return { success: true, output: cloneDeep(this.notebook) }
     }
 
     // query status

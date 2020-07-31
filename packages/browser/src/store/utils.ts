@@ -1,32 +1,29 @@
-import { ICell, INotebookViewModel, IKernelInfo, ICodeCell, ICellViewModel } from '@bayesnote/common/lib/types'
-import { store } from './index'
+import { ICodeCell, IKernelInfo, INotebook } from '@bayesnote/common/lib/types'
+import { createEmptyCodeCell } from '@bayesnote/common/lib/utils'
 import cloneDeep from 'lodash/cloneDeep'
 import uniqBy from 'lodash/uniqBy'
-import { createEmptyCodeCell } from '@bayesnote/common/lib/utils'
+import { store } from './index'
 
 /* -------------------------------------------------------------------------- */
 /*                                   cellVM                                   */
 /* -------------------------------------------------------------------------- */
-export const getCurrentCellVM = (cell: ICell) => {
+export const getCurrentCellVM = (cell: ICodeCell) => {
     let state = store.getState()
-    let currentCells = state.notebookVM.notebook.cells
-    let index = currentCells.findIndex(item => item.cell.id === cell.id)
+    let currentCells = state.notebookReducer.notebookVM.cells
+    let index = currentCells.findIndex(item => item.id === cell.id)
     return currentCells[index]
 }
 
-export const cloneCurrentCellVM = (cell: ICell) => {
+export const cloneCurrentCellVM = (cell: ICodeCell) => {
     return cloneDeep(getCurrentCellVM(cell))
 }
 
-export const createCellVM = (emptyCell: ICodeCell): ICellViewModel => {
-    let emptyCellVM = {
-        cell: emptyCell,
-        exportd: ''
-    }
-    return emptyCellVM
+//TODO: redundant
+export const createCellVM = (emptyCell: ICodeCell): ICodeCell => {
+    return emptyCell
 }
 
-export const createEmptyCodeCellVM = (id?: string): ICellViewModel => {
+export const createEmptyCodeCellVM = (id?: string): ICodeCell => {
     let emptyCell = createEmptyCodeCell(id)
     let emptyCellVM = createCellVM(emptyCell)
     return emptyCellVM
@@ -35,16 +32,16 @@ export const createEmptyCodeCellVM = (id?: string): ICellViewModel => {
 /* -------------------------------------------------------------------------- */
 /*                                 notebookVM                                 */
 /* -------------------------------------------------------------------------- */
-export const cloneNotebookVM = (notebookVM: INotebookViewModel) => {
+export const cloneNotebookVM = (notebookVM: INotebook) => {
     return cloneDeep(notebookVM)
 }
 
-export const getNotebookKernelInfo = (notebookVM: INotebookViewModel): IKernelInfo => {
-    let cells = notebookVM.notebook.cells
+export const getNotebookKernelInfo = (notebookVM: INotebook): IKernelInfo => {
+    let cells = notebookVM.cells
     let info = cells.map(cell => ({
-        language: cell.cell.language,
-        kernelName: cell.cell.kernelName,
-        backend: cell.cell.backend
+        language: cell.language,
+        kernelName: cell.kernelName,
+        backend: cell.backend
     })) // language in jupyter means kernel name
     info = uniqBy(info, 'language')
     return info

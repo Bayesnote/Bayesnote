@@ -1,19 +1,19 @@
-import { ICellViewModel, INotebookViewModel } from '@bayesnote/common/lib/types.js'
-import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
-import client from '../socket'
-import Cell from './cell'
-import MainToolbar from './main-toolbar'
+import { ICodeCell } from '@bayesnote/common/lib/types.js';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import client from '../socket';
+import { RootState, store } from '../store/index';
+import { Cell } from './cell';
 
-interface IState {
-    notebookVM: INotebookViewModel
-}
+export const Notebook: React.FC = () => {
+    const notebookVM = useSelector((state: RootState) => state.notebookReducer.notebookVM)
 
-const Notebook: React.FC<IState> = ({ notebookVM }) => {
-    const getContent = () => {
-        return notebookVM.notebook.cells.map(
-            (cellVM: ICellViewModel) => {
-                return <Cell key={cellVM.cell.id} cellVM={cellVM} />
+    //TODO: rename
+    const loadCells = () => {
+        return notebookVM.cells.map(
+            (cellVM: ICodeCell) => {
+                console.log("cellVM: ", cellVM.source)
+                return <Cell key={cellVM.id} cellVM={cellVM} />
             })
     }
 
@@ -34,12 +34,36 @@ const Notebook: React.FC<IState> = ({ notebookVM }) => {
 
     return (
         <>
-            <MainToolbar />
-            {getContent()}
+            <div style={{ width: "80%" }}>
+                <div style={{ float: "right" }}>
+                    < NotebookToolbar />
+                </div>
+                {loadCells()}
+            </div>
         </>
     )
 }
 
-const mapStateToProps = (state: IState) => ({ notebookVM: state.notebookVM })
+const NotebookToolbar: React.FC = () => {
+    const notebookVM = useSelector((state: RootState) => state.notebookReducer.notebookVM)
+    const [name, setName] = useState("");
 
-export default connect(mapStateToProps)(Notebook)
+    //TODO:
+    const handleNew = () => {
+
+    }
+
+    const handleSave = () => {
+        store.dispatch({
+            type: "updateNotebookName",
+            payload: { name },
+        });
+        client.emit("notebook.save", notebookVM)
+    }
+
+    return <div>
+        <input type="text" onChange={e => setName(e.target.value)} />
+        <button onClick={handleNew}>New</button>
+        <button onClick={handleSave}>Save</button>
+    </div>
+}

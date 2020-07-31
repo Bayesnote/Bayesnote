@@ -1,18 +1,19 @@
-import { CellType, ICellViewModel, IexportdVarMap, IexportdVarMapValue, IExportVarPayload } from '@bayesnote/common/lib/types'
+import { CellType, ICodeCell, IexportdVarMap, IexportdVarMapValue, IExportVarPayload } from '@bayesnote/common/lib/types'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import client from '../socket'
 import { IState } from '../store/reducer'
 
+//TODO:
 interface Props {
-    cellVM: ICellViewModel
+    cellVM: ICodeCell
     exportdVarMap: IexportdVarMap
 }
 
-const createexportVarPayload = (exportVar: string, cellVM: ICellViewModel): IExportVarPayload => {
+const createexportVarPayload = (exportVar: string, cellVM: ICodeCell): IExportVarPayload => {
     return {
         exportVar: exportVar,
-        exportCell: cellVM.cell
+        exportCell: cellVM
     }
 }
 
@@ -23,7 +24,7 @@ const RenderImportexportdVar: React.FC<Props> = ({ cellVM, exportdVarMap }) => {
 
     const onexportSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.keyCode === 13) {
-            if (cellVM.cell.type !== CellType.CODE) return
+            if (cellVM.type !== CellType.CODE) return
             let exportVarPayload: IExportVarPayload = createexportVarPayload(exportVar, cellVM)
             client.emit('export.variable', exportVarPayload)
         }
@@ -37,12 +38,12 @@ const RenderImportexportdVar: React.FC<Props> = ({ cellVM, exportdVarMap }) => {
     const onImportSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
         let exportdVarMapValue = (JSON.parse(selectedImportVar) as IexportdVarMapValue)
         if (e.keyCode === 13) {
-            if (cellVM.cell.type !== CellType.CODE) return
+            if (cellVM.type !== CellType.CODE) return
             if (!selectedImportVar) return
-            if (exportdVarMapValue.id === cellVM.cell.id) return
+            if (exportdVarMapValue.id === cellVM.id) return
             if (!exportdVarMapValue.id || !exportdVarMapValue.payload.exportVar) return
             exportdVarMapValue.payload.importVarRename = variableRename
-            exportdVarMapValue.payload.importCell = cellVM.cell
+            exportdVarMapValue.payload.importCell = cellVM
             console.log("onImportSubmit -> exportdVarMapValue", exportdVarMapValue)
             client.emit('export.variable.import', exportdVarMapValue)
         }
@@ -64,7 +65,7 @@ const RenderImportexportdVar: React.FC<Props> = ({ cellVM, exportdVarMap }) => {
         return flag
     }
 
-    const renderexport = () => {
+    const renderExport = () => {
         return (<>
             {/* export */}
             {/* <span> export var: </span> */}
@@ -77,22 +78,26 @@ const RenderImportexportdVar: React.FC<Props> = ({ cellVM, exportdVarMap }) => {
     const renderImport = () => {
         let disabled = shouldDisableImport()
         return (<>
-            {/* import */}
-            {/* <span>import var: </span> */}
             <select disabled={disabled} value={selectedImportVar} onChange={(e) => { setSelectedImportVar(e.target.value) }}>
                 <option key="-1" label="Import variable" value={JSON.stringify({ id: '', payload: {} })}></option>
                 {getexportdVarMapValueList().map((item, index) => (
-                    <option key={index} label={`${item.payload.exportVar}-${item.id}`} value={JSON.stringify(item)}></option>
+                    <option key={index} label={`${item.payload.exportVar}`} value={JSON.stringify(item)}></option>
                 ))}
             </select>
-            {/* <span> as </span>
-                <input disabled={disabled} type="text" value={variableRename} onChange={(e) => { setVariableRename(e.target.value) }} placeholder="Rename variable" onKeyDown={(e) => { onImportSubmit(e) }} /> */}
+            <span> as </span>
+            <input disabled={disabled}
+                type="text"
+                value={variableRename}
+                onChange={(e) => { setVariableRename(e.target.value) }}
+                placeholder="Rename variable"
+                onKeyDown={(e) => { onImportSubmit(e) }} />
+
         </>)
     }
 
     return ((<>
         <div className="IO-variable" style={{ textAlign: 'right' }} >
-            {renderexport()}
+            {renderExport()}
             {renderImport()}
         </div>
     </>))

@@ -1,46 +1,10 @@
-/* -------------------------------------------------------------------------- */
-/*                                  react vm                                  */
-/* -------------------------------------------------------------------------- */
-// notebook vm in react
-export interface INotebookViewModel {
-    notebook: INotebook
-}
-
-// cell vm in react
-export interface ICellViewModel {
-    cell: ICell;
-    exportd: string
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                  notebook                                  */
-/* -------------------------------------------------------------------------- */
-// notebook
+//TODO: Refactor. The abstraction is way too complicated.
 export interface INotebook {
-    cells: ICellViewModel[]
+    name?: string,
+    cells: ICodeCell[]
 }
 
-// notebook json data
-export interface INotebookJSON {
-    cells: ICell[]
-}
-
-// run notebook callback
-export interface INotebookCallback {
-    (payload: INotebookCallbackPayload): void
-}
-
-// run notebook callback payload
-export interface INotebookCallbackPayload {
-    current: number;
-    length: number;
-    finish: boolean;
-    notebookJSON?: INotebookJSON
-}
-
-// notebook status
-export type INotebookStatus = NotebookStatus
-
+//TODO: Incomplete
 export enum NotebookStatus {
     'RUNNING' = 1,
     'IDLE'
@@ -69,14 +33,11 @@ export interface ICellBase {
     id: string;
     type: CellType;
     source: string;
-    metadata: ICellMetadata;
+    metadata: ICellMetadata; //TODO: Remove
     outputs: ICellOutput[];
     state: ICellState;
 }
 
-export type ICell = ICodeCell
-
-// cell state
 export enum ICellState {
     "Running" = 1,
     "Finished",
@@ -89,12 +50,11 @@ export interface ICellMetadata {
     source_hidden: boolean;
     output_hidden: boolean;
 }
+
 // celltype
 export enum CellType {
     CODE = 'code',
     MARKDOWN = 'markdown',
-    PARAMETER = 'parameter',
-    INJECTED_PARAMETER = 'injected_parameter'
 };
 
 // code cell
@@ -167,18 +127,10 @@ export function isClearOutput(msg: ICellOutput) {
     return msg.type === 'clear'
 }
 
-export function isParameterCell(cell: ICodeCell) {
-    return cell.type === CellType.PARAMETER
-}
-
-export function isInjectedParameterCell(cell: ICodeCell) {
-    return cell.type === CellType.INJECTED_PARAMETER
-}
-
 // socket response
 export interface IResponse {
     msg: ICellOutput
-    cell: ICell
+    cell: ICodeCell
 }
 
 /* -------------------------------------------------------------------------- */
@@ -200,6 +152,7 @@ export type IKernelInfo = {
 /* -------------------------------------------------------------------------- */
 /*                                  exportVar                                 */
 /* -------------------------------------------------------------------------- */
+//TODO: refactor
 export interface IExportVarPayload {
     exportVar: string;
     exportCell: ICodeCell;

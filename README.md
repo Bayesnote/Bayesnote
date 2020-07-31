@@ -77,7 +77,7 @@ Dashboard: Drag & Drop
 Installation:
 ```sh
 cd Bayesnote/
-yarn && lerna bootstrap
+yarn && lerna bootstrap && lerna add @bayesnote/common
 ```
 
 Set up development environment:
@@ -88,7 +88,7 @@ cd packages/common && yarn run watch
 
 ```sh
 # start node.js server for the unified notebook layer
-cd packages/node && yarn run watch && yarn run dev
+cd packages/node && yarn run dev
 ```
 
 ```sh
@@ -97,7 +97,7 @@ cd packages/browser && yarn start
 ```
 
 ```sh
-# start Bayesnote flow backend service written in go.
+# start Bayesnote flow backend service in golang.
 cd flow && go run .
 ```
 

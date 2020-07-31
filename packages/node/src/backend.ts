@@ -13,6 +13,7 @@ import { IJsonDataMap, Translator } from './translator'
 
 const log = createLogger({ name: 'BackendManager' })
 
+//TODO: REFACTOR backend.ts/notebook.ts/socket.ts, especially handleResult()
 type ITranslatedMap = {
     [key: string]: {
         code: string

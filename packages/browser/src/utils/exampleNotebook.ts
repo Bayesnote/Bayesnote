@@ -1,12 +1,13 @@
-import { ICellState, CellType, ICell } from '@bayesnote/common/lib/types.js'
+import { CellType, ICellState, ICodeCell } from '@bayesnote/common/lib/types.js'
 
-export function exampleCells(): { cells: ICell[] } {
+//TODO: This should move to JSON on disk
+export function exampleMultiLanguages(): { cells: ICodeCell[] } {
     return {
         cells: [
             {
                 id: '4e698ede-c098-4d84-bbce-516d448c4f97',
                 type: CellType.CODE,
-                source: '#result example\n\n1 + 1',
+                source: '# Bayesnote Supports multiple languages: Python, SQL, R, Spark etc.\n# Python. \nfruits = [\'Banana\', \'Apple\', \'Lime\']\nfruits',
                 language: 'python',
                 kernelName: 'python3',
                 backend: 'Jupyter',
@@ -20,9 +21,9 @@ export function exampleCells(): { cells: ICell[] } {
             }, {
                 id: 'a53f768a-1858-4f03-86f6-09c10a1a0f5c',
                 type: CellType.CODE,
-                source: "// javascript get token example\n\nfs = require('fs')\n\ndata = fs.readFileSync(path.resolve(__dirname, './config.json'))\n\nconsole.log(JSON.parse(data.toString()).token)",
-                language: 'javascript',
-                kernelName: 'javascript',
+                source: "# R \nvar.1 = c(0,1,2,3)\nprint(var.1)",
+                language: 'r',
+                kernelName: 'ir',
                 backend: 'Jupyter',
                 metadata: {
                     scrollbar: false,
@@ -35,9 +36,9 @@ export function exampleCells(): { cells: ICell[] } {
             {
                 id: '9ef575ed-7882-4233-829a-fbbd58eee0e1',
                 type: CellType.CODE,
-                source: "import pandas as pd\npd.options.display.html.table_schema = True # Data Explorer On!\npd.options.display.max_rows = 4\ndf = pd.read_csv('https://gist.githubusercontent.com/rgbkrk/a7984a8788a73e2afb8fd4b89c8ec6de/raw/db8d1db9f878ed448c3cac3eb3c9c0dc5e80891e/2015.csv')\ndf",
-                language: 'python',
-                kernelName: 'python3',
+                source: "\nspark.version",
+                language: 'scala',
+                "kernelName": "apache_toree_scala",
                 backend: 'Jupyter',
                 metadata: {
                     scrollbar: false,
@@ -46,176 +47,161 @@ export function exampleCells(): { cells: ICell[] } {
                 },
                 outputs: [],
                 state: ICellState.Finished,
-            },
-            {
-                id: '386bce8a-47e0-4f25-8bd4-04cc0a129ccb',
-                type: CellType.CODE,
-                source: "# JSON example\n\nfrom IPython.display import JSON\n\nJSON({'a': [1, 2, 3, 4,], 'b': {'inner1': 'helloworld', 'inner2': 'foobar'}})",
-                language: 'python',
-                kernelName: 'python3',
-                backend: 'Jupyter',
-                metadata: {
-                    scrollbar: false,
-                    source_hidden: false,
-                    output_hidden: false
-                },
-                outputs: [],
-                state: ICellState.Finished,
-            },
-            {
-                id: 'e068c6bb-605c-4933-be67-b0c562eb87e2',
-                type: CellType.CODE,
-                source: "#stream example\n\nimport time\n\nprint('start')\ntime.sleep(1)\nprint('processing')\ntime.sleep(1)\nprint('processing')\ntime.sleep(1)\nprint('processing')\ntime.sleep(1)\nprint('finish')",
-                language: 'python',
-                kernelName: 'python3',
-                backend: 'Jupyter',
-                metadata: {
-                    scrollbar: false,
-                    source_hidden: false,
-                    output_hidden: false
-                },
-                outputs: [],
-                state: ICellState.Finished,
-            },
-            {
-                id: '0daedc21-1578-4381-87f1-ade64e869983',
-                type: CellType.CODE,
-                source: "# error example \n\n This will throw an error",
-                language: 'python',
-                kernelName: 'python3',
-                backend: 'Jupyter',
-                metadata: {
-                    scrollbar: false,
-                    source_hidden: false,
-                    output_hidden: false
-                },
-                outputs: [],
-                state: ICellState.Finished,
-            },
-            {
-                id: 'a4b70e5a-b8a2-454f-b7fc-ef5953873798',
-                type: CellType.CODE,
-                source: "# display example\n\nfrom IPython.display import display, Image, SVG, Math, YouTubeVideo\n\nImage(url='https://www.python.org/static/favicon.ico')",
-                language: 'python',
-                kernelName: 'python3',
-                backend: 'Jupyter',
-                metadata: {
-                    scrollbar: false,
-                    source_hidden: false,
-                    output_hidden: false
-                },
-                outputs: [],
-                state: ICellState.Finished,
-            },
-            {
-                id: 'f4018a1b-c3ab-4e24-aac7-9f381ff32cb5',
-                type: CellType.CODE,
-                source: "# zeppelin markdown example\n\nIt will show html generated by zeppelin",
-                language: 'md',
-                kernelName: 'md',
-                backend: 'Zeppelin',
-                metadata: {
-                    scrollbar: false,
-                    source_hidden: false,
-                    output_hidden: false
-                },
-                outputs: [],
-                state: ICellState.Finished,
-            },
-            {
-                id: 'de449b13-0074-4c93-a455-687a222dc454',
-                type: CellType.CODE,
-                source: '// spark example\n\nval textFile = spark.read.textFile("README.md")\nvar c = textFile.count()\nvar first = textFile.first()',
-                language: 'spark',
-                kernelName: 'spark',
-                backend: 'Zeppelin',
-                metadata: {
-                    scrollbar: false,
-                    source_hidden: false,
-                    output_hidden: false
-                },
-                outputs: [],
-                state: ICellState.Finished,
-            },
-            {
-                id: 'acb1335d-b2a5-4d77-81cf-4f4a9c9cad99',
-                type: CellType.CODE,
-                source: "# data transfer example\n\nimport pandas as pd\n\ndf = pd.read_csv('https://gist.githubusercontent.com/rgbkrk/a7984a8788a73e2afb8fd4b89c8ec6de/raw/db8d1db9f878ed448c3cac3eb3c9c0dc5e80891e/2015.csv')\ndataToexport = df.to_dict()\nprint('lenth: ', len(dataToexport['Country']), 'firstCountry: ', dataToexport['Country'][0])\nprint('finish')",
-                language: 'python',
-                kernelName: 'python3',
-                backend: 'Jupyter',
-                metadata: {
-                    scrollbar: false,
-                    source_hidden: false,
-                    output_hidden: false
-                },
-                outputs: [],
-                state: ICellState.Finished,
-            },
-            {
-                id: 'eb8ee355-6fcf-47fb-bbaf-b518f87f52b5',
-                type: CellType.CODE,
-                source: "// data transfer example\n\nconsole.log(temp_var)",
-                language: 'javascript',
-                kernelName: 'javascript',
-                backend: 'Jupyter',
-                metadata: {
-                    scrollbar: false,
-                    source_hidden: false,
-                    output_hidden: false
-                },
-                outputs: [],
-                state: ICellState.Finished,
-            },
-            {
-                id: 'd55c0afd-dfb8-4e49-8139-0336c85484d0',
-                type: CellType.MARKDOWN,
-                source: "#### md math example\n\n$\\sigma_U \\sim \\mathrm{Normal}(0, \\Theta_U^2)$",
-                language: 'python',
-                kernelName: 'python3',
-                backend: 'Jupyter',
-                metadata: {
-                    scrollbar: false,
-                    source_hidden: false,
-                    output_hidden: false
-                },
-                outputs: [],
-                state: ICellState.Finished
             },
         ]
     }
 }
 
-export function parameterExampleCells(): { cells: ICell[] } {
+export function exampleVariableSharing(): { cells: ICodeCell[] } {
     return {
-        cells: [{
-            id: '646ace57-6412-49d1-95aa-a44846fa401a',
-            type: CellType.PARAMETER,
-            source: "myList = ['oliver', 'alice', 'troy']\ndelay = 1",
-            language: 'javascript',
-            kernelName: 'javascript',
-            backend: 'Jupyter',
-            metadata: {
-                scrollbar: false,
-                source_hidden: false,
-                output_hidden: false
+        cells: [
+            {
+                id: '4e698ede-c098-4d84-bbce-516d448c4f97',
+                type: CellType.CODE,
+                source: '#Variables can be shared between different languages, including Python, SQL, R, Spark etc.\n#Python. \nfruits = [\'Banana\', \'Apple\', \'Lime\']',
+                language: 'python',
+                kernelName: 'python3',
+                backend: 'Jupyter',
+                metadata: {
+                    scrollbar: false,
+                    source_hidden: false,
+                    output_hidden: false
+                },
+                outputs: [],
+                state: ICellState.Finished,
+            }, {
+                id: 'a53f768a-1858-4f03-86f6-09c10a1a0f5c',
+                type: CellType.CODE,
+                source: "#R \nprint(temp_var)",
+                language: 'R',
+                kernelName: 'ir',
+                backend: 'Jupyter',
+                metadata: {
+                    scrollbar: false,
+                    source_hidden: false,
+                    output_hidden: false
+                },
+                outputs: [],
+                state: ICellState.Finished,
             },
-            outputs: [],
-            state: ICellState.Finished,
-        }, {
-            id: '3df31bb7-49d2-4632-8d8b-246204313b7e',
-            type: CellType.CODE,
-            source: "from time import sleep\n\nfor name in myList:\n  sleep(float(delay))\n  print(name)\n",
-            language: 'python',
-            kernelName: 'python3',
-            backend: 'Jupyter',
-            metadata: {
-                scrollbar: false,
-                source_hidden: false,
-                output_hidden: false
+            {
+                id: '9ef575ed-7882-4233-829a-fbbd58eee0e1',
+                type: CellType.CODE,
+                source: "#R \nname = \"Bayes\"\n ",
+                language: 'R',
+                kernelName: 'ir',
+                backend: 'Jupyter',
+                metadata: {
+                    scrollbar: false,
+                    source_hidden: false,
+                    output_hidden: false
+                },
+                outputs: [],
+                state: ICellState.Finished,
             },
-            outputs: [],
-            state: ICellState.Finished,
-        }]
+            {
+                id: '646ace57-6412-49d1-95aa-a44846fa401a',
+                type: CellType.CODE,
+                source: "#Python\nprint(name)",
+                language: 'python',
+                kernelName: 'python3',
+                backend: 'Jupyter',
+                metadata: {
+                    scrollbar: false,
+                    source_hidden: false,
+                    output_hidden: false
+                },
+                outputs: [],
+                state: ICellState.Finished,
+            }
+        ]
+    }
+}
+
+export function exampleWorkflow(): { cells: ICodeCell[] } {
+    return {
+        cells: [
+            {
+                id: '4e698ede-c098-4d84-bbce-516d448c4f97',
+                type: CellType.CODE,
+                source: '',
+                language: 'python',
+                kernelName: 'python3',
+                backend: 'Jupyter',
+                metadata: {
+                    scrollbar: false,
+                    source_hidden: false,
+                    output_hidden: false
+                },
+                outputs: [],
+                state: ICellState.Finished,
+            }, {
+                id: 'a53f768a-1858-4f03-86f6-09c10a1a0f5c',
+                type: CellType.CODE,
+                source: "#R \nprint(temp_var)",
+                language: 'R',
+                kernelName: 'ir',
+                backend: 'Jupyter',
+                metadata: {
+                    scrollbar: false,
+                    source_hidden: false,
+                    output_hidden: false
+                },
+                outputs: [],
+                state: ICellState.Finished,
+            },
+            {
+                id: '9ef575ed-7882-4233-829a-fbbd58eee0e1',
+                type: CellType.CODE,
+                source: "#R \nname = \"Bayes\"\n ",
+                language: 'R',
+                kernelName: 'ir',
+                backend: 'Jupyter',
+                metadata: {
+                    scrollbar: false,
+                    source_hidden: false,
+                    output_hidden: false
+                },
+                outputs: [],
+                state: ICellState.Finished,
+            },
+            {
+                id: '646ace57-6412-49d1-95aa-a44846fa401a',
+                type: CellType.CODE,
+                source: "#Python\nprint(name)",
+                language: 'python',
+                kernelName: 'python3',
+                backend: 'Jupyter',
+                metadata: {
+                    scrollbar: false,
+                    source_hidden: false,
+                    output_hidden: false
+                },
+                outputs: [],
+                state: ICellState.Finished,
+            }
+        ]
+    }
+}
+
+export function exampleChart(): { cells: ICodeCell[] } {
+    return {
+        cells: [
+            {
+                id: '4e698ede-c098-4d84-bbce-516d448c4f97',
+                type: CellType.CODE,
+                source: 'import requests, json\nr = requests.get("https://raw.githubusercontent.com/altair-viz/vega_datasets/master/vega_datasets/_data/cars.json")\njson.dumps(r.json())',
+                language: 'python',
+                kernelName: 'python3',
+                backend: 'Jupyter',
+                metadata: {
+                    scrollbar: false,
+                    source_hidden: false,
+                    output_hidden: false
+                },
+                outputs: [],
+                state: ICellState.Finished,
+            }
+        ]
     }
 }

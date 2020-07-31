@@ -1,5 +1,9 @@
 import { ICodeCell } from '@bayesnote/common/lib/types'
-import { Script, createContext } from 'vm'
+import { createContext, Script } from 'vm'
+
+//TODO: Refactor
+//TODO: Support Apache Arrow instead of JSON
+//TODO: Drop js support, Spark
 
 export type IJsonDataMap = {
     [key: string]: string // variableName: JSONDataString
@@ -46,11 +50,11 @@ export class Translator {
             scriptPrint: boolean
             scriptClean: boolean
         } = {
-            scriptImportJSON: true,
-            scriptStringify: true,
-            scriptPrint: true,
-            scriptClean: true,
-        },
+                scriptImportJSON: true,
+                scriptStringify: true,
+                scriptPrint: true,
+                scriptClean: true,
+            },
     ) {
         // It generate code that stringify data to json string
         // To avoid global scope pollution the tempVar will be removed
@@ -59,6 +63,7 @@ export class Translator {
         let scriptStringify
         let scriptPrint
         let scriptClean
+        //console.log("translateToJSONExportCode", sourceLanguage, kernelName)
         if (['python'].includes(sourceLanguage) && kernelName.startsWith('python3')) {
             scriptImportJSON = `import json\n`
             scriptStringify = `${tempVarName} = json.dumps(${variable})\n`
@@ -69,8 +74,12 @@ export class Translator {
             scriptStringify = `${tempVarName} = JSON.stringify(${variable})\n`
             scriptPrint = `console.log(global.${tempVarName})\n`
             scriptClean = `delete global.${tempVarName}\n`
+        } else if (sourceLanguage === "R") {
+            scriptImportJSON = `library("rjson")\n`
+            scriptStringify = `${tempVarName} = toJSON(${variable})`
+            scriptPrint = ``
+            scriptClean = ``
         } else {
-            // todo to support other language
             scriptImportJSON = ``
             scriptStringify = ``
             scriptPrint = ``
@@ -80,10 +89,13 @@ export class Translator {
         opts.scriptStringify && (code += scriptStringify)
         opts.scriptPrint && (code += scriptPrint)
         opts.scriptClean && (code += scriptClean)
+
         return code
     }
 
     translateFromJSONImportCode(targetLanguage: string, kernelName: string, jsonData: string, varName: string) {
+        console.log("translateToJSONExportCode", targetLanguage, kernelName)
+
         let code
         if (['python'].includes(targetLanguage) && kernelName.startsWith('python3')) {
             const importJSON = `import json\n`
@@ -93,10 +105,17 @@ export class Translator {
             const importJSON = ``
             const parse = `${varName} = JSON.parse('${jsonData.trim()}')\n`
             code = `${importJSON}${parse}`
+        } else if (targetLanguage === "R") {
+            const importJSON = `library("rjson")\n`
+            const parse = `${varName} = (fromJSON('${jsonData.trim()}'))\n`
+            code = `${importJSON}${parse}`
         } else {
-            // todo to support other language
-            code = ''
+            const importJSON = ``
+            const parse = ``
+            code = ``
         }
+
+        console.log("translateFromJSONImportCode", code)
         return code
     }
 }
