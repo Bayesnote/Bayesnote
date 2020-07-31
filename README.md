@@ -77,7 +77,7 @@ Dashboard: Drag & Drop
 Installation:
 ```sh
 cd Bayesnote/
-yarn && lerna bootstrap && lerna link
+yarn && lerna bootstrap && lerna add @bayesnote/common
 ```
 
 Set up development environment:

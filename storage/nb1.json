@@ -1,0 +1,27 @@
+{
+    "cells": [
+        {
+            "id": "f6135e34-4434-4780-b29f-aac99e593b62",
+            "type": "code",
+            "source": "\nfrom datetime import datetime\nnow = datetime.now()\ncurrent_time = now.strftime(\"%H:%M:%S\")\nprint(\"Current Time =\", current_time)",
+            "language": "python",
+            "kernelName": "python3",
+            "backend": "Jupyter",
+            "metadata": {
+                "scrollbar": true,
+                "source_hidden": false,
+                "output_hidden": false
+            },
+            "state": 2,
+            "outputs": [
+                {
+                    "type": "result",
+                    "data": {
+                        "text/plain": "2"
+                    }
+                }
+            ]
+        }
+    ],
+    "name": ""
+}

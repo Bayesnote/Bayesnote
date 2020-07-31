@@ -8,6 +8,5 @@ packages/dashboard/build
 packages/common/lib
 node_modules/
 lerna-debug.log
-storage/
 
 /flow/flow
