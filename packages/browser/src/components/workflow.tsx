@@ -1,7 +1,6 @@
 import { ICodeCell } from '@bayesnote/common/lib/types.js';
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import React, { useEffect, useState } from 'react';
-import { LazyLog } from 'react-lazylog';
 import MonacoEditor from "react-monaco-editor";
 import { useTable } from 'react-table';
 // @ts-ignore
@@ -26,7 +25,6 @@ export const Flow: React.FC<Props> = ({ cellVM }) => {
             <TabList>
                 <Tab>Flow</Tab>
                 <Tab>Editor</Tab>
-                <Tab>Log</Tab>
             </TabList>
 
             <TabPanel>
@@ -35,9 +33,6 @@ export const Flow: React.FC<Props> = ({ cellVM }) => {
             <TabPanel>
                 <h2>  <FlowEditor /></h2>
                 <ToolBar />
-            </TabPanel>
-            <TabPanel>
-                <LazyLog extraLines={1} enableSearch url={url} caseInsensitive />
             </TabPanel>
         </Tabs>
     </div >
@@ -71,7 +66,6 @@ const FlowTable: React.FC = () => {
     //TODO: logic to handle workflow
     //TODO: Group into operation
     const [data, setData] = useState([{ name: "", schedule: "", status: "", time: "" }] as any)
-    console.log("data", data)
 
     const {
         getTableProps,
@@ -121,7 +115,6 @@ const ToolBar: React.FC = () => {
 
     const handleStart = () => {
         const state = store.getState().flowReducer.flow
-        console.log(state)
         const url = "http://localhost:80/workflow/wf1/start"
         fetch(url, {
             method: "POST"
@@ -131,7 +124,6 @@ const ToolBar: React.FC = () => {
     const handleStop = () => {
         //TODO: parse yaml to get name
         const state = store.getState().flowReducer.flow
-        console.log(state)
         const url = "http://localhost:80/workflow/wf1/stop"
         fetch(url, {
             method: "POST"

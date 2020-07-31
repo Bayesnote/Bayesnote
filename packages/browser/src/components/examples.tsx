@@ -6,13 +6,11 @@ import { exampleChart, exampleMultiLanguages } from '../utils/exampleNotebook'
 
 export const Examples: React.FC = () => {
     let history = useHistory()
-    const [example, setExample] = useState(0)
 
     const loadNotebook = (cells: ICodeCell[]) => {
         let notebook: INotebook = { cells: [] }
         cells.forEach(cell => notebook.cells.push(cell))
         store.dispatch({ type: 'loadNotebook', payload: notebook })
-        setExample(example + 1)
     }
 
     const loadDashboard = () => {
