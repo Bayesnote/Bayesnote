@@ -1,78 +1,49 @@
 # Bayesnote: A Frictionless Integrated Notebook
 
-Jupyter Notebook, Zeppelin Notebook and other notebooks have been highly popular among data scientists and data engineers. However, these notebooks are built with a limited goal: providing an interactive computing environment that only solves a fraction of problems of modern data teams, especially the operation of notebooks is missing. The development and operation of data application, including dashboard and machine learning model, is slow, costly and painful.
+Bayesnote is a frictionless integrated notebook environment for data scientists and data engineers. It provides a user interface to build dashboards and deploy machine learning models right from a notebook. It also supports the operation of notebooks by a workflow system, Noteflow. It manages servers, libraries, and containers for development and production.
 
-We aim to build a frictionless integrated notebook environment (INE):
-- Truly end-to-end  (e.g. from spin up clusters to deliver analytics to business) 
-- Combines development and operation of notebooks (e.g. run notebooks with dependency on a fixed schedule)
-- Deliverable-oriented, build dashboard and deploy machine learning model right from notebooks
+# Architecture:
+Bayesnote is consisted of
+1. Unified Notebook Backend. It is designed to reuse the computation engine by integrating with existing notebooks, like Jupyter notebook and Zeppelin notebook, and to be integrated by other apps like Apache Airflow by exposing notebook operations, e.g. run/interrupt, as REST APIs.
+2. Noteflow. It is a workflow system built for notebooks rather than functions. The dependency of notebooks, called Noteflow, is specified in YAML and triggered by cron or events. It is written in Go rather than Python to make it easier for developers/contributors to maintain and easier for users to deploy.
+3. Dashboard component. It enables data scientists to process data in a notebook with Python, SQL, R and Spark, and build dashboards right from the notebook.
+4. Machine Learning component(under development). It provides one-click deployment to production right from the notebook.
+5. Container component. It automates common tasks of managing containers for notebook users for environment isolation and deploy to production.
 
-To achieve this goal, we build Bayesnote that introduces:
-- An unified notebook layer that 
-    - Supports multiple languages in one notebook with in-memory variable sharing across cells (Python, SQL, R, Scala)
-    - Integrate any other notebooks, including Jupyter notebook, Zeppelin Notebook etc., as computation backend and providing APIs to be integrated by other applications (e.g. Airflow can trigger Bayesnote to run) 
-- Built-in docker containers as the development and operation environment
-- A workflow component built around notebooks (think about Airflow for notebooks)
-- A dashboard component and a machine learning component that integrated well with notebooks.
+# Experimental Features:
+Bayesnote also introduces experimental features into the notebook itself:
+1. Multiple language support. Write Python, SQL, R, and Spark in one notebook by selecting a language for each cell of the notebook.
+2. Variable sharing. Variables in different languages in one notebook would be automatically shared across cells.
 
-With Bayesnote, data scientists and data engineers, at most, could become full-stack engineers with little learning costs, and at least, would be 10x less painful and 10x more productive.
+# Screenshots
 
-*Note to users: This 0.1-alpha release is NOT ready for users, but you can request features here.* 😎
+Notebook
 
-*Note to contributors: We welcome all contributors. Your contributions could bring the innovation of the engineering community to the data community.*
+![](./.github/notebook.png)
 
-## Screenshots
+Write Python, SQL, R, and Spark in one notebook. Users can select a language for each cell and get results printed.
+![](.github/multi.png)
+
+Make chart rights from notebook.
+![](.github/chart.png)
+
+Build dashboards by drag & drop.
+![](.github/drag.png)
 
 
-Multi-language notebook: Select language including Spark for each cell 
+![](.github/dashboard.png)
 
-![multiLang](./.github/MultiLangs.png)
+Define workflow by a YAML file. In this example, the name of the workflow is "wf1", the schedule is "every 5 minute" in cron expression. The optional "Image" field refers to docker image used for running notebooks. The noteflow: Run notebook "nb1" and "nb2" first; If all are successful, run notebook "nb3".
+(The user interface for defining workflow is under development.)
+![](.github/editor.png)
 
-Variable Sharing: Export variable from one language 
-![ExportVars](.github/ExportVars.png)
+All scheduled workflows are displayed under "Flow" tab.
 
-Variable Sharing: Import variable to another language
-![ImportVars](.github/ImportVars.png)
+![](.github/flow.png)
 
-Workflow: Run notebook with parameters every 5 minutes
-![WFP](.github/WorkflowParams.png)
+Bayesnote is a new project and under active development.
 
-Workflow: Run notebook with dependency (Run nb1 and nb2 first, then nb3)
-![WFP](.github/WorkflowDep.png)
-
-Chart: Resize
-![Chart](https://i.gyazo.com/a382110fdf990c36b2158445d4535114.gif)
-
-Dashboard: Drag & Drop
-![Dashboard](https://i.gyazo.com/493a17ec3e3af547aa3058b8782aa6b1.gif)
-  
-
-## Use cases
-### Dashboard: 
-- Previous: 
-    - Workflow: Data scientists process data by writing Python, R and Scala in a notebook, write all their data into disk. Then they uses dashboard tool to write SQL to make charts and dashboard. 
-    - Problems: 
-        - Slow to develop. They have to go back and forth between notebook and dashboard tools for iteration.
-        - Hard to operate. If the dashboard is refreshing everyday, and the notebook is failed to run, then a workflow system has to be set up to handle failures.
-- After: 
-  - Workflow: Data scientists write Python, SQL, R and scala all in one notebook. Configure workflow by YAML or UI. Done.
-  - Improvements:
-    - Fast to develop. All languages are supported in one notebook so no switching between notebook and dashboard tool required. Process data in-memory, saving time read and write data to disks.
-    - Easy to operate. Built-in workflow system. No external workflow system (e.g. Airflow) is required to learn and operate.
-
-### Machine learning:
-- Previous:
-  - Workflow: Data scientists struggles with environment, e.g loading external library into spark, switching back and forth between notebook and SQL editor, laptops and servers, losing track of model development, writing docs to explain their model, and rely on engineers to deploy their model into production.
-  - Problems:
-    - Slow to iterate. Dependent on others to deploy models. 
-    - Difficult to operate. Lack of skills to operate machine learning infrastructure.
-- After:
-  - Workflow: Data scientists write all languages in one notebook. Docker containers automatically spin up based on input parameters of models and run in parallel. One-click deployment to production.
-  - Improvements:
-    - Fast to iterate. Saved time by experiment models in parallel on docker containers.
-    - Easy to deploy. One-click deployment to production with the same docker image.
-
-## For contributors: 
+## For contributors/early-adopters: 
 
 Installation:
 ```sh
@@ -87,7 +58,7 @@ cd packages/common && yarn run watch
 ```
 
 ```sh
-# start node.js server for the unified notebook layer
+# start node.js server
 cd packages/node && yarn run dev
 ```
 
@@ -99,9 +70,4 @@ cd packages/browser && yarn start
 ```sh
 # start Bayesnote flow backend service in golang.
 cd flow && go run .
-```
-
-```sh
-# start dashboard development
-cd packages/dashboard && yarn run start
 ```
