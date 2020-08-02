@@ -5,7 +5,8 @@
     "uuid": "^8.0.0"
   },
   "scripts": {
-    "watch": "del ./lib/**/* && tsc --build ./tsconfig.json -w"
+    "watch": "del ./lib/**/* && tsc --build ./tsconfig.json -w",
+    "build": "del ./lib/**/* && tsc --build ./tsconfig.json"
   },
   "devDependencies": {
     "@types/uuid": "^7.0.3",

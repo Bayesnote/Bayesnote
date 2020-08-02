@@ -41,7 +41,7 @@ func startFlowServer() {
 	r.HandleFunc("/containers/{containerID}/pip/{package}/install", handleInstallPip)
 
 	//TODO: spark
-	http.ListenAndServe(":80", r)
+	http.ListenAndServe(":8088", r)
 }
 
 //TODO: cross-origin issue

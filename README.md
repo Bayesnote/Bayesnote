@@ -2,6 +2,9 @@
 
 Bayesnote is a frictionless integrated notebook environment for data scientists and data engineers. It provides a user interface to build dashboards and deploy machine learning models right from a notebook. It also supports the operation of notebooks by a workflow system, Noteflow. It manages servers, libraries, and containers for development and production.
 
+# Motivation & Philosophy:
+[Bayesnote: Redefine Notebook](https://towardsdatascience.com/bayesnote-redefine-notebook-2ab00277bbc?source=friends_link&sk=94e2e9d234caa0edc3adf7235bd84b74)
+
 # Architecture:
 Bayesnote is consisted of
 1. Unified Notebook Backend. It is designed to reuse the computation engine by integrating with existing notebooks, like Jupyter notebook and Zeppelin notebook, and to be integrated by other apps like Apache Airflow by exposing notebook operations, e.g. run/interrupt, as REST APIs.
@@ -28,10 +31,10 @@ Make chart rights from notebook.
 ![](.github/chart.png)
 
 Build dashboards by drag & drop.
-![](.github/drag.png)
+![](.github/drag.gif)
 
 
-![](.github/dashboard.png)
+![](.github/dashboard.gif)
 
 Define workflow by a YAML file. In this example, the name of the workflow is "wf1", the schedule is "every 5 minute" in cron expression. The optional "Image" field refers to docker image used for running notebooks. The noteflow: Run notebook "nb1" and "nb2" first; If all are successful, run notebook "nb3".
 (The user interface for defining workflow is under development.)
@@ -43,28 +46,36 @@ All scheduled workflows are displayed under "Flow" tab.
 
 Bayesnote is a new project and under active development.
 
-## For contributors/early-adopters: 
+## Users: Getting Started
+
+0. Install the docker client
+1. Pull the image: `docker pull josephpeng/bayesnote:latest`
+
+2. Start the container: `docker run --rm -d  -p 5000:5000/tcp -p 8890:8890/tcp josephpeng/bayesnote:latest`
+3. Open http://localhost:5000/
+
+## Contributors: Set up development environment
 
 Installation:
 ```sh
-cd Bayesnote/
-yarn && lerna bootstrap && lerna add @bayesnote/common
+git clone https://github.com/Bayesnote/Bayesnote.git
+cd Bayesnote/  && lerna bootstrap
 ```
 
 Set up development environment:
 ```sh
 # watch changes in common package which is depended by other packages
-cd packages/common && yarn run watch
+cd packages/common && yarn && yarn run watch
 ```
 
 ```sh
 # start node.js server
-cd packages/node && yarn run dev
+cd packages/node && yarn && yarn run watch & yarn run dev
 ```
 
 ```sh
 # start frontend
-cd packages/browser && yarn start
+cd packages/browser && yarn && yarn start
 ```
 
 ```sh

@@ -17,7 +17,7 @@ interface Props {
 //TODO: Integrate with docker & libraries
 export const Flow: React.FC<Props> = ({ cellVM }) => {
     //TODO: Log does not load
-    const url = "http://localhost:80/workflow"
+    const url = "http://localhost:8088/workflow"
 
     //TODO: add margin below
     return <div style={{ width: "60%" }}>
@@ -39,7 +39,7 @@ export const Flow: React.FC<Props> = ({ cellVM }) => {
 }
 
 //TODO: this is ugly
-const url = "http://localhost:80/workflow"
+const url = "http://localhost:8088/workflow"
 
 //This is should reside out of react-table component.
 const columns = [
@@ -115,7 +115,7 @@ const ToolBar: React.FC = () => {
 
     const handleStart = () => {
         const state = store.getState().flowReducer.flow
-        const url = "http://localhost:80/workflow/wf1/start"
+        const url = "http://localhost:8088/workflow/wf1/start"
         fetch(url, {
             method: "POST"
         }).then(Response => console.log((Response.status)))
@@ -124,14 +124,14 @@ const ToolBar: React.FC = () => {
     const handleStop = () => {
         //TODO: parse yaml to get name
         const state = store.getState().flowReducer.flow
-        const url = "http://localhost:80/workflow/wf1/stop"
+        const url = "http://localhost:8088/workflow/wf1/stop"
         fetch(url, {
             method: "POST"
         }).then(Response => console.log((Response.status)))
     }
 
     const hadnleRun = () => {
-        const url = "http://localhost:80/workflow/wf1/run"
+        const url = "http://localhost:8088/workflow/wf1/run"
         fetch(url, {
             method: "POST"
         }).then(Response => console.log((Response.status)))
