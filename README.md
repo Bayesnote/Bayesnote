@@ -2,6 +2,9 @@
 
 Bayesnote is a frictionless integrated notebook environment for data scientists and data engineers. It provides a user interface to build dashboards and deploy machine learning models right from a notebook. It also supports the operation of notebooks by a workflow system, Noteflow. It manages servers, libraries, and containers for development and production.
 
+# Motivation & Philosophy:
+[Bayesnote: Redefine Notebook](https://towardsdatascience.com/bayesnote-redefine-notebook-2ab00277bbc?source=friends_link&sk=94e2e9d234caa0edc3adf7235bd84b74)
+
 # Architecture:
 Bayesnote is consisted of
 1. Unified Notebook Backend. It is designed to reuse the computation engine by integrating with existing notebooks, like Jupyter notebook and Zeppelin notebook, and to be integrated by other apps like Apache Airflow by exposing notebook operations, e.g. run/interrupt, as REST APIs.
@@ -28,10 +31,10 @@ Make chart rights from notebook.
 ![](.github/chart.png)
 
 Build dashboards by drag & drop.
-![](.github/drag.png)
+![](.github/drag.gif)
 
 
-![](.github/dashboard.png)
+![](.github/dashboard.gif)
 
 Define workflow by a YAML file. In this example, the name of the workflow is "wf1", the schedule is "every 5 minute" in cron expression. The optional "Image" field refers to docker image used for running notebooks. The noteflow: Run notebook "nb1" and "nb2" first; If all are successful, run notebook "nb3".
 (The user interface for defining workflow is under development.)
