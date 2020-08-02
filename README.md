@@ -48,23 +48,24 @@ Bayesnote is a new project and under active development.
 Installation:
 ```sh
 cd Bayesnote/
-yarn && lerna bootstrap && lerna add @bayesnote/common
+git clone https://github.com/Bayesnote/Bayesnote.git
+cd Bayesnote/  && lerna bootstrap
 ```
 
 Set up development environment:
 ```sh
 # watch changes in common package which is depended by other packages
-cd packages/common && yarn run watch
+cd packages/common && yarn && yarn run watch
 ```
 
 ```sh
 # start node.js server
-cd packages/node && yarn run dev
+cd packages/node && yarn && yarn run start
 ```
 
 ```sh
 # start frontend
-cd packages/browser && yarn start
+cd packages/browser && yarn && yarn start
 ```
 
 ```sh

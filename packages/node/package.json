@@ -7,7 +7,7 @@
     "lint": "eslint 'src/**/*.{js,ts}' --quiet --fix"
   },
   "dependencies": {
-    "@bayesnote/common": "^0.0.1",
+    "@bayesnote/common": "file:../common",
     "@jupyterlab/services": "^5.2.0",
     "bunyan": "^1.8.12",
     "cors": "^2.8.5",
