@@ -4,8 +4,6 @@ import { RootState, store } from '../store';
 import { Libraries } from './libraries';
 
 export const Spark: React.FC = () => {
-    const [cluster, setCluster] = useState('')
-
     return <div>
         <AddCluster />
         <ClusterList />

@@ -18,7 +18,6 @@ interface Props {
 //TODO: Integrate with docker & libraries
 export const Flow: React.FC<Props> = ({ cellVM }) => {
     //TODO: Log does not load
-    const url = "http://localhost:9292/workflow"
 
     //TODO: add margin below
     return <div style={{ width: "60%" }}>
@@ -81,9 +80,9 @@ const FlowTable: React.FC = () => {
     });
 
     useEffect(() => {
-        fetch(url).
-            then(response => response.json()).
-            then(data => setData(data))
+        fetch(url)
+            .then(response => response.json())
+            .then(data => setData(data))
     }, [])
 
     return (
@@ -119,7 +118,6 @@ const ToolBar: React.FC = () => {
     const flow = useSelector((state: RootState) => state.flowReducer.flow)
     console.log("Toobar", flow)
     const handleStart = () => {
-        const state = store.getState().flowReducer.flow
         const url = "http://localhost:9292/workflow/wf1/deploy"
         fetch(url, {
             method: "POST",
@@ -128,7 +126,6 @@ const ToolBar: React.FC = () => {
     }
 
     const handleStop = () => {
-        const state = store.getState().flowReducer.flow
         const url = "http://localhost:9292/workflow/wf1/stop"
         fetch(url, {
             method: "POST"
@@ -172,7 +169,6 @@ const FlowEditor: React.FC = () => {
 
     const onChange = (newValue: string) => {
         if (model) {
-            const contentHeight = (model.getLineCount() + 1) * 19
             setHeight((model.getLineCount() + 1) * 19)
         }
         setCode(newValue)

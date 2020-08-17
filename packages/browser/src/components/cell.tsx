@@ -37,9 +37,9 @@ export const Cell: React.FC<Props> = ({ cellVM }) => {
     }
 
     //TODO
-    const interruptCell = () => {
-        client.emit('cell.interrupt', cellVM)
-    }
+    // const interruptCell = () => {
+    //     client.emit('cell.interrupt', cellVM)
+    // }
 
     const runCell = () => {
         client.emit('cell.run', cellVM)

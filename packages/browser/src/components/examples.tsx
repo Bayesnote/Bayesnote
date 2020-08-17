@@ -1,5 +1,5 @@
 import { ICodeCell, INotebook } from '@bayesnote/common/lib/types.js'
-import React, { useState } from 'react'
+import React from 'react'
 import { useHistory } from "react-router"
 import { store } from '../store'
 import { exampleChart, exampleMultiLanguages } from '../utils/exampleNotebook'

@@ -30,7 +30,6 @@ client.on("export.variable.import.ok", (res: any) => {
   console.log("import variable: ", res);
 });
 client.on("nb.pong", () => console.log("pong"));
-// client.on("cluster.update", handleClusterUpdate)
 
 // event
 // result
@@ -121,10 +120,6 @@ function handleexportVariable(exportdVarMapValue: IexportdVarMapValue) {
 function handleexportVariableList(exportdVarMap: IexportdVarMap) {
   console.log("handleexportVariableList -> exportdVarMap", exportdVarMap);
   store.dispatch({ type: "uploadexportdVarMap", payload: exportdVarMap });
-}
-
-const handleClusterUpdate = (cluster: string) => {
-
 }
 
 export default client;
