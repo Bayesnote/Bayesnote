@@ -12,7 +12,6 @@ export const Notebook: React.FC = () => {
     const loadCells = () => {
         return notebookVM.cells.map(
             (cellVM: ICodeCell) => {
-                console.log("cellVM: ", cellVM.source)
                 return <Cell key={cellVM.id} cellVM={cellVM} />
             })
     }
