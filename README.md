@@ -83,4 +83,3 @@ cd packages/browser && yarn && yarn start
 # start Bayesnote flow backend service in golang.
 cd flow && go run .
 ```
-# docker
