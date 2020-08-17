@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@Bayesnote/common@../common":
-  version "0.0.1"
-  dependencies:
-    uuid "^8.0.0"
-
 "@babel/code-frame@^7.0.0":
   version "7.8.3"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.8.3.tgz#33e25903d7481181534e12ec0a25f16b6fcf419e"
@@ -27,6 +22,11 @@
     "@babel/helper-validator-identifier" "^7.9.0"
     chalk "^2.0.0"
     js-tokens "^4.0.0"
+
+"@bayesnote/common@file:../common":
+  version "0.0.1"
+  dependencies:
+    uuid "^8.0.0"
 
 "@jupyterlab/coreutils@^4.2.0":
   version "4.2.0"

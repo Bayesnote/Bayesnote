@@ -6,29 +6,43 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/robfig/cron/v3"
+	"github.com/rs/cors"
 	"gopkg.in/yaml.v2"
 )
 
+//TODO:  for all handlers
 func startFlowServer() {
 	ct = cron.New()
 	ct.Start()
 
 	r := mux.NewRouter()
 
+	//cluster
+	r.HandleFunc("/clusters", handleSetCluster).Methods("POST")
+
+	//file
+	r.HandleFunc("/upload", handleUpload).Methods("POST")
+
 	//workflow
 	r.HandleFunc("/workflow", handleStatus).Methods("GET")
-	r.HandleFunc("/workflow/{workflow}/start", handleStart).Methods("POST")
+	r.HandleFunc("/workflow/{workflow}/deploy", handleDeploy).Methods("POST")
 	r.HandleFunc("/workflow/{workflow}/run", handleRun).Methods("POST")
 	r.HandleFunc("/workflow/{workflow}/stop", handleStop).Methods("POST")
 
+	//docker
+	r.HandleFunc("/docker", handleDocker).Methods("GET")
+
 	//image
 	r.HandleFunc("/images", handleGetImages).Methods("GET")
-	r.HandleFunc("/images/{image:.*}", handlePostImage).Methods("POST")
+	r.HandleFunc("/images/{imageID}/load", handleLoadImage).Methods("POST")
+	r.HandleFunc("/images/{image:.*}/start", handleStartImage).Methods("POST")
 
 	//container
 	r.HandleFunc("/containers", handleListContainers).Methods("GET")
@@ -40,25 +54,79 @@ func startFlowServer() {
 	//ws
 	r.HandleFunc("/containers/{containerID}/pip/{package}/install", handleInstallPip)
 
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+	})
+
 	//TODO: spark
-	http.ListenAndServe(":8088", r)
+	http.ListenAndServe(":9292", handlers.RecoveryHandler()(c.Handler(r)))
+}
+
+func handleDocker(w http.ResponseWriter, r *http.Request) {
+	if dk.isInstalled() && dk.isRunning() {
+		w.Write([]byte("Docker OK"))
+	} else {
+		w.Write([]byte("Dokcer is NOT OK"))
+	}
+}
+
+func handleLoadImage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	imageID := vars["imageID"]
+	path := filepath.Join(hostPath + imageID)
+	dk.load(path)
+	byteJSON, _ := json.Marshal("load: " + imageID)
+	w.Write(byteJSON)
+}
+
+func handleSetCluster(w http.ResponseWriter, r *http.Request) {
+	body, _ := ioutil.ReadAll(r.Body)
+	var t target
+	json.Unmarshal(body, &t)
+	//TODO: does this require SSH connection ?
+	t.setRemoteSpark()
+}
+
+//TODO: This should only be used for local -> remote communication. Data is mounted from host to local container
+func handleUpload(w http.ResponseWriter, r *http.Request) {
+	file, handler, err := r.FormFile("file")
+	if err != nil {
+		log.Error(err)
+	}
+	defer file.Close()
+
+	fileBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Error(err)
+	}
+
+	err = ioutil.WriteFile("/home/jovyan/.bayesnote/"+handler.Filename, fileBytes, 777)
+	if err != nil {
+		log.Error(err)
+	}
+
+	log.WithFields(logrus.Fields{
+		"file": handler.Filename,
+	}).Info("file uploaded")
 }
 
 //TODO: cross-origin issue
 func handleStatus(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var f flowLogs
 	f.read()
 	w.Write(f.list())
 }
 
-func handleStart(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+//TODO: password
+func handleDeploy(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	var f flow
 	yaml.Unmarshal(body, &f)
-	ct.AddFunc(f.Schedule, func() { startDAG(f) })
 
+	//TODO: this is ugly
+	f.Target.deploy(&f)
+
+	//TODO: poll data from remote ~/.bayesnote
 	//log
 	log.WithFields(logrus.Fields{
 		"name":     f.Name,
@@ -71,11 +139,11 @@ func handleRun(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	var f flow
 	yaml.Unmarshal(body, &f)
-	startDAG(f)
+	ct.AddFunc(f.Schedule, func() { startDAG(f) })
 }
 
 func handleStop(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	vars := mux.Vars(r)
 	workflow := vars["workflow"]
 	os.Setenv("STOP", workflow)
@@ -86,12 +154,12 @@ func handleGetImages(w http.ResponseWriter, r *http.Request) {
 	w.Write(byteJSON)
 }
 
-//TODO
-func handlePostImage(w http.ResponseWriter, r *http.Request) {
-	// vars := mux.Vars(r)
-	// image := vars["image"]
-	// byteJSON, _ := json.Marshal(dk.start(image))
-	// w.Write(byteJSON)
+func handleStartImage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	image := vars["image"]
+	_, port := dk.start(image)
+	byteJSON, _ := json.Marshal("Start image with port: " + port)
+	w.Write(byteJSON)
 }
 
 func handleListContainers(w http.ResponseWriter, r *http.Request) {
@@ -117,9 +185,6 @@ func handleUpdateContainer(w http.ResponseWriter, r *http.Request) {
 
 // TODO: remove 8 bytes
 func handleListPip(w http.ResponseWriter, r *http.Request) {
-	//TODO: Handle CORS issues
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-
 	vars := mux.Vars(r)
 	containerID := vars["containerID"]
 	cmd := []string{"pip", "list", "--format", "json"}
@@ -138,7 +203,6 @@ func handleListPip(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleInstallPip(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		panic(err)

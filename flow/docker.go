@@ -2,12 +2,16 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"context"
-	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
+	"os/exec"
 	"strconv"
+	"strings"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
@@ -25,7 +29,7 @@ func (d *docker) getClient() (*client.Client, context.Context) {
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 	return cli, ctx
 }
@@ -34,7 +38,7 @@ func (d *docker) listImage() []types.ImageSummary {
 	cli, ctx := d.getClient()
 	rst, err := cli.ImageList(ctx, types.ImageListOptions{})
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 	return rst
 }
@@ -43,7 +47,7 @@ func (d *docker) listContainer() []types.Container {
 	cli, ctx := d.getClient()
 	rst, err := cli.ContainerList(ctx, types.ContainerListOptions{})
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 	return rst
 }
@@ -52,7 +56,7 @@ func (d *docker) commitContainer(ID string) string {
 	cli, ctx := d.getClient()
 	resp, err := cli.ContainerCommit(ctx, ID, types.ContainerCommitOptions{})
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 	return resp.ID
 }
@@ -61,21 +65,20 @@ func (d *docker) pullImage(image string) {
 	cli, ctx := d.getClient()
 	reader, err := cli.ImagePull(ctx, image, types.ImagePullOptions{})
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 	io.Copy(os.Stdout, reader)
 }
 
-//Build image from Dockerfile
 func (d *docker) buildImage() {
 	cli, ctx := d.getClient()
 	buildCtx, err := archive.TarWithOptions(d.dockerFile, &archive.TarOptions{})
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 	resp, err := cli.ImageBuild(ctx, buildCtx, types.ImageBuildOptions{Tags: []string{d.tag}})
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 	io.Copy(os.Stdout, resp.Body)
 }
@@ -84,11 +87,10 @@ func (d *docker) tagImage(source string, dest string) {
 	cli, ctx := d.getClient()
 	err := cli.ImageTag(ctx, source, dest)
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 }
 
-//create & start
 func (d *docker) start(image string) (string, string) {
 	cli, ctx := d.getClient()
 
@@ -117,33 +119,31 @@ func (d *docker) start(image string) (string, string) {
 		},
 		Mounts: []mount.Mount{
 			{
-				Type: mount.TypeBind,
-				// TODO
-				Source: "/Users/pt/Downloads/notebook",
-				Target: "/home/jovyan/notebook",
+				Type:   mount.TypeBind,
+				Source: hostPath,
+				Target: containerPath,
 			},
 		},
 	}
 	resp, err := cli.ContainerCreate(ctx, containerConfig, hostConfig, nil, "")
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-		panic(err)
+		log.Error(err)
 	}
 
 	//Wait for container to runnning
 	for {
 		rst, err := cli.ContainerInspect(ctx, resp.ID)
 		if err != nil {
-			panic(err)
+			log.Error(err)
 		}
 		if rst.State.Running == true {
 			break
 		}
 	}
 
-	// url := "0.0.0.0:" + string(ps)
 	log.Print("Container started: ", resp.ID)
 	return resp.ID, ps
 }
@@ -152,7 +152,7 @@ func (d *docker) stop(ID string) {
 	cli, ctx := d.getClient()
 	rst, err := cli.ContainerInspect(ctx, ID)
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 	if rst.State.Running == true {
 		err := cli.ContainerStop(ctx, ID, nil)
@@ -186,11 +186,99 @@ func (d *docker) runCmd(cmd []string, ID string) *bufio.Reader {
 }
 
 //TODO: Add repo + TAG. Rename latest
-func (d *docker) commit(ID string) {
+func (d *docker) commit(ID string) string {
 	cli, ctx := d.getClient()
-	commitResp, err := cli.ContainerCommit(ctx, ID, types.ContainerCommitOptions{})
+	resp, err := cli.ContainerCommit(ctx, ID, types.ContainerCommitOptions{})
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
-	fmt.Println(commitResp.ID)
+
+	s := strings.Split(resp.ID, ":")
+	return s[1]
+}
+
+//TODO: add progress bar
+func (d *docker) save(ID string) io.ReadCloser {
+	cli, ctx := d.getClient()
+
+	var IDs []string
+	IDs = append(IDs, ID)
+
+	reader, err := cli.ImageSave(ctx, IDs)
+	if err != nil {
+		log.Error(err)
+	}
+
+	return reader
+}
+
+func (d *docker) load(path string) {
+	cli, ctx := d.getClient()
+	file, err := os.Open(path)
+	if err != nil {
+		log.Error(err)
+	}
+
+	resp, err := cli.ImageLoad(ctx, file, false)
+	if err != nil {
+		log.Error(err)
+	}
+
+	log.WithFields(logrus.Fields{
+		"resp": resp.JSON,
+	}).Info("load image")
+}
+
+func (d *docker) copyFile(ID string, srcPath string) {
+	cli, ctx := d.getClient()
+	byteArray, err := ioutil.ReadFile(srcPath)
+	if err != nil {
+		log.Error(err)
+	}
+	err = cli.CopyToContainer(ctx, ID, containerPath, bytes.NewReader(byteArray), types.CopyToContainerOptions{AllowOverwriteDirWithFile: true})
+	if err != nil {
+		log.Error(err)
+	}
+}
+
+//TODO: should only keep one container
+func (d *docker) getID() string {
+	cmd := exec.Command("hostname")
+	if cmd.Stderr != nil {
+		log.Error(cmd.Stderr)
+	}
+
+	output, err := cmd.Output()
+	if err != nil {
+		log.Error(err)
+	}
+
+	return strings.TrimSuffix(string(output), "\n")
+}
+
+func (d *docker) isRunning() bool {
+	cli, ctx := d.getClient()
+	_, err := cli.Ping(ctx)
+	if err != nil {
+		log.Error(err)
+		return false
+	}
+	return true
+}
+
+func (d *docker) isInstalled() bool {
+	cmd := exec.Command("bash", "-c", "which docker")
+	if cmd.Stderr != nil {
+		log.Error(cmd.Stderr)
+	}
+
+	output, err := cmd.Output()
+	if err != nil {
+		log.Error(err)
+	}
+
+	if strings.Contains(string(output), "not found") {
+		return false
+	}
+	return true
 }

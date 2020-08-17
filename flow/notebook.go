@@ -6,12 +6,15 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"path/filepath"
 	"time"
+
+	"github.com/Sirupsen/logrus"
 )
 
 //TODO: Refactor
-
 type request struct {
+	name     string
 	Notebook notebook
 	port     string
 }
@@ -71,28 +74,44 @@ func (r *request) run(path string) bool {
 		log.Error(err)
 	}
 
-	for i := 0; i < 10; i++ {
-		if r.ping() == true {
-			resp, err := http.Post("http://localhost:"+r.port+"/api/v1/job", "application/json", bytes.NewBuffer(byteArray))
-			if err != nil {
-				log.Error(err)
-			}
-
-			bodyBytes, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				log.Error(err)
-			}
-			var runResp runResp
-			json.Unmarshal(bodyBytes, &runResp)
-			fmt.Printf("%+v\n", runResp)
-			log.Info(runResp)
-
-			if runResp.Success {
-				return true
-			}
+	//Wait for server to be ready
+	for i := 0; i < 30; i++ {
+		if r.ping() == false {
+			log.Info("Wait for container")
+			time.Sleep(2 * time.Second)
+		} else {
+			break
 		}
-		time.Sleep(1 * time.Second)
+
+		if i == 10 {
+			return false
+		}
 	}
+
+	resp, err := http.Post("http://localhost:"+r.port+"/api/v1/job", "application/json", bytes.NewBuffer(byteArray))
+	if err != nil {
+		log.Error(err)
+	}
+
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Error(err)
+	}
+
+	//TODO: Should return notebook + rendered HTML
+	var runResp runResp
+	json.Unmarshal(bodyBytes, &runResp)
+	path = filepath.Join(hostPath, r.name+"-"+time.Now().Format("20060102150405")+".json")
+	ioutil.WriteFile(path, bodyBytes, 777)
+
+	log.WithFields(logrus.Fields{
+		"path": path,
+	}).Info("Write notebook")
+
+	if runResp.Success {
+		return true
+	}
+
 	return false
 }
 

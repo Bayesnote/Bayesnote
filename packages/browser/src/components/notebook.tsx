@@ -58,6 +58,8 @@ const NotebookToolbar: React.FC = () => {
             type: "updateNotebookName",
             payload: { name },
         });
+
+        notebookVM.name = name
         client.emit("notebook.save", notebookVM)
     }
 

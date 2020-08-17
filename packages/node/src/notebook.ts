@@ -18,6 +18,7 @@ import { createLogger } from 'bunyan'
 import jsonfile, { Path } from 'jsonfile'
 import cloneDeep from 'lodash/cloneDeep'
 import uniqBy from 'lodash/uniqBy'
+import { homedir } from 'os'
 import path from 'path'
 import { BackendManager } from './backend'
 
@@ -41,14 +42,16 @@ namespace File {
 
     export const write = (notebookVM: INotebook) => {
         //TODO: handle name conflicts
+        console.log('Notebook: ', notebookVM.name)
         let fileName = 'Undefined'
         if (notebookVM.name) {
             fileName = notebookVM.name
         }
-        const writePath: Path = path.resolve(`../../storage/` + fileName + `.json`)
+        const homePath = homedir()
+        const writePath: Path = path.resolve(homePath + '/.bayesnote/' + fileName + `.json`)
         jsonfile.writeFile(writePath, notebookVM, function (err) {
             if (err) console.error(err)
-            log.info('Notebook saved')
+            log.info('Notebook saved: ', writePath)
         })
     }
 }
