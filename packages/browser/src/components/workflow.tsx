@@ -23,16 +23,17 @@ export const Flow: React.FC<Props> = ({ cellVM }) => {
     return <div style={{ width: "60%" }}>
         <Tabs>
             <TabList>
-                <Tab>Flow</Tab>
                 <Tab>Editor</Tab>
+                <Tab>Flow</Tab>
             </TabList>
 
-            <TabPanel>
-                <h2> <FlowTable /></h2>
-            </TabPanel>
+
             <TabPanel>
                 <h2>  <FlowEditor /></h2>
                 <ToolBar />
+            </TabPanel>
+            <TabPanel>
+                <h2> <FlowTable /></h2>
             </TabPanel>
         </Tabs>
     </div >
@@ -116,7 +117,7 @@ const FlowTable: React.FC = () => {
 //TODO: get workflow name from editor
 const ToolBar: React.FC = () => {
     const flow = useSelector((state: RootState) => state.flowReducer.flow)
-    console.log("Toobar", flow)
+
     const handleStart = () => {
         const url = "http://localhost:9292/workflow/wf1/deploy"
         fetch(url, {

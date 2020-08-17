@@ -154,7 +154,7 @@ target:
     user: hadoop
     pem: /Users/pt/Desktop/spark2.pem
 schedule: "*/5 * * * *"
-image: bayesnote:latest
+image: josephpeng/bayesnote:latest
 tasks:
     - name: nb1
       next: nb3
