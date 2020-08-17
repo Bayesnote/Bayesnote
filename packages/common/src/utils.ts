@@ -1,14 +1,15 @@
-import { v4 as uuid } from 'uuid'
-import { ICellState, ICodeCell, CellType } from './types'
+import { v4 as uuid } from 'uuid';
+import { CellType, ICellState, ICodeCell } from './types';
 
 // create cell
-export const createEmptyCodeCell = (id?: string): ICodeCell => {
+//TODO: https://stackoverflow.com/questions/30734509/how-to-pass-optional-parameters-while-omitting-some-other-optional-parameters
+export const createEmptyCodeCell = (id?: string, language?: string, kernelName?: string, source?: string): ICodeCell => {
     let emptyCell = {
         id: id || uuid(),
         type: CellType.CODE,
-        source: '',
-        language: 'python', // todo testing select python3 by default
-        kernelName: 'python3',
+        source: source || '',
+        language: language || 'python', // todo testing select python3 by default
+        kernelName: kernelName || 'python3',
         backend: 'Jupyter',
         metadata: {
             scrollbar: true,

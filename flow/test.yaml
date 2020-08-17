@@ -1,0 +1,11 @@
+name: wf1
+schedule: "*/5 * * * *"
+image: josephpeng/bayesnote:0.0.1
+tasks:
+    - name: nb1
+      next: nb3
+
+    - name: nb2
+      next: nb3
+      
+    - name: nb3

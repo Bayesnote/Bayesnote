@@ -2,11 +2,12 @@ import { ICodeCell } from '@bayesnote/common/lib/types.js';
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import React, { useEffect, useState } from 'react';
 import MonacoEditor from "react-monaco-editor";
+import { useSelector } from 'react-redux';
 import { useTable } from 'react-table';
 // @ts-ignore
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import { store } from '../store';
+import { RootState, store } from '../store';
 
 interface Props {
     cellVM: ICodeCell
@@ -17,29 +18,28 @@ interface Props {
 //TODO: Integrate with docker & libraries
 export const Flow: React.FC<Props> = ({ cellVM }) => {
     //TODO: Log does not load
-    const url = "http://localhost:8088/workflow"
 
     //TODO: add margin below
     return <div style={{ width: "60%" }}>
         <Tabs>
             <TabList>
-                <Tab>Flow</Tab>
                 <Tab>Editor</Tab>
+                <Tab>Flow</Tab>
             </TabList>
 
-            <TabPanel>
-                <h2> <FlowTable /></h2>
-            </TabPanel>
+
             <TabPanel>
                 <h2>  <FlowEditor /></h2>
                 <ToolBar />
+            </TabPanel>
+            <TabPanel>
+                <h2> <FlowTable /></h2>
             </TabPanel>
         </Tabs>
     </div >
 }
 
-//TODO: this is ugly
-const url = "http://localhost:8088/workflow"
+const url = "http://localhost:9292/workflow"
 
 //This is should reside out of react-table component.
 const columns = [
@@ -62,6 +62,8 @@ const columns = [
 ];
 
 //TODO: CSS 
+//TODO: fetch Remote log
+//TODO: Add host column
 const FlowTable: React.FC = () => {
     //TODO: logic to handle workflow
     //TODO: Group into operation
@@ -79,9 +81,9 @@ const FlowTable: React.FC = () => {
     });
 
     useEffect(() => {
-        fetch(url).
-            then(response => response.json()).
-            then(data => setData(data))
+        fetch(url)
+            .then(response => response.json())
+            .then(data => setData(data))
     }, [])
 
     return (
@@ -111,27 +113,28 @@ const FlowTable: React.FC = () => {
     );
 }
 
+//TODO: init state not work
+//TODO: get workflow name from editor
 const ToolBar: React.FC = () => {
+    const flow = useSelector((state: RootState) => state.flowReducer.flow)
 
     const handleStart = () => {
-        const state = store.getState().flowReducer.flow
-        const url = "http://localhost:8088/workflow/wf1/start"
+        const url = "http://localhost:9292/workflow/wf1/deploy"
         fetch(url, {
-            method: "POST"
+            method: "POST",
+            body: flow
         }).then(Response => console.log((Response.status)))
     }
 
     const handleStop = () => {
-        //TODO: parse yaml to get name
-        const state = store.getState().flowReducer.flow
-        const url = "http://localhost:8088/workflow/wf1/stop"
+        const url = "http://localhost:9292/workflow/wf1/stop"
         fetch(url, {
             method: "POST"
         }).then(Response => console.log((Response.status)))
     }
 
     const hadnleRun = () => {
-        const url = "http://localhost:8088/workflow/wf1/run"
+        const url = "http://localhost:9292/workflow/wf1/run"
         fetch(url, {
             method: "POST"
         }).then(Response => console.log((Response.status)))
@@ -146,6 +149,7 @@ const ToolBar: React.FC = () => {
 
 //TODO: Remove duplicate with monaco.tsx
 const FlowEditor: React.FC = () => {
+    const flow = useSelector((state: RootState) => state.flowReducer.flow)
 
     const options = {
         minimap: { enabled: false },
@@ -154,7 +158,7 @@ const FlowEditor: React.FC = () => {
     var model: monaco.editor.ITextModel | null
 
     const [height, setHeight] = useState(0)
-    const [code, setCode] = useState(flowTemplate)
+    const [code, setCode] = useState(flow)
 
     const editorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
         editor.focus();
@@ -166,7 +170,6 @@ const FlowEditor: React.FC = () => {
 
     const onChange = (newValue: string) => {
         if (model) {
-            const contentHeight = (model.getLineCount() + 1) * 19
             setHeight((model.getLineCount() + 1) * 19)
         }
         setCode(newValue)
@@ -186,17 +189,3 @@ const FlowEditor: React.FC = () => {
         />
     );
 }
-
-let flowTemplate = `
-name: wf1
-schedule: "*/5 * * * *"
-image: bayesnote:latest
-tasks:
-    - name: nb1
-      next: nb3
-
-    - name: nb2
-      next: nb3
-      
-    - name: nb3
-`

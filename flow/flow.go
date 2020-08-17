@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -16,27 +17,22 @@ TODO:
 - check validation of input yaml
 - check lifecycle of status of vertex
 - global status for clean up
-*/
-
-//TODO: Fix container bug
-/*
-1. spin up many containers
-2. wait for APIs for too long
-3. does not turn off containers
+- remove stopped container
 */
 
 //raw
 type flow struct {
 	Name     string `yaml:"name"`
+	Target   target `yaml:"target"`
 	Schedule string `yaml:"schedule"`
 	Tasks    []task `yaml:"tasks"`
 	Image    string `yaml:"image"`
 }
 
 type task struct {
-	Name   string              `yaml:"name"`
-	Params map[string][]string `yaml:"params"`
-	Next   string              `yaml:"next"`
+	Name string `yaml:"name"`
+	// Params map[string][]string `yaml:"params"`
+	Next string `yaml:"next"`
 }
 
 //DAG processed
@@ -44,11 +40,9 @@ type DAG struct {
 	Name     string
 	Time     time.Time
 	Vertices []vertex
-	Params   []params
+	// Params   []params
 
 	msgCh chan event
-
-	image string
 }
 
 type vertex struct {
@@ -62,16 +56,16 @@ type vertex struct {
 	params   map[string]string
 
 	//container info
-	image       string
-	containerID string
-	port        string
+	image string
+	id    string
+	port  string
 }
 
-type params struct {
-	name  string
-	index int
-	value map[string]string
-}
+// type params struct {
+// 	name  string
+// 	index int
+// 	value map[string]string
+// }
 
 type event struct {
 	// eventName   string
@@ -86,7 +80,9 @@ type DAGRun struct {
 }
 
 func startDAG(f flow) {
-	var d = newDAG(f)
+	d := &DAG{Name: f.Name}
+	d.setVertex(f)
+	d.setEdges()
 	d.start()
 
 	log.WithFields(logrus.Fields{
@@ -94,13 +90,6 @@ func startDAG(f flow) {
 		"schedule": f.Schedule,
 		"status":   "running",
 	}).Info("Flow running")
-}
-
-func newDAG(f flow) *DAG {
-	d := &DAG{Name: f.Name}
-	d.setVertex(f)
-	d.setEdges()
-	return d
 }
 
 func (d *DAG) start() {
@@ -121,29 +110,8 @@ func (d *DAG) setVertex(f flow) {
 		d.Vertices = append(d.Vertices, v)
 	}
 	d.setRetry()
-	d.setImage(f)
+	d.setImage(f.Image)
 }
-
-func (d *DAG) setImage(f flow) {
-	d.image = f.Image
-	for i := range d.Vertices {
-		d.Vertices[i].image = d.image
-	}
-}
-
-// func (d *DAG) setParams(t task) {
-// 	for _, v := range t.Params {
-// 		for i := 0; i < len(v); i++ {
-// 			temp := map[string]string{}
-// 			for ik, iv := range t.Params {
-// 				temp[ik] = iv[i]
-// 			}
-// 			v := vertex{Name: t.Name + "-" + strconv.Itoa(i), params: temp, next: t.Next}
-// 			d.Vertices = append(d.Vertices, v)
-// 		}
-// 		break
-// 	}
-// }
 
 func (d *DAG) setEdges() {
 	for i := range d.Vertices {
@@ -157,8 +125,13 @@ func (d *DAG) setEdges() {
 			}
 		}
 	}
+
+	log.WithFields(logrus.Fields{
+		"DAG": fmt.Sprintf("%+v", d),
+	}).Info("DAG generated")
 }
 
+//TODO: rename
 func (d *DAG) emit() {
 	for msg := range d.msgCh {
 		for i := range d.Vertices {
@@ -167,6 +140,9 @@ func (d *DAG) emit() {
 	}
 }
 
+/* TODO:
+read HTML & send email.
+*/
 func (d *DAG) handleDone() {
 	for {
 		time.Sleep(1 * time.Second)
@@ -193,17 +169,11 @@ func (d *DAG) getStopSignal() {
 		time.Sleep(1 * time.Second)
 		if d.Name == os.Getenv("STOP") {
 			//TODO: need stopChan ? or sender check if golang channel is closed?
-			d.stopAllcontainers()
+			// d.stopAllcontainers()
 			os.Setenv("STOP", "")
 			close(d.msgCh)
 			break
 		}
-	}
-}
-
-func (d *DAG) stopAllcontainers() {
-	for i := range d.Vertices {
-		d.Vertices[i].stopContainer()
 	}
 }
 
@@ -231,18 +201,24 @@ func (d *DAG) setRetry() {
 	}
 }
 
-func (v *vertex) handleEvent(e event) {
-	fmt.Printf("%s recv from %s \n", v.Name, e)
+func (d *DAG) setImage(image string) {
+	for i := range d.Vertices {
+		d.Vertices[i].image = image
+	}
+}
+
+//TODO: if v is OK -> close channel
+func (v *vertex) handleEvent(e event, msgChan chan event) {
+	log.Info("%s recv from %s \n", v.Name, e)
 
 	if v.Name == e.name {
 		v.Status = e.status
 		switch en := e.status; en {
 		case "succeeded":
-			//TODO:
-			//v.stopContainer()
+			dk.stop(v.id)
 		case "failed":
-			// TODO: need msgChan to retry or notify DAG?
-			//v.run(msgChan)
+			//TODO: stop ?
+			v.run(msgChan)
 		}
 	} else {
 		switch en := e.status; en {
@@ -253,31 +229,46 @@ func (v *vertex) handleEvent(e event) {
 }
 
 func (v *vertex) startContainer() {
-	v.containerID, v.port = dk.start(v.image)
+	v.id, v.port = dk.start(v.image)
+
+	log.WithFields(logrus.Fields{
+		"name":      v.Name,
+		"container": v.id,
+		"port":      v.port,
+	}).Info("Start container")
 }
 
-func (v *vertex) stopContainer() {
-	fmt.Println("stop: ", v.Name, v.containerID)
-	dk.stop(v.containerID)
+//TODO: stop everything ?
+func (v *vertex) stop(msgChan chan event) {
+	dk.stop(v.id)
+	msgChan <- event{name: v.Name, status: "failed"}
+
+	log.WithFields(logrus.Fields{
+		"name": v.Name,
+	}).Info("Run failed")
 }
 
 //listen on
 func (v *vertex) listen(msg event, msgChan chan event) {
-	v.handleEvent(msg)
+	v.handleEvent(msg, msgChan)
 	v.run(msgChan)
 }
 
 func (v *vertex) run(msgChan chan event) {
+	if v.retry == 0 {
+		v.stop(msgChan)
+	}
 	//check if we can run this vertex
 	if len(v.upstream) == 0 && v.Status != "succeeded" && v.Status != "running" && v.retry > 0 {
+		v.startContainer()
 		v.Status = "running"
 		v.retry--
-		if v.image != "none" {
-			v.startContainer()
-		} else {
-			v.port = "8889"
-		}
-		go runNotebook(v.Name, v.params, v.port, msgChan)
+		go v.runNotebook(msgChan)
+
+		log.WithFields(logrus.Fields{
+			"name":   v.Name,
+			"status": "running",
+		}).Info("Run notebook")
 	}
 }
 
@@ -296,19 +287,24 @@ func (v *vertex) removeUpstream(up string) {
 	}
 }
 
-func runNotebook(nb string, p map[string]string, port string, statusChan chan event) {
-	log.Info("runNotebook: ", nb)
+//nb string, p map[string]string, port string, statusChan chan event
+func (v *vertex) runNotebook(statusChan chan event) {
+	log.Info("runNotebook: ", v.Name)
 	//make request
-	var r request
-	r.port = port
+	r := request{port: v.port, name: v.Name}
+	path := filepath.Join(hostPath, v.Name+".json")
 
-	success := r.run("../storage/" + nb + ".json")
-
-	rst := event{name: nb}
+	success := r.run(path)
+	rst := event{name: v.Name}
 
 	if success {
 		rst.status = "succeeded"
 		statusChan <- rst
+
+		log.WithFields(logrus.Fields{
+			"name":   v.Name,
+			"status": "succeeded",
+		}).Info("Run notebook")
 	}
 }
 
@@ -324,6 +320,7 @@ type flowLog struct {
 
 type flowLogs []flowLog
 
+//TODO: path
 func (l *flowLogs) read() {
 	f, err := ioutil.ReadFile("flow.log")
 	if err != nil {

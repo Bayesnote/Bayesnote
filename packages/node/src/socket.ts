@@ -7,6 +7,7 @@ import {
     IKernelInfo,
     INotebook,
 } from '@bayesnote/common/lib/types'
+import { createEmptyCodeCell } from '@bayesnote/common/lib/utils'
 import { createLogger } from 'bunyan'
 import { createServer } from 'http'
 import type { Server } from 'http'
@@ -59,6 +60,7 @@ export class SocketManager {
         socket.on('export.variable.list', this.onexportVariableList(socket))
         socket.on('export.variable.import', this.onexportVariableImport(socket))
         socket.on('notebook.save', this.onNotebookSave(socket))
+        socket.on('cluster.update', this.onUpdateCluster(socket))
     }
 
     // exported var map
@@ -154,6 +156,20 @@ export class SocketManager {
     private onNotebookSave = (socket: SocketIO.Socket) => {
         return (notebook: INotebook) => {
             this.notebookManager.saveNotebook(notebook)
+        }
+    }
+
+    private onUpdateCluster = (socket: SocketIO.Socket) => {
+        return async (cluster: string) => {
+            console.log('onUpdateCluster', cluster)
+            const source = `val conf = new SparkConf().setMaster("${cluster}")\nval sc = new SparkContext(conf)`
+            //prepare a new cell
+            const cell = createEmptyCodeCell(undefined, 'scala', 'spylon-kernel', source)
+            //run
+            socket.emit('cell.run', cell)
+            //TODO: get run status
+
+            //TODO: verify spark master
         }
     }
 

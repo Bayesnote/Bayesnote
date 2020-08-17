@@ -102,7 +102,7 @@ const ChartItem: React.FC<props> = ({ spec, index }) => {
     const ItemTypes = {
         CHART: 'chart',
     }
-
+    // eslint-disable-next-line
     const [{ isDragging }, drag] = useDrag({
         item: { index: index, type: ItemTypes.CHART },
         collect: (monitor) => ({

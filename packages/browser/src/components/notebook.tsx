@@ -12,7 +12,6 @@ export const Notebook: React.FC = () => {
     const loadCells = () => {
         return notebookVM.cells.map(
             (cellVM: ICodeCell) => {
-                console.log("cellVM: ", cellVM.source)
                 return <Cell key={cellVM.id} cellVM={cellVM} />
             })
     }
@@ -58,6 +57,8 @@ const NotebookToolbar: React.FC = () => {
             type: "updateNotebookName",
             payload: { name },
         });
+
+        notebookVM.name = name
         client.emit("notebook.save", notebookVM)
     }
 

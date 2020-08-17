@@ -1,6 +1,7 @@
 import {
   ICellOutput,
-  IClearOutput, IErrorOutput, IExecuteResultOutput,
+  IClearOutput,
+  ICodeCell, IErrorOutput, IExecuteResultOutput,
   IexportdVarMap, IexportdVarMapValue,
   IKernelSpecs,
   IResponse,
@@ -8,8 +9,7 @@ import {
   isStatusOutput,
   isStreamOutput,
   IStatusOutput,
-  IStreamOutput,
-  ICodeCell
+  IStreamOutput
 } from "@bayesnote/common/lib/types";
 import socketClient from "socket.io-client";
 import { store } from "./store";

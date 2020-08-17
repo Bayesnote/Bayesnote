@@ -147,7 +147,23 @@ export type FlowState = {
 };
 
 const flowInitState: FlowState = {
-  flow: ""
+  flow: `name: wf1
+target:
+    ip: ec2-52-41-66-152.us-west-2.compute.amazonaws.com
+    port: 22
+    user: hadoop
+    pem: /Users/pt/Desktop/spark2.pem
+schedule: "*/5 * * * *"
+image: josephpeng/bayesnote:latest
+tasks:
+    - name: nb1
+      next: nb3
+
+    - name: nb2
+      next: nb3
+      
+    - name: nb3
+  `
 };
 
 export const flowReducer = (state = flowInitState, action: IAction) => {
@@ -316,3 +332,27 @@ export const dashboardListReducer = (state = dashbaordListInitState, action: IAc
   }
 }
 
+export type SparkState = {
+  currentCluster: string
+  clusters: string[]
+};
+
+const initSparkState: SparkState = {
+  currentCluster: "", //TODO: localhost ?
+  clusters: [] as string[]
+};
+
+export const sparkReducer = (state = initSparkState, action: IAction) => {
+  switch (action.type) {
+    case "addSparkClusters":
+      return produce(state, (draft) => {
+        draft.clusters.push(action.payload.input)
+      })
+    case "updateSparkCluster":
+      return produce(state, (draft) => {
+        draft.currentCluster = action.payload.cluster
+      })
+    default:
+      return state
+  }
+}

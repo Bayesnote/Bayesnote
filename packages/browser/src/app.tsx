@@ -9,6 +9,7 @@ import { Board, DashboardNav } from './components/dashboard';
 import { Examples } from './components/examples';
 import { Libraries } from "./components/libraries";
 import { Notebook } from './components/notebook';
+import { Spark } from "./components/spark";
 import { Flow } from './components/workflow';
 import { store } from './store';
 
@@ -24,6 +25,7 @@ const App: React.FC = () => {
                 <Link to="/notebook" >Notebooks </Link>
                 <Link to="/workflow">Workflow </Link>
                 <Link to="/dashboard" >Dashboard </Link>
+                <Link to="/spark" >Spark </Link>
               </div>
               <SplitPane split="vertical" defaultSize="15%" pane2Style={{ overflow: 'scroll' }} style={{ position: 'relative' }}>
                 <div className="Panel-2" style={{ maxHeight: "80%" }}>
@@ -31,6 +33,7 @@ const App: React.FC = () => {
                     <Route path={["/example"]} component={Examples} />
                     <Route path='/libraries' component={Libraries} />
                     <Route path='/dashboard' component={DashboardNav} />
+                    <Route path='/spark' component={Spark} />
                   </Switch>
                 </div>
                 <div className="Panel-3" style={{ overflowY: "scroll" }}>
@@ -38,7 +41,7 @@ const App: React.FC = () => {
                     <Route exact path="/">
                       <Redirect to="/example" />
                     </Route>
-                    <Route path={["/notebook", "/example"]} component={Notebook} />
+                    <Route path={["/notebook", "/example", "/spark"]} component={Notebook} />
                     <Route path='/workflow' component={Flow} />
                     <Route path='/dashboard' component={Board} />
                   </Switch>

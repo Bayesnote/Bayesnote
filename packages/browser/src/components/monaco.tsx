@@ -1,6 +1,6 @@
 import { ICodeCell } from '@bayesnote/common/lib/types.js';
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import MonacoEditor from "react-monaco-editor";
 import { store } from '../store';
 
@@ -10,27 +10,24 @@ interface Props {
 }
 
 export const Editor: React.FC<Props> = ({ cellVM }) => {
-
     const options = {
         minimap: { enabled: false },
     }
 
-    var model: monaco.editor.ITextModel | null
-
+    const [model, setModel] = useState<monaco.editor.ITextModel>()
     const [height, setHeight] = useState(0)
     const [code, setCode] = useState(cellVM.source)
 
     const editorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
         editor.focus();
-        model = editor.getModel()
-        if (model) {
-            setHeight((model.getLineCount() + 1) * 19)
+        if (editor.getModel()) {
+            setModel(editor.getModel() as monaco.editor.ITextModel)
+            setHeight((editor.getModel()!.getLineCount() + 1) * 19)
         }
     }
 
-    const onChange = (newValue: string) => {
+    const onChange = (newValue: string, event: monaco.editor.IModelContentChangedEvent) => {
         if (model) {
-            const contentHeight = (model.getLineCount() + 1) * 19
             setHeight((model.getLineCount() + 1) * 19)
         }
         setCode(newValue)
