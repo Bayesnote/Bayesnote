@@ -1,6 +1,8 @@
 # Bayesnote: A Frictionless Integrated Notebook
 
-Bayesnote is a frictionless integrated notebook environment for data scientists and data engineers. It provides a user interface to build dashboards and deploy machine learning models right from a notebook. It also supports the operation of notebooks by a workflow system, Noteflow. It manages servers, libraries, and containers for development and production.
+Bayesnote = Notebook + Workflow + Machine Learning + Dashboard. It provides a user interface to build dashboards and deploy machine learning models right from a notebook. It also supports the operation of notebooks by a workflow system, Noteflow. It manages servers, libraries, and containers for development and production.
+
+Bayesnote is a new project and we are looking for 10 early-adopters.
 
 # Motivation & Philosophy:
 [Bayesnote: Redefine Notebook](https://towardsdatascience.com/bayesnote-redefine-notebook-2ab00277bbc?source=friends_link&sk=94e2e9d234caa0edc3adf7235bd84b74)
@@ -50,8 +52,7 @@ Bayesnote is a new project and under active development.
 
 0. Install the docker client
 1. Pull the image: `docker pull josephpeng/bayesnote:latest`
-
-2. Start the container: `docker run --rm -d  -p 5000:5000/tcp -p 8890:8890/tcp josephpeng/bayesnote:latest`
+2. Start the container: `docker run --rm -d  -p 5000:5000/tcp -p 8890:8890/tcp josephpeng/bayesnote:0.0.2`
 3. Open http://localhost:5000/
 
 ## Contributors: Set up development environment
