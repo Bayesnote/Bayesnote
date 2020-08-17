@@ -51,9 +51,8 @@ Bayesnote is a new project and under active development.
 ## Users: Getting Started
 
 0. Install the docker client
-1. Pull the image: `docker pull josephpeng/bayesnote:latest`
-2. Start the container: `docker run --rm -d  -p 5000:5000/tcp -p 8890:8890/tcp josephpeng/bayesnote:0.0.2`
-3. Open http://localhost:5000/
+1. Start the container: `docker run --rm -d  -p 5000:5000/tcp -p 8890:8890/tcp josephpeng/bayesnote:0.0.2`
+2. Open http://localhost:5000/
 
 ## Contributors: Set up development environment
 
