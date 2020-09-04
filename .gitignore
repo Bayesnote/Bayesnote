@@ -2,6 +2,7 @@ data
 flow.db
 flow
 *.ipynb
+.github
 
 bayesnote*
 
