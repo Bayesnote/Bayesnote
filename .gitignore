@@ -1,12 +1,27 @@
-*/**/node_modules/
-.DS_Store
-config.json
-packages/node/out/
-packages/browser/build/
-packages/cli/lib
-packages/dashboard/build
-packages/common/lib
-node_modules/
-lerna-debug.log
+data
+flow.db
+flow
+*.ipynb
 
-/flow/flow
+bayesnote*
+
+# dependencies
+frontend/node_modules
+frontend/.pnp
+frontend/.pnp.js
+
+# testing
+frontend/coverage
+
+# production
+frontend/build
+
+# misc
+frontend/.DS_Store
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
