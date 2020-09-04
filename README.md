@@ -54,4 +54,4 @@ https://medium.com/@josephtengpeng/how-to-orcestrate-jupyter-notebooks-752aa8081
 
 Note: This project is adding new features fast.
 
-Note: I am working on this project full-time. Let me know what do you think. Questions, Comments, feature requests, and Pull requests welcome.
+Note: I am working on this project full-time. Let me know what do you think. Questions, comments, feature requests, and pull requests welcome. welcome.
