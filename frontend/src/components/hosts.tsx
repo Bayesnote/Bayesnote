@@ -1,4 +1,4 @@
-import { Button, ControlGroup, Divider, FormGroup, InputGroup } from "@blueprintjs/core";
+import { Button, ControlGroup, Divider, FormGroup, InputGroup, FileInput } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
 import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 import { AppToaster } from "./toasters";
@@ -10,27 +10,34 @@ export const hostRefresh = atom({
     default: 0, // default value (aka initial value)
 });
 
-//TODO: select or drag & drop pem
 export const AddHost: React.FC = () => {
     const [ip, setIP] = useState("")
     const [user, setUser] = useState("")
     const [password, setPassword] = useState("")
-    const [pem, setPem] = useState("")
+    const [pem, setPem] = useState<string | Blob>("")
     const [count, setCount] = useRecoilState(hostRefresh);
 
     const handleSave = () => {
         const url = baseURL + "/hosts"
-        const host = {
+        const host: { [key: string]: string | Blob } = {
             "User": user,
             "IP": ip,
             "Password": password,
             "Pem": pem
         }
 
+        const fd = new FormData()
+        for (const key of Object.keys(host)) {
+            fd.append(key, host[key] as string | Blob)
+        }
+
         fetch(url,
             {
                 method: 'post',
-                body: JSON.stringify(host)
+                headers: {
+                    ContentType: 'multipart/form-data'
+                },
+                body: fd
             })
             .then(response => response.json())
             .then(result => {
@@ -120,15 +127,12 @@ export const AddHost: React.FC = () => {
                 </FormGroup>
 
                 <FormGroup label="Pem">
-                    <InputGroup placeholder="/Users/Downloads/us-west-2.pem"
-                        value={pem}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPem(e.target.value)} />
+                    <FileInput fill={true} onInputChange={(e: React.ChangeEvent<HTMLInputElement>) => e.target.files && setPem(e.target.files[0])} />
                 </FormGroup>
 
                 <Divider />
 
                 <h5>2. Save: </h5>
-
 
                 <Button text="Save" onClick={handleSave} />
                 <br></br>
